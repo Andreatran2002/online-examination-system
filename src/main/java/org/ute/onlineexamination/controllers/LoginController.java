@@ -1,6 +1,5 @@
 package org.ute.onlineexamination.controllers;
 
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -40,13 +39,13 @@ public class LoginController {
             wrongLogin.setText("Success!");
             switch (loginAs.getValue().toString()) {
                 case "Admin":
-                    m.changeScene("AdminPage.fxml");
+                    m.changeScene("org/ute/onlineexamination/AdminPage.fxml");
                     break;
                 case "Teacher":
-                    m.changeScene("TeacherPage.fxml");
+                    m.changeScene("org/ute/onlineexamination/TeacherPage.fxml");
                     break;
                 case "Student":
-                    m.changeScene("StudentPage.fxml");
+                    m.changeScene("org/ute/onlineexamination/StudentPage.fxml");
                     break;
             }
         }
