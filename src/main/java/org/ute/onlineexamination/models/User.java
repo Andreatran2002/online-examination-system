@@ -115,6 +115,10 @@ public class User {
 
     private String password_hash;
     private Time last_login;
+
+    public User() {
+    }
+
     private Time created_at;
     private Time updated_at;
     private Time deleted_at;

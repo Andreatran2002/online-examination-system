@@ -5,11 +5,14 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
 import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.models.User;
+import org.ute.onlineexamination.utils.AppUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,22 +46,21 @@ public class LoginController {
     }
 
     public void userLogIn(ActionEvent event) throws IOException{
-        checkLogIn();
+        checkLogIn(event);
     }
 
-    private void checkLogIn() throws IOException{
-        MainApplication m = new MainApplication();
+    private void checkLogIn(Event event) throws IOException{
         if (loginEmail.getText().toString().equals("admin") && loginPassword.getText().toString().equals("123")){
             wrongLogin.setText("Success!");
             switch (loginAs.getValue().toString()) {
                 case "Admin":
-                    m.changeScene("AdminPage.fxml", 1200,600);
+                    AppUtils.changeScreen(event, "AdminPage.fxml");
                     break;
                 case "Teacher":
-                    m.changeScene("TeacherPage.fxml", 1200,600);
+                    AppUtils.changeScreen(event, "TeacherPage.fxml");
                     break;
                 case "Student":
-                    m.changeScene("StudentPage.fxml", 1200,600);
+                    AppUtils.changeScreen(event, "StudentPage.fxml");
                     break;
             }
         }
@@ -72,13 +74,8 @@ public class LoginController {
 
     }
 
-    public void navToRegisterPage(KeyEvent keyEvent)  {
-        MainApplication m = new MainApplication();
-        try {
-            m.changeScene("RegisterPage.fxml", 600,400);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void navToRegisterPage(KeyEvent keyEvent) throws IOException {
+        AppUtils.changeScreen(keyEvent, "RegisterPage.fxml");
     }
 
 }

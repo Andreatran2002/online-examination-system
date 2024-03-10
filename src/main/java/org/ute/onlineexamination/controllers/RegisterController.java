@@ -6,15 +6,17 @@ import java.sql.SQLException;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Window;
 import org.ute.onlineexamination.MainApplication;
+import org.ute.onlineexamination.daos.StudentDAO;
+import org.ute.onlineexamination.daos.TeacherDAO;
 import org.ute.onlineexamination.daos.UserDAO;
+import org.ute.onlineexamination.models.Student;
+import org.ute.onlineexamination.models.Teacher;
 import org.ute.onlineexamination.models.User;
+import org.ute.onlineexamination.utils.AppUtils;
 
 public class RegisterController {
 
@@ -22,31 +24,41 @@ public class RegisterController {
     public TextField registerFullName;
     public PasswordField registerPassword;
     public TextField registerEmail;
-
-    private static void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.initOwner(owner);
-        alert.show();
-    }
+    public ChoiceBox registerAs;
+    UserDAO userDAO = new UserDAO();
+    TeacherDAO teacherDAO = new TeacherDAO();
+    StudentDAO studentDAO = new StudentDAO();
 
     public void userRegister(ActionEvent event) {
 
         String fullName = registerFullName.getText();
         String email = registerEmail.getText();
         String password = registerPassword.getText();
+        try{
 
-        UserDAO userDAO = new UserDAO();
-        userDAO.register(new User(fullName, email, password));
+            userDAO.save(new User(fullName, email, password));
+            User user = userDAO.getByEmail(email);
+            switch (registerAs.getValue().toString()) {
+                case "Teacher":
+                    teacherDAO.save(new Teacher(user.getId()));
+                    break;
+                case "Student":
+                    studentDAO.save(new Student(user.getId()));
+                    break;
+                default:
+                    break;
+            }
+
+        }catch (Exception e){
+            AppUtils.showAlert(Alert.AlertType.ERROR,event,"Lỗi trong quá trình tạo user", e.getMessage());
+        }
+
 
     }
 
     public void navToLoginPage(MouseEvent mouseEvent) {
-        MainApplication m = new MainApplication();
         try {
-            m.changeScene("LoginPage.fxml",600,400);
+            AppUtils.changeScreen(mouseEvent, "LoginPage.fxml");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -51,7 +51,7 @@
             <Button fx:id="registerBtn" layoutX="114.0" layoutY="310.0" mnemonicParsing="false" onAction="#userRegister" prefHeight="31.0" prefWidth="111.0" text="Register" />
             <Label fx:id="wrongLogin" alignment="CENTER" contentDisplay="CENTER" layoutX="66.0" layoutY="119.0" prefHeight="17.0" prefWidth="214.0" textAlignment="CENTER" textFill="WHITE" />
             <Label fx:id="email1" layoutX="43.0" layoutY="151.0" text="Register as" textFill="WHITE" />
-            <ChoiceBox fx:id="registerAs" layoutX="122.0" layoutY="147.0" prefWidth="150.0" >
+            <ChoiceBox fx:id="registerAs" layoutX="122.0" layoutY="147.0" prefWidth="150.0" value="Student">
                <items>
                   <FXCollections fx:factory="observableArrayList">
                      <String fx:value="Admin" />
