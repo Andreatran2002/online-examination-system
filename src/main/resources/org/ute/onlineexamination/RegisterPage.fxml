@@ -13,7 +13,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ute.onlineexamination.controllers.LoginController">
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ute.onlineexamination.controllers.RegisterController">
    <left>
       <AnchorPane prefHeight="400.0" prefWidth="279.0" style="-fx-background-color: #0a132e;" BorderPane.alignment="CENTER">
          <children>
@@ -29,7 +31,7 @@
             </Text>
             <ImageView fitHeight="79.0" fitWidth="75.0" layoutX="112.0" layoutY="78.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@org/ute/onlineexamination/images/🦆%20icon%20_Lightbulb_.png" />
+                  <Image url="@images/🦆%20icon%20_Lightbulb_.png" />
                </image></ImageView>
          </children>
       </AnchorPane>
@@ -39,17 +41,25 @@
          <children>
             <ImageView fitHeight="46.0" fitWidth="39.0" layoutX="153.0" layoutY="67.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@org/ute/onlineexamination/images/🦆%20icon%20_lock_.png" />
+                  <Image url="@images/🦆%20icon%20_lock_.png" />
                </image>
             </ImageView>
             <Label fx:id="email" layoutX="43.0" layoutY="191.0" text="Full Name" textFill="WHITE" />
             <Label layoutX="41.0" layoutY="270.0" text="Password" textFill="WHITE" />
             <TextField fx:id="registerFullName" layoutX="121.0" layoutY="189.0" style="-fx-background-color: white;" />
             <PasswordField fx:id="registerPassword" layoutX="121.0" layoutY="267.0" style="-fx-background-color: white;" />
-            <Button fx:id="registerBtn" layoutX="114.0" layoutY="310.0" mnemonicParsing="false" onAction="#userLogIn" prefHeight="31.0" prefWidth="111.0" text="Register" />
+            <Button fx:id="registerBtn" layoutX="114.0" layoutY="310.0" mnemonicParsing="false" onAction="#userRegister" prefHeight="31.0" prefWidth="111.0" text="Register" />
             <Label fx:id="wrongLogin" alignment="CENTER" contentDisplay="CENTER" layoutX="66.0" layoutY="119.0" prefHeight="17.0" prefWidth="214.0" textAlignment="CENTER" textFill="WHITE" />
             <Label fx:id="email1" layoutX="43.0" layoutY="151.0" text="Register as" textFill="WHITE" />
-            <ChoiceBox fx:id="registerAs" layoutX="122.0" layoutY="147.0" prefWidth="150.0" />
+            <ChoiceBox fx:id="registerAs" layoutX="122.0" layoutY="147.0" prefWidth="150.0" >
+               <items>
+                  <FXCollections fx:factory="observableArrayList">
+                     <String fx:value="Admin" />
+                     <String fx:value="Student"  />
+                     <String fx:value="Teacher" />
+                  </FXCollections>
+               </items>
+            </ChoiceBox>
             <Label fx:id="email2" layoutX="42.0" layoutY="230.0" text="Email" textFill="WHITE" />
             <TextField fx:id="registerEmail" layoutX="120.0" layoutY="228.0" style="-fx-background-color: white;" />
             <Group layoutX="96.0" layoutY="348.0">
@@ -59,7 +69,7 @@
                         <Font size="11.0" />
                      </font>
                   </Label>
-                  <Label fx:id="loginNav" layoutX="127.0" onMouseClicked="#navToLoginPage" text="Login" textFill="#ffaf00">
+                  <Label fx:id="loginNav" layoutX="127.0"  onMouseClicked="#navToLoginPage" text="Login" textFill="#ffaf00">
                      <font>
                         <Font size="11.0" />
                      </font>

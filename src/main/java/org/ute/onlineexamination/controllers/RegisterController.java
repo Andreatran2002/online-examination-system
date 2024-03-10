@@ -1,6 +1,7 @@
 package org.ute.onlineexamination.controllers;
 
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javafx.event.ActionEvent;
@@ -9,59 +10,18 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Window;
+import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.daos.UserDAO;
 import org.ute.onlineexamination.models.User;
 
 public class RegisterController {
 
-    @FXML
-    private TextField fullNameField;
 
-    @FXML
-    private TextField emailIdField;
-
-    @FXML
-    private PasswordField passwordField;
-
-    @FXML
-    private Button submitButton;
-
-    @FXML
-    public void register(ActionEvent event) throws SQLException {
-
-        Window owner = submitButton.getScene().getWindow();
-
-        System.out.println(fullNameField.getText());
-        System.out.println(emailIdField.getText());
-        System.out.println(passwordField.getText());
-        if (fullNameField.getText().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
-                    "Please enter your name");
-            return;
-        }
-
-        if (emailIdField.getText().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
-                    "Please enter your email id");
-            return;
-        }
-        if (passwordField.getText().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
-                    "Please enter a password");
-            return;
-        }
-
-        String fullName = fullNameField.getText();
-        String email = emailIdField.getText();
-        String password = passwordField.getText();
-
-        UserDAO userDAO = new UserDAO();
-        userDAO.save(new User(fullName, email, password));
-
-        showAlert(Alert.AlertType.CONFIRMATION, owner, "Registration Successful!",
-                "Welcome " + fullNameField.getText());
-    }
+    public TextField registerFullName;
+    public PasswordField registerPassword;
+    public TextField registerEmail;
 
     private static void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
         Alert alert = new Alert(alertType);
@@ -70,5 +30,25 @@ public class RegisterController {
         alert.setContentText(message);
         alert.initOwner(owner);
         alert.show();
+    }
+
+    public void userRegister(ActionEvent event) {
+
+        String fullName = registerFullName.getText();
+        String email = registerEmail.getText();
+        String password = registerPassword.getText();
+
+        UserDAO userDAO = new UserDAO();
+        userDAO.register(new User(fullName, email, password));
+
+    }
+
+    public void navToLoginPage(MouseEvent mouseEvent) {
+        MainApplication m = new MainApplication();
+        try {
+            m.changeScene("LoginPage.fxml",600,400);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

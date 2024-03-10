@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class MainApplication extends Application {
+
     private static Stage stage;
 
     public static void main(String[] args) {
@@ -26,8 +27,9 @@ public class MainApplication extends Application {
         primaryStage.show();
     }
 
-    public void changeScene(String fxml) throws IOException {
+    public void changeScene(String fxml , Integer w , Integer h) throws IOException {
         Parent panel = FXMLLoader.load(getClass().getResource(fxml));
+        stage.setScene(new Scene(panel, w, h));
         stage.getScene().setRoot(panel);
     }
 }

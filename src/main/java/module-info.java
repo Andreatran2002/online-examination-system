@@ -7,6 +7,7 @@ module org.ute.onlineexamination {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
+    requires jbcrypt;
 
     opens org.ute.onlineexamination to javafx.fxml;
     exports org.ute.onlineexamination;
