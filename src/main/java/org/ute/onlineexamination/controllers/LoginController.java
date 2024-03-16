@@ -7,21 +7,29 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import org.kordamp.bootstrapfx.scene.layout.Panel;
 import org.ute.onlineexamination.MainApplication;
+import org.ute.onlineexamination.daos.StudentDAO;
+import org.ute.onlineexamination.daos.TeacherDAO;
+import org.ute.onlineexamination.daos.UserDAO;
+import org.ute.onlineexamination.models.Student;
+import org.ute.onlineexamination.models.Teacher;
 import org.ute.onlineexamination.models.User;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 public class LoginController {
-    String[] st = { "admin", "student", "teacher"};
-
-    public ChoiceBox loginAs=  new ChoiceBox<String>(FXCollections.observableArrayList(st));
+    public ChoiceBox loginAs;
     @FXML
     private Button loginBtn;
     @FXML
@@ -30,41 +38,55 @@ public class LoginController {
     private TextField loginEmail;
     @FXML
     private PasswordField loginPassword;
+    Scene scene;
+    Parent panel ;
+    UserDAO userDAO ;
+    TeacherDAO teacherDAO;
+    StudentDAO studentDAO;
     public LoginController(){
-        loginAs.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-
-            // if the item of the list is changed
-            public void changed(ObservableValue ov, Number value, Number new_value)
-            {
-
-                // set the text for the label to the selected item
-//                l1.setText(st[new_value.intValue()] + " selected");
-            }
-        });
-
-
+        userDAO = new UserDAO();
+        teacherDAO = new TeacherDAO();
+        studentDAO = new StudentDAO();
     }
 
     public void userLogIn(ActionEvent event) throws IOException{
-        checkLogIn(event);
-    }
-
-    private void checkLogIn(Event event) throws IOException{
-        if (loginEmail.getText().toString().equals("admin") && loginPassword.getText().toString().equals("123")){
-            wrongLogin.setText("Success!");
+        wrongLogin.setText("");
+        scene = ((Node)event.getSource()).getScene();
+        User user = userDAO.getByEmail(loginEmail.getText());
+        if (user.getCreated_at() == null){
+            wrongLogin.setText("Account not exist. Please try again !");
+            return ;
+        }
+        if (user.checkPassword(loginPassword.getText())) {
             switch (loginAs.getValue().toString()) {
                 case "Admin":
-                    AppUtils.changeScreen(event, "AdminPage.fxml");
+                    if (!user.getIs_admin()){
+                        wrongLogin.setText("This account is not admin");
+                        return ;
+                    }
+                    panel = FXMLLoader.load(MainApplication.class.getResource("AdminPage.fxml"));
                     break;
                 case "Teacher":
-                    AppUtils.changeScreen(event, "TeacherPage.fxml");
+                    Teacher teacher = teacherDAO.getByUserId(user.getId());
+                    if (teacher.getCreated_at()==null){
+                        wrongLogin.setText("This account is not teacher");
+                        return ;
+                    }
+                    panel = FXMLLoader.load(MainApplication.class.getResource("TeacherPage.fxml"));
                     break;
                 case "Student":
-                    AppUtils.changeScreen(event, "StudentPage.fxml");
+                    Student student = studentDAO.getByUserId(user.getId());
+                    if (student.getCreated_at()==null){
+                        wrongLogin.setText("This account is not teacher");
+                        return ;
+                    }
+                    panel = FXMLLoader.load(MainApplication.class.getResource("StudentPage.fxml"));
                     break;
             }
+            if (panel != null){
+                scene.setRoot(panel);
+            }
         }
-
         else if (loginEmail.getText().isEmpty() || loginPassword.getText().isEmpty()){
             wrongLogin.setText("Please enter your data");
         }
@@ -74,8 +96,10 @@ public class LoginController {
 
     }
 
-    public void navToRegisterPage(KeyEvent keyEvent) throws IOException {
-        AppUtils.changeScreen(keyEvent, "RegisterPage.fxml");
+    public void navToRegisterPage(MouseEvent event) throws IOException {
+        scene = ((Node)event.getSource()).getScene();
+        panel = FXMLLoader.load(MainApplication.class.getResource("RegisterPage.fxml"));
+        scene.setRoot(panel);
     }
 
 }

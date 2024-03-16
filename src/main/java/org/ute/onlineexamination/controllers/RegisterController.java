@@ -6,6 +6,10 @@ import java.sql.SQLException;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Window;
@@ -25,19 +29,48 @@ public class RegisterController {
     public PasswordField registerPassword;
     public TextField registerEmail;
     public ChoiceBox registerAs;
-    UserDAO userDAO = new UserDAO();
-    TeacherDAO teacherDAO = new TeacherDAO();
-    StudentDAO studentDAO = new StudentDAO();
+    public Label wrongRegister;
+    UserDAO userDAO;
+    TeacherDAO teacherDAO;
+    StudentDAO studentDAO;
+
+    public RegisterController(){
+        teacherDAO = new TeacherDAO();
+        userDAO = new UserDAO();
+        studentDAO = new StudentDAO();
+    }
+
+    Boolean checkInput(){
+        return !registerEmail.getText().isEmpty() && !registerPassword.getText().isEmpty() && !registerFullName.getText().isEmpty();
+    }
+    void reset (){
+        registerEmail.setText("");
+        registerFullName.setText("");
+        registerPassword.setText("");
+    }
 
     public void userRegister(ActionEvent event) {
-
+        Boolean isInputValid = checkInput();
+        if (!isInputValid ){
+            wrongRegister.setText("Invalid input. Please try again!");
+            return ;
+        }
+        if (!wrongRegister.getText().isEmpty()){
+            wrongRegister.setText("");
+        }
         String fullName = registerFullName.getText();
         String email = registerEmail.getText();
         String password = registerPassword.getText();
-        try{
 
+        User user = userDAO.getByEmail(email);
+        System.out.println(user.getEmail());
+        if (user.getEmail() != null){
+            wrongRegister.setText("Email account exist. Please try different email !");
+            return ;
+        }
+        try{
             userDAO.save(new User(fullName, email, password));
-            User user = userDAO.getByEmail(email);
+            user = userDAO.getByEmail(email);
             switch (registerAs.getValue().toString()) {
                 case "Teacher":
                     teacherDAO.save(new Teacher(user.getId()));
@@ -48,17 +81,17 @@ public class RegisterController {
                 default:
                     break;
             }
-
+            reset();
         }catch (Exception e){
             AppUtils.showAlert(Alert.AlertType.ERROR,event,"Lỗi trong quá trình tạo user", e.getMessage());
         }
-
-
     }
 
     public void navToLoginPage(MouseEvent mouseEvent) {
         try {
-            AppUtils.changeScreen(mouseEvent, "LoginPage.fxml");
+            Scene scene = ((Node)mouseEvent.getSource()).getScene();
+            Parent panel = FXMLLoader.load(MainApplication.class.getResource("LoginPage.fxml"));
+            scene.setRoot(panel);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

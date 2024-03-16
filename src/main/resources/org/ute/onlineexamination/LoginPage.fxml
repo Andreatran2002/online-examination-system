@@ -39,7 +39,7 @@
    <center>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #0a132e;" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="46.0" fitWidth="39.0" layoutX="141.0" layoutY="67.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="46.0" fitWidth="39.0" layoutX="147.0" layoutY="53.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@images/🦆%20icon%20_lock_.png" />
                </image>
@@ -49,14 +49,14 @@
             <TextField fx:id="loginEmail" layoutX="121.0" layoutY="189.0" style="-fx-background-color: white;" />
             <PasswordField fx:id="loginPassword" layoutX="121.0" layoutY="231.0" style="-fx-background-color: white;" />
             <Button fx:id="loginBtn" layoutX="105.0" layoutY="283.0" mnemonicParsing="false" onAction="#userLogIn" prefHeight="31.0" prefWidth="111.0" text="Login" />
-            <Label fx:id="wrongLogin" alignment="CENTER" contentDisplay="CENTER" layoutX="66.0" layoutY="119.0" prefHeight="17.0" prefWidth="214.0" textAlignment="CENTER" textFill="WHITE" />
+            <Label fx:id="wrongLogin" alignment="CENTER" contentDisplay="CENTER" layoutX="59.0" layoutY="108.0" prefHeight="33.0" prefWidth="215.0" textAlignment="CENTER" textFill="RED" wrapText="true" />
             <Label fx:id="email1" layoutX="43.0" layoutY="151.0" text="Login as" textFill="WHITE" />
             <ChoiceBox fx:id="loginAs" layoutX="122.0" layoutY="147.0" prefWidth="150.0">
                <items>
                   <FXCollections fx:factory="observableArrayList">
                      <String fx:value="Admin" />
-                     <String fx:value="Student"  />
-                     <String fx:value="Teacher"  />
+                     <String fx:value="Student" />
+                     <String fx:value="Teacher" />
                   </FXCollections>
                </items>
             </ChoiceBox>

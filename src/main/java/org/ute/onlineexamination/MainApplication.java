@@ -19,7 +19,7 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         primaryStage.setResizable(false);
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("RegisterPage.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("LoginPage.fxml")));
         primaryStage.setTitle("Online Examination System");
         primaryStage.setScene(new Scene(root, 600, 400));
         primaryStage.show();

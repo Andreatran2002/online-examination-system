@@ -11,6 +11,15 @@ public class User {
     private String full_name;
     private String email;
     private String mobile;
+    private Boolean is_admin;
+
+    public Boolean getIs_admin() {
+        return is_admin;
+    }
+
+    public void setIs_admin(Boolean is_admin) {
+        this.is_admin = is_admin;
+    }
 
     public User(String full_name, String email, String mobile, String password_hash) {
         this.full_name = full_name;
@@ -25,7 +34,7 @@ public class User {
         String generatedSecuredPasswordHash = BCrypt.hashpw(password, BCrypt.gensalt(12));
         this.password_hash = generatedSecuredPasswordHash;
     }
-    public Boolean checkPassword(String password , String password_hash){
+    public Boolean checkPassword(String password){
         return BCrypt.checkpw(password, password_hash);
     }
 

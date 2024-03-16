@@ -48,20 +48,28 @@ public class UserDAO implements DAO<User> {
 
     }
 
-    public User getByEmail( String email ){
+    public User getByEmail(String email ){
+        User user = new User();
         try (Connection connection = DBConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM User WHERE email=? ")) {
             preparedStatement.setString(1, email);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()){
                 // TODO: lay thong tin User
-                String mov_name = rs.getString(1);
-                int mov_year = rs.getInt(2);
+                user.setId(rs.getInt("id"));
+                user.setEmail(rs.getString("email"));
+                user.setCreated_at(rs.getTime("created_at"));
+                user.setUpdated_at(rs.getTime("updated_at"));
+                user.setDeleted_at(rs.getTime("deleted_at"));
+                user.setFull_name(rs.getString("full_name"));
+                user.setLast_login(rs.getTime("last_login"));
+                user.setIs_admin(rs.getBoolean("is_admin"));
+                user.setPassword_hash(rs.getString("password_hash"));
+                user.setMobile(rs.getString("mobile"));
             }
-            preparedStatement.close();
         } catch (SQLException e) {
             DBConnectionFactory.printSQLException(e);
         }
-        return new User();
+        return user;
     }
 }
