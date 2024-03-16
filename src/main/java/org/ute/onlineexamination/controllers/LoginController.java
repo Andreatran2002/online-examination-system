@@ -26,6 +26,7 @@ import org.ute.onlineexamination.models.User;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 public class LoginController {
@@ -49,6 +50,11 @@ public class LoginController {
         studentDAO = new StudentDAO();
     }
 
+    void navToHomePage(String page,User user) throws IOException {
+        panel = FXMLLoader.load(MainApplication.class.getResource(page+".fxml"));
+        userDAO.update(user);
+    }
+
     public void userLogIn(ActionEvent event) throws IOException{
         wrongLogin.setText("");
         scene = ((Node)event.getSource()).getScene();
@@ -58,13 +64,14 @@ public class LoginController {
             return ;
         }
         if (user.checkPassword(loginPassword.getText())) {
+            user.setLast_login(AppUtils.getCurrentDateTime());
             switch (loginAs.getValue().toString()) {
                 case "Admin":
                     if (!user.getIs_admin()){
                         wrongLogin.setText("This account is not admin");
                         return ;
                     }
-                    panel = FXMLLoader.load(MainApplication.class.getResource("AdminPage.fxml"));
+                    navToHomePage("AdminPage",user);
                     break;
                 case "Teacher":
                     Teacher teacher = teacherDAO.getByUserId(user.getId());
@@ -72,7 +79,7 @@ public class LoginController {
                         wrongLogin.setText("This account is not teacher");
                         return ;
                     }
-                    panel = FXMLLoader.load(MainApplication.class.getResource("TeacherPage.fxml"));
+                    navToHomePage("TeacherPage",user);
                     break;
                 case "Student":
                     Student student = studentDAO.getByUserId(user.getId());
@@ -80,7 +87,7 @@ public class LoginController {
                         wrongLogin.setText("This account is not teacher");
                         return ;
                     }
-                    panel = FXMLLoader.load(MainApplication.class.getResource("StudentPage.fxml"));
+                    navToHomePage("StudentPage",user);
                     break;
             }
             if (panel != null){

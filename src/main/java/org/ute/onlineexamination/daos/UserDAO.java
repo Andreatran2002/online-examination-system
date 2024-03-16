@@ -3,11 +3,10 @@ package org.ute.onlineexamination.daos;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
 import org.ute.onlineexamination.models.User;
+import org.ute.onlineexamination.utils.AppUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +39,18 @@ public class UserDAO implements DAO<User> {
 
     @Override
     public void update(User user) {
-
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE User SET last_login=? , full_name=? , updated_at=? , password_hash=?, mobile=? WHERE id=? ")) {
+            preparedStatement.setTimestamp(1, user.getLast_login());
+            preparedStatement.setString(2, user.getFull_name());
+            preparedStatement.setTimestamp(3, AppUtils.getCurrentDateTime());
+            preparedStatement.setString(4, user.getPassword_hash());
+            preparedStatement.setString(5, user.getMobile());
+            preparedStatement.setInt(6, user.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
     }
 
     @Override
@@ -58,11 +68,11 @@ public class UserDAO implements DAO<User> {
                 // TODO: lay thong tin User
                 user.setId(rs.getInt("id"));
                 user.setEmail(rs.getString("email"));
-                user.setCreated_at(rs.getTime("created_at"));
-                user.setUpdated_at(rs.getTime("updated_at"));
-                user.setDeleted_at(rs.getTime("deleted_at"));
+                user.setCreated_at(rs.getTimestamp("created_at"));
+                user.setUpdated_at(rs.getTimestamp("updated_at"));
+                user.setDeleted_at(rs.getTimestamp("deleted_at"));
                 user.setFull_name(rs.getString("full_name"));
-                user.setLast_login(rs.getTime("last_login"));
+                user.setLast_login(rs.getTimestamp("last_login"));
                 user.setIs_admin(rs.getBoolean("is_admin"));
                 user.setPassword_hash(rs.getString("password_hash"));
                 user.setMobile(rs.getString("mobile"));

@@ -11,6 +11,9 @@ import javafx.stage.Window;
 import org.ute.onlineexamination.MainApplication;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class AppUtils {
     public AppUtils(){
@@ -31,6 +34,12 @@ public class AppUtils {
         alert.setContentText(message);
         alert.initOwner(scene.getWindow());
         alert.show();
+    }
+
+    public static Timestamp getCurrentDateTime(){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Timestamp timestamp = Timestamp.valueOf(localDateTime);
+        return timestamp;
     }
 
 }

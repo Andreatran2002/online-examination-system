@@ -1,7 +1,8 @@
 package org.ute.onlineexamination.models;
 
 
-import java.sql.Time;
+import java.sql.Timestamp;
+import java.sql.Timestamp;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -78,39 +79,39 @@ public class User {
         this.password_hash = password_hash;
     }
 
-    public Time getLast_login() {
+    public Timestamp getLast_login() {
         return last_login;
     }
 
-    public void setLast_login(Time last_login) {
+    public void setLast_login(Timestamp last_login) {
         this.last_login = last_login;
     }
 
-    public Time getCreated_at() {
+    public Timestamp getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Time created_at) {
+    public void setCreated_at(Timestamp created_at) {
         this.created_at = created_at;
     }
 
-    public Time getUpdated_at() {
+    public Timestamp getUpdated_at() {
         return updated_at;
     }
 
-    public void setUpdated_at(Time updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdated_at(Timestamp uptimestampd_at) {
+        this.updated_at = uptimestampd_at;
     }
 
-    public Time getDeleted_at() {
+    public Timestamp getDeleted_at() {
         return deleted_at;
     }
 
-    public void setDeleted_at(Time deleted_at) {
+    public void setDeleted_at(Timestamp deleted_at) {
         this.deleted_at = deleted_at;
     }
 
-    public User(int id, String full_name, String email, String mobile, String password_hash, Time last_login, Time created_at, Time updated_at, Time deleted_at) {
+    public User(int id, String full_name, String email, String mobile, String password_hash, Timestamp last_login, Timestamp created_at, Timestamp updated_at, Timestamp deleted_at) {
         this.id = id;
         this.full_name = full_name;
         this.email = email;
@@ -123,13 +124,13 @@ public class User {
     }
 
     private String password_hash;
-    private Time last_login;
+    private Timestamp last_login;
 
     public User() {
     }
 
-    private Time created_at;
-    private Time updated_at;
-    private Time deleted_at;
+    private Timestamp created_at;
+    private Timestamp updated_at;
+    private Timestamp deleted_at;
 
 }
