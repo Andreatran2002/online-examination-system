@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-
-
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <AnchorPane prefHeight="32.0" prefWidth="602.0" BorderPane.alignment="CENTER">
@@ -14,11 +9,9 @@
             <MenuBar layoutY="1.0" prefHeight="28.0" prefWidth="602.0">
               <menus>
                 <Menu mnemonicParsing="false" text="Student" />
-                <Menu mnemonicParsing="false" text="Teacher">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="New" />
-                  </items>
-                </Menu>
+                <Menu mnemonicParsing="false" text="Teacher" />
+                  <Menu mnemonicParsing="false" text="Course" />
+                  <Menu mnemonicParsing="false" text="Test" />
                 <Menu mnemonicParsing="false" text="Help">
                   <items>
                     <MenuItem mnemonicParsing="false" text="About" />
@@ -30,7 +23,20 @@
          </children>
       </AnchorPane>
    </top>
-   <left>
-      <AnchorPane prefHeight="398.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-   </left>
+   <right>
+      <TableView prefHeight="368.0" prefWidth="391.0" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn prefWidth="75.0" text="C1" />
+          <TableColumn prefWidth="75.0" text="C2" />
+        </columns>
+      </TableView>
+   </right>
+   <center>
+      <AnchorPane prefHeight="368.0" prefWidth="241.0" BorderPane.alignment="CENTER">
+         <children>
+            <TextField layoutX="20.0" layoutY="16.0" />
+            <Icon content="SEARCH" layoutX="172.0" layoutY="19.0" />
+            <Button layoutX="24.0" layoutY="60.0" mnemonicParsing="false" text="Button" />
+         </children></AnchorPane>
+   </center>
 </BorderPane>

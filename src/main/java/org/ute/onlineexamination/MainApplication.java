@@ -23,6 +23,14 @@ public class MainApplication extends Application {
         primaryStage.setTitle("Online Examination System");
         primaryStage.setScene(new Scene(root, 600, 400));
         primaryStage.show();
+
+        primaryStage.sceneProperty().addListener((observable, old, newV) -> {
+            System.out.println("sceen change");
+
+            System.out.println(old);
+            System.out.println(newV);
+
+        });
     }
 
 

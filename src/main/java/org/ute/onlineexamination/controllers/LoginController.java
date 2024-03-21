@@ -15,6 +15,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.scene.layout.Panel;
 import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.daos.StudentDAO;
@@ -39,9 +40,9 @@ public class LoginController {
     private TextField loginEmail;
     @FXML
     private PasswordField loginPassword;
-    Scene scene;
     Parent panel ;
     UserDAO userDAO ;
+    Stage appStage;
     TeacherDAO teacherDAO;
     StudentDAO studentDAO;
     public LoginController(){
@@ -52,12 +53,15 @@ public class LoginController {
 
     void navToHomePage(String page,User user) throws IOException {
         panel = FXMLLoader.load(MainApplication.class.getResource(page+".fxml"));
+        Scene scene = new Scene(panel, 1200, 800);
+        appStage.setScene(scene);
+        appStage.show();
         userDAO.update(user);
     }
 
     public void userLogIn(ActionEvent event) throws IOException{
+        appStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         wrongLogin.setText("");
-        scene = ((Node)event.getSource()).getScene();
         User user = userDAO.getByEmail(loginEmail.getText());
         if (user.getCreated_at() == null){
             wrongLogin.setText("Account not exist. Please try again !");
@@ -90,9 +94,6 @@ public class LoginController {
                     navToHomePage("StudentPage",user);
                     break;
             }
-            if (panel != null){
-                scene.setRoot(panel);
-            }
         }
         else if (loginEmail.getText().isEmpty() || loginPassword.getText().isEmpty()){
             wrongLogin.setText("Please enter your data");
@@ -104,9 +105,10 @@ public class LoginController {
     }
 
     public void navToRegisterPage(MouseEvent event) throws IOException {
-        scene = ((Node)event.getSource()).getScene();
+        appStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         panel = FXMLLoader.load(MainApplication.class.getResource("RegisterPage.fxml"));
-        scene.setRoot(panel);
+        appStage.setScene(new Scene(panel, 600, 400));
+        appStage.show();
     }
 
 }
