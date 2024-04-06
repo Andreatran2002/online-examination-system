@@ -12,7 +12,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import javafx.stage.Window;
+import org.kordamp.bootstrapfx.scene.layout.Panel;
 import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.daos.StudentDAO;
 import org.ute.onlineexamination.daos.TeacherDAO;
@@ -33,6 +35,9 @@ public class RegisterController {
     UserDAO userDAO;
     TeacherDAO teacherDAO;
     StudentDAO studentDAO;
+    Stage appStage;
+    Panel panel;
+
 
     public RegisterController(){
         teacherDAO = new TeacherDAO();
@@ -89,9 +94,10 @@ public class RegisterController {
 
     public void navToLoginPage(MouseEvent mouseEvent) {
         try {
-            Scene scene = ((Node)mouseEvent.getSource()).getScene();
-            Parent panel = FXMLLoader.load(MainApplication.class.getResource("LoginPage.fxml"));
-            scene.setRoot(panel);
+            appStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+            panel = FXMLLoader.load(MainApplication.class.getResource("LoginPage.fxml"));
+            appStage.setScene(new Scene(panel, 600, 400));
+            appStage.show();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

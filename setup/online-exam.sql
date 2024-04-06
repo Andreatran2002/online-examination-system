@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db:3306
--- Generation Time: Mar 10, 2024 at 10:53 AM
+-- Generation Time: Apr 06, 2024 at 12:52 PM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.8
 
@@ -50,6 +50,7 @@ CREATE TABLE `Course` (
   `description` text NOT NULL,
   `start` datetime NOT NULL,
   `end` datetime NOT NULL,
+  `category` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL
@@ -121,6 +122,13 @@ CREATE TABLE `Student` (
   `user_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `Student`
+--
+
+INSERT INTO `Student` (`id`, `created_at`, `updated_at`, `deleted_at`, `user_id`) VALUES
+(1, '2024-04-04 05:50:58', NULL, NULL, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -183,10 +191,18 @@ CREATE TABLE `User` (
   `email` varchar(255) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
   `last_login` datetime DEFAULT NULL,
+  `is_admin` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `User`
+--
+
+INSERT INTO `User` (`id`, `full_name`, `mobile`, `email`, `password_hash`, `last_login`, `is_admin`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 'Andrea tran', NULL, 'andreatran2002@gmail.com', '$2a$12$wm/QOTcYZhroiWNl8.XgbuWhOlRlRQ2MFmakyWK2L6Y6d1cT/EYB2', '2024-04-04 15:10:57', 0, '2024-04-04 05:50:58', '2024-04-04 15:10:58', NULL);
 
 --
 -- Indexes for dumped tables
@@ -302,7 +318,7 @@ ALTER TABLE `Question`
 -- AUTO_INCREMENT for table `Student`
 --
 ALTER TABLE `Student`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `TakeExam`
@@ -326,7 +342,7 @@ ALTER TABLE `Teacher`
 -- AUTO_INCREMENT for table `User`
 --
 ALTER TABLE `User`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables

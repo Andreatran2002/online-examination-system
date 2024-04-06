@@ -53,7 +53,7 @@ public class LoginController {
 
     void navToHomePage(String page,User user) throws IOException {
         panel = FXMLLoader.load(MainApplication.class.getResource(page+".fxml"));
-        Scene scene = new Scene(panel, 1200, 800);
+        Scene scene = new Scene(panel, 1000, 800);
         appStage.setScene(scene);
         appStage.show();
         userDAO.update(user);
