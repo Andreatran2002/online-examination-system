@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.ute.onlineexamination.utils.AppUtils;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -17,14 +18,13 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-
         primaryStage.setResizable(false);
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("StudentPage.fxml")));
-        primaryStage.setTitle("Online Examination System");
-//        primaryStage.setScene(new Scene(root, 600, 400));
-        primaryStage.setScene(new Scene(root, 1000, 800));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("LoginPage.fxml")));
+        primaryStage.setTitle(AppUtils.APP_TITLE);
+        primaryStage.setScene(new Scene(root, 600, 400));
+//        primaryStage.setScene(new Scene(root, 1000, 800));
         primaryStage.show();
-this.sceneChangeHandler(primaryStage);
+//this.sceneChangeHandler(primaryStage);
 
     }
 

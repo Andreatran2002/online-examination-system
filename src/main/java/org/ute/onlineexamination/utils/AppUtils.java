@@ -9,13 +9,28 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.ute.onlineexamination.MainApplication;
+import org.ute.onlineexamination.models.RoleData;
+import org.ute.onlineexamination.models.User;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class AppUtils {
+
+    public static String APP_TITLE = "Online Examination System";
+    public static User CURRENT_USER;
+    public static RoleData CURRENT_ROLE;
+    public static void saveUser(User user , RoleData role ) {
+
+        CURRENT_USER = user ;
+        CURRENT_ROLE = role;
+    }
     public AppUtils(){
 
     }
@@ -26,9 +41,31 @@ public class AppUtils {
         scene.setRoot(panel);
     }
 
+
+    static public Date fromLdt(LocalDateTime ldt) {
+        ZonedDateTime zdt = ZonedDateTime.of(ldt, ZoneId.systemDefault());
+        GregorianCalendar cal = GregorianCalendar.from(zdt);
+        return cal.getTime();
+    }
+    static  public Timestamp fromDateAndTime(LocalDate date, String timeString){
+        String[] fromTimeData = timeString.split(":");
+        Date fromDateTime = AppUtils.fromLdt(date.atTime(Integer.parseInt(fromTimeData[0]),Integer.parseInt(fromTimeData[1]))) ;
+        return new Timestamp(fromDateTime.getTime());
+    }
+
     public static void showAlert(Alert.AlertType alertType, Event event , String title, String message) {
         Scene scene = ((Node)event.getSource()).getScene();
         Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.initOwner(scene.getWindow());
+        alert.show();
+    }
+
+    public static  void showInfo(Event event , String title, String message){
+        Scene scene = ((Node)event.getSource()).getScene();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);

@@ -1,14 +1,16 @@
 package org.ute.onlineexamination.models;
 
-import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Locale;
 
 public class Course {
     private Integer id;
     private Integer teacher_id;
+    private String category;
     private String name;
     private String description ;
-    private Time start;
-    private Time end;
+    private Timestamp start;
+    private Timestamp end;
 
     public Course() {
     }
@@ -17,12 +19,21 @@ public class Course {
         return id;
     }
 
-    public Course(Integer teacher_id, String name, String description, Time start, Time end) {
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public Course(Integer teacher_id, String name, String description, Timestamp start, Timestamp end, String category) {
         this.teacher_id = teacher_id;
         this.name = name;
         this.description = description;
         this.start = start;
         this.end = end;
+        this.category = category;
     }
 
     public void setId(Integer id) {
@@ -53,47 +64,47 @@ public class Course {
         this.description = description;
     }
 
-    public Time getStart() {
+    public Timestamp getStart() {
         return start;
     }
 
-    public void setStart(Time start) {
+    public void setStart(Timestamp start) {
         this.start = start;
     }
 
-    public Time getEnd() {
+    public Timestamp getEnd() {
         return end;
     }
 
-    public void setEnd(Time end) {
+    public void setEnd(Timestamp end) {
         this.end = end;
     }
 
-    public Time getDeleted_at() {
+    public Timestamp getDeleted_at() {
         return deleted_at;
     }
 
-    public void setDeleted_at(Time deleted_at) {
+    public void setDeleted_at(Timestamp deleted_at) {
         this.deleted_at = deleted_at;
     }
 
-    public Time getCreated_at() {
+    public Timestamp getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Time created_at) {
+    public void setCreated_at(Timestamp created_at) {
         this.created_at = created_at;
     }
 
-    public Time getUpdated_at() {
+    public Timestamp getUpdated_at() {
         return updated_at;
     }
 
-    public void setUpdated_at(Time updated_at) {
+    public void setUpdated_at(Timestamp updated_at) {
         this.updated_at = updated_at;
     }
 
-    private Time deleted_at;
-    private Time created_at;
-    private Time updated_at;
+    private Timestamp deleted_at;
+    private Timestamp created_at;
+    private Timestamp updated_at;
 }

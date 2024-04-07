@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ute.onlineexamination.controllers.NewCourseController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ute.onlineexamination.controllers.UpdateCourseController">
    <top>
       <AnchorPane prefHeight="61.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
@@ -48,25 +48,11 @@
                   <ChoiceBox fx:id="category" prefHeight="25.0" prefWidth="462.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <Label text="From" GridPane.rowIndex="3" />
                   <Label text="End" GridPane.rowIndex="4" />
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                     <children>
-                        <DatePicker fx:id="fromDate" layoutX="52.0" layoutY="13.0" prefHeight="25.0" prefWidth="151.0" />
-                        <TextField fx:id="fromTime" layoutX="321.0" layoutY="10.0" prefHeight="25.0" prefWidth="103.0" />
-                        <Label layoutX="1.0" layoutY="17.0" text="Date" />
-                        <Label layoutX="236.0" layoutY="17.0" text="Time(hh:mm) " />
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                     <children>
-                        <Label layoutX="1.0" layoutY="17.0" text="Date" />
-                        <DatePicker fx:id="toDate" layoutX="51.0" layoutY="13.0" prefHeight="25.0" prefWidth="151.0" />
-                        <Label layoutX="234.0" layoutY="18.0" text="Time(hh:mm) " />
-                        <TextField fx:id="toTime" layoutX="320.0" layoutY="14.0" prefHeight="25.0" prefWidth="103.0" />
-                     </children>
-                  </AnchorPane>
+                  <DatePicker fx:id="from" prefHeight="25.0" prefWidth="496.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <DatePicker fx:id="to" prefHeight="25.0" prefWidth="453.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                </children>
             </GridPane>
-            <Button layoutX="250.0" layoutY="268.0" mnemonicParsing="false" onAction="#onCreateNewCourse" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #192b7c;" text="Create" textFill="WHITE" />
+            <Button layoutX="250.0" layoutY="268.0" mnemonicParsing="false" onAction="#onUpdateNewCourse" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #192b7c;" text="Create" textFill="WHITE" />
          </children>
       </AnchorPane>
    </bottom>

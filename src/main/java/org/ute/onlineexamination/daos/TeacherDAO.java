@@ -5,6 +5,7 @@ import org.ute.onlineexamination.database.DBConnectionFactory;
 import org.ute.onlineexamination.models.Student;
 import org.ute.onlineexamination.models.Teacher;
 import org.ute.onlineexamination.models.User;
+import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,8 +31,9 @@ public class TeacherDAO implements DAO<Teacher> {
     public void save(Teacher teacher) {
         try (Connection connection = DBConnectionFactory.getConnection();
              // TODO: check email sau do create user va account student hoac teacher
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Teacher (user_id) VALUES (?)")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Teacher (user_id,created_at) VALUES (?,?)")) {
             preparedStatement.setInt(1, teacher.getUser_id());
+            preparedStatement.setTimestamp(2, AppUtils.getCurrentDateTime());
             System.out.println(preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {

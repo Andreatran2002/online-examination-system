@@ -3,6 +3,7 @@ package org.ute.onlineexamination.controllers;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Objects;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -36,7 +37,7 @@ public class RegisterController {
     TeacherDAO teacherDAO;
     StudentDAO studentDAO;
     Stage appStage;
-    Panel panel;
+    Parent panel;
 
 
     public RegisterController(){
@@ -92,14 +93,10 @@ public class RegisterController {
         }
     }
 
-    public void navToLoginPage(MouseEvent mouseEvent) {
-        try {
-            appStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-            panel = FXMLLoader.load(MainApplication.class.getResource("LoginPage.fxml"));
-            appStage.setScene(new Scene(panel, 600, 400));
-            appStage.show();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void navToLoginPage(MouseEvent mouseEvent)  throws IOException {
+        appStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+        panel = FXMLLoader.load(MainApplication.class.getResource("LoginPage.fxml"));
+        appStage.setScene(new Scene(panel, 600, 400));
+        appStage.show();
     }
 }
