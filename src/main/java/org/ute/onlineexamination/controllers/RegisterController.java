@@ -89,7 +89,7 @@ public class RegisterController {
             }
             reset();
         }catch (Exception e){
-            AppUtils.showAlert(Alert.AlertType.ERROR,event,"Lỗi trong quá trình tạo user", e.getMessage());
+            AppUtils.showAlert(event,"Lỗi trong quá trình tạo user", e.getMessage());
         }
     }
 

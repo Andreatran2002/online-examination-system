@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.ute.onlineexamination.MainApplication;
@@ -53,9 +54,9 @@ public class AppUtils {
         return new Timestamp(fromDateTime.getTime());
     }
 
-    public static void showAlert(Alert.AlertType alertType, Event event , String title, String message) {
+    public static void showAlert( Event event , String title, String message) {
         Scene scene = ((Node)event.getSource()).getScene();
-        Alert alert = new Alert(alertType);
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
@@ -63,15 +64,35 @@ public class AppUtils {
         alert.show();
     }
 
-    public static  void showInfo(Event event , String title, String message){
+    public static  void showInfo(Event event , String title, String message , AlertActionInterface action ){
         Scene scene = ((Node)event.getSource()).getScene();
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.initOwner(scene.getWindow());
-        alert.show();
+        alert.showAndWait();
+
+        if (alert.getResult() == ButtonType.OK) {
+            action.action();
+        }
     }
+    public static  void showYesNoOption(Event event , String title, String message , AlertActionInterface okeAction ){
+        Scene scene = ((Node)event.getSource()).getScene();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.initOwner(scene.getWindow());
+        alert.showAndWait();
+
+        if (alert.getResult() == ButtonType.OK) {
+            okeAction.action();
+        }
+
+    }
+
+
 
     public static Timestamp getCurrentDateTime(){
         LocalDateTime localDateTime = LocalDateTime.now();

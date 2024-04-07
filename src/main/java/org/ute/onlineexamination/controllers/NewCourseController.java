@@ -4,13 +4,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.daos.CourseDAO;
 import org.ute.onlineexamination.models.Course;
 import org.ute.onlineexamination.models.User;
+import org.ute.onlineexamination.utils.AlertActionInterface;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.net.URL;
@@ -60,9 +64,15 @@ public class NewCourseController implements Initializable {
             course.setName(name.getText());
             course.setDescription(description.getText());
             courseDAO.save(course);
-            AppUtils.showInfo(event,"Create course success","Create course " + name + "successfull");
+            AppUtils.showInfo(event, "Create course success", "Create course " + name + "successfull", new AlertActionInterface() {
+                @Override
+                public void action() {
+                    Stage   appStage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
+                    appStage.close();
+                }
+            });
         }catch (Exception e){
-            AppUtils.showAlert(Alert.AlertType.ERROR,event,"Create course false",e.getMessage());
+            AppUtils.showAlert(event,"Create course false",e.getMessage());
         }
     }
 }

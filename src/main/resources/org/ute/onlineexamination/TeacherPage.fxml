@@ -195,6 +195,34 @@
                </children></AnchorPane>
          </content>
       </Tab>
+      <Tab text="Question Package">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TableView layoutX="16.0" layoutY="80.0" prefHeight="642.0" prefWidth="969.0">
+                     <columns>
+                        <TableColumn prefWidth="343.0" text="Question" />
+                        <TableColumn prefWidth="256.0" text="Course" />
+                        <TableColumn prefWidth="116.0" text="Active" />
+                        <TableColumn minWidth="0.0" prefWidth="104.0" text="Priority" />
+                        <TableColumn prefWidth="148.0" text="Action" />
+                     </columns>
+                  </TableView>
+                  <Label layoutX="16.0" layoutY="23.0" text="List Question">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <TextField layoutX="496.0" layoutY="22.0" />
+                  <Label layoutX="435.0" layoutY="26.0" text="Name" />
+                  <Label layoutX="688.0" layoutY="26.0" prefHeight="17.0" prefWidth="45.0" text="Course" />
+                  <ChoiceBox layoutX="748.0" layoutY="22.0" prefWidth="150.0" />
+                  <Button layoutX="929.0" layoutY="22.0" mnemonicParsing="false" text="Search" />
+                  <Button layoutX="166.0" layoutY="22.0" mnemonicParsing="false" onAction="#navToNewExam" text="New" />
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
       <Tab text="Setting">
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />

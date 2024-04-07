@@ -53,12 +53,30 @@ public class CourseDAO implements DAO<Course> {
 
     @Override
     public void update(Course course) {
-
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Course SET name=? , description=? , start=? , end=?, category=?, updated_at=? WHERE id=? ")) {
+            preparedStatement.setString(1, course.getName());
+            preparedStatement.setString(2, course.getDescription());
+            preparedStatement.setTimestamp(3, course.getStart());
+            preparedStatement.setTimestamp(4, course.getEnd());
+            preparedStatement.setString(5, course.getCategory());
+            preparedStatement.setTimestamp(6, AppUtils.getCurrentDateTime());
+            preparedStatement.setInt(7, course.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
     }
 
     @Override
     public void delete(Course course) {
-
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Course WHERE id=? ")) {
+            preparedStatement.setInt(1, course.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
     }
 
     public ObservableList<Course> getByTeacherId(Integer id ){
@@ -72,7 +90,7 @@ public class CourseDAO implements DAO<Course> {
                 // TODO: lay thong tin User
                 course.setId(rs.getInt("id"));
                 course.setName(rs.getString("name"));
-                course.setDescription(rs.getString("name"));
+                course.setDescription(rs.getString("description"));
                 course.setDeleted_at(rs.getTimestamp("deleted_at"));
                 course.setStart(rs.getTimestamp("start"));
                 course.setEnd(rs.getTimestamp("end"));

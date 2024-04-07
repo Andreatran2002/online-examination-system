@@ -16,6 +16,7 @@ import javafx.util.Callback;
 import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.daos.CourseDAO;
 import org.ute.onlineexamination.models.Course;
+import org.ute.onlineexamination.utils.AlertActionInterface;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.io.IOException;
@@ -68,15 +69,30 @@ public class TeacherController implements Initializable {
                                     });
                                     editBtn.setOnAction(event -> {
                                         Course course = getTableView().getItems().get(getIndex());
-                                        //TODO : Open Edit course page
-                                        System.out.println(course.getId()
-                                                + "   " + course.getName());
+                                        try {
+                                            navToUpdateCourse(course);
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
                                     });
                                     deleteBtn.setOnAction(event -> {
                                         Course course = getTableView().getItems().get(getIndex());
-                                        //TODO : Open Delete course page
-                                        System.out.println(course.getId()
-                                                + "   " + course.getName());
+                                        AppUtils.showYesNoOption(event, "Delete course " + course.getName(), "Are you sure to delte this course?", new AlertActionInterface() {
+                                            @Override
+                                            public void action() {
+                                                try{
+                                                    courseDAO.delete(course);
+                                                    AppUtils.showInfo(event, "Delete course", "Delete course " + course.getName() + " successfull", new AlertActionInterface() {
+                                                        @Override
+                                                        public void action() {
+                                                            resetDataView();
+                                                        }
+                                                    });
+                                                }catch (Exception e){
+                                                    AppUtils.showAlert(event, "Delete course", "Delete course " + course.getName() + " false");
+                                                }
+                                            }
+                                        });
                                     });
                                     HBox hbox = new HBox(detailBtn,editBtn,deleteBtn);
                                     setGraphic(hbox);
@@ -103,6 +119,17 @@ public class TeacherController implements Initializable {
         Stage stage = new Stage();
         stage.setTitle(AppUtils.APP_TITLE);
         Pane panel = FXMLLoader.load(MainApplication.class.getResource("NewCoursePage.fxml"));
+        stage.setScene(new Scene(panel, 600, 400));
+        stage.show();
+    }
+    void navToUpdateCourse(Course course) throws IOException {
+        Stage stage = new Stage();
+        stage.setTitle(AppUtils.APP_TITLE);
+        FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource("UpdateCoursePage.fxml"));
+        UpdateCourseController controller = new UpdateCourseController();
+        controller.setCourse(course);
+        loader.setController(controller);
+        Pane panel = loader.load();
         stage.setScene(new Scene(panel, 600, 400));
         stage.show();
     }
