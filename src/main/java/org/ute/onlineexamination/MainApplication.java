@@ -15,16 +15,28 @@ public class MainApplication extends Application {
         launch(args);
     }
 
+//    @Override
+//    public void start(Stage primaryStage) throws IOException {
+//
+//        primaryStage.setResizable(false);
+//        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("StudentPage.fxml")));
+//        primaryStage.setTitle("Online Examination System");
+////        primaryStage.setScene(new Scene(root, 600, 400));
+//        primaryStage.setScene(new Scene(root, 1000, 800));
+//        primaryStage.show();
+//this.sceneChangeHandler(primaryStage);
+//
+//    }
+
     @Override
     public void start(Stage primaryStage) throws IOException {
 
         primaryStage.setResizable(false);
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("StudentPage.fxml")));
-        primaryStage.setTitle("Online Examination System");
-//        primaryStage.setScene(new Scene(root, 600, 400));
-        primaryStage.setScene(new Scene(root, 1000, 800));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("LoginPage.fxml")));
+        primaryStage.setScene(new Scene(root, 600, 400));
+//        primaryStage.setScene(new Scene(root, 1000, 800));
         primaryStage.show();
-this.sceneChangeHandler(primaryStage);
+        this.sceneChangeHandler(primaryStage);
 
     }
 

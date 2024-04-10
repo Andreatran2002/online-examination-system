@@ -58,4 +58,11 @@ public class StudentController implements Initializable {
         stage.setScene(new Scene(panel, 1000, 800));
         stage.show();
     }
+    public void navToUpdateStudentPage(ActionEvent event) throws IOException {
+        Stage stage = new Stage();
+        stage.setTitle("Update Student");
+        Pane panel = FXMLLoader.load(MainApplication.class.getResource("UpdateStudentPage.fxml"));
+        stage.setScene(new Scene(panel, 400, 400));
+        stage.show();
+    }
 }

@@ -2,11 +2,10 @@ package org.ute.onlineexamination.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class DBConnectionFactory {
-    private static final String DATABASE_URL = "jdbc:mysql://127.0.0.1:6033/online-exam";
+    private static final String DATABASE_URL = "jdbc:mysql://localhost:6033/online-exam?enabledTLSProtocols=TLSv1.2";
     private static final String DATABASE_USER_NAME = "root";
     private static final String DATABASE_PASSWORD = "123";
 

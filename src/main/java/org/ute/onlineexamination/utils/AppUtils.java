@@ -6,14 +6,13 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 import org.ute.onlineexamination.MainApplication;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+
+
 
 public class AppUtils {
     public AppUtils(){

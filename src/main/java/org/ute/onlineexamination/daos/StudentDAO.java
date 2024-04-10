@@ -5,6 +5,7 @@ import org.ute.onlineexamination.database.DBConnectionFactory;
 import org.ute.onlineexamination.models.Student;
 import org.ute.onlineexamination.models.Teacher;
 import org.ute.onlineexamination.models.User;
+import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -43,6 +44,42 @@ public class StudentDAO implements DAO<Student> {
     public void update(Student student) {
 
     }
+
+
+    public User updateStudentByEmail(String email) {
+        User user = new User();
+        try (Connection connection = DBConnectionFactory.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Student JOIN User ON Student.user_id = User.id SET last_login=? , full_name=? , updated_at=? , password_hash=?, mobile=? WHERE email=?  ")){
+            preparedStatement.setTimestamp(1, user.getLast_login());
+            preparedStatement.setString(2, user.getFull_name());
+            preparedStatement.setTimestamp(3, AppUtils.getCurrentDateTime());
+            preparedStatement.setString(4, user.getPassword_hash());
+            preparedStatement.setString(5, user.getMobile());
+            preparedStatement.setString(6, user.getEmail());
+            preparedStatement.executeUpdate();
+        }catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return user;
+    }
+
+    public User getStudentEmail(String email) {
+        User user = new User();
+        Student student = new Student();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT User.email FROM User JOIN Student ON User.id = ?")){
+            preparedStatement.setInt(1, student.getUser_id());
+            preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                user.setEmail(rs.getString("email"));
+            }
+        }catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return user;
+    }
+
 
     @Override
     public void delete(Student student) {

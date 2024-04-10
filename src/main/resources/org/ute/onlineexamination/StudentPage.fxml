@@ -342,7 +342,7 @@
                               <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
-                        <Button layoutX="824.0" layoutY="15.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="88.0" style="-fx-background-color: white; -fx-border-color: #d0d0d0;" text="Update" textFill="#d0d0d0" />
+                        <Button layoutX="824.0" layoutY="15.0" onAction="#navToUpdateStudentPage" mnemonicParsing="false" prefHeight="26.0" prefWidth="88.0" text="Update" textFill="WHITE" />
                      </children>
                   </AnchorPane>
                   <Button layoutX="22.0" layoutY="245.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="118.0" style="-fx-background-color: red;" text="Logout" textFill="WHITE">

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="397.0" prefWidth="524.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ute.onlineexamination.controllers.UpdateStudentController">
+   <children>
+      <Label layoutX="69.0" layoutY="66.0" text="Email Address">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font></Label>
+      <Label fx:id="labelEmail" layoutX="205.0" layoutY="67.0" />
+      <Label layoutX="67.0" layoutY="121.0" text="Fullname">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <TextField layoutX="206.0" layoutY="118.0" promptText="" />
+      <Label layoutX="68.0" layoutY="179.0" text="Phone number">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <TextField layoutX="206.0" layoutY="176.0" promptText="" />
+      <Label layoutX="66.0" layoutY="243.0" text="Password">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <TextField layoutX="206.0" layoutY="240.0" promptText="" />
+      <Button layoutX="60.0" layoutY="304.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="111.0" text="Thoát">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+      <Button layoutX="244.0" layoutY="304.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="111.0" text="Lưu">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+   </children>
+</AnchorPane>
