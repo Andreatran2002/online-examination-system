@@ -13,6 +13,11 @@ public class Answer {
         this.correct = correct;
         this.active = active;
     }
+    public Answer(String content, Boolean correct, Boolean active) {
+        this.content = content;
+        this.correct = correct;
+        this.active = active;
+    }
 
     public Integer getId() {
         return id;

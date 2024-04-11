@@ -23,24 +23,30 @@ public class UserDAO implements DAO<User> {
     }
 
     @Override
-    public void save(User user) {
+    public Integer save(User user) {
+        Integer userId = -1;
         try (Connection connection = DBConnectionFactory.getConnection();
              // TODO: check email sau do create user va account student hoac teacher
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO User (full_name, email, password_hash) VALUES (?, ?, ?)")) {
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO User (full_name, email, password_hash) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, user.getFull_name());
             preparedStatement.setString(2, user.getEmail());
             preparedStatement.setString(3, user.getPassword_hash());
             System.out.println(preparedStatement);
             preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                userId = rs.getInt(1);
+            }
         } catch (SQLException e) {
             DBConnectionFactory.printSQLException(e);
         }
+        return userId;
     }
 
     @Override
     public void update(User user) {
         try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE User SET last_login=? , full_name=? , updated_at=? , password_hash=?, mobile=? WHERE id=? ")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE User SET last_login=? , full_name=? , updated_at=? , password_hash=?, mobile=? WHERE id=? ", Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setTimestamp(1, user.getLast_login());
             preparedStatement.setString(2, user.getFull_name());
             preparedStatement.setTimestamp(3, AppUtils.getCurrentDateTime());

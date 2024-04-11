@@ -6,10 +6,7 @@ import org.ute.onlineexamination.models.Student;
 import org.ute.onlineexamination.models.Teacher;
 import org.ute.onlineexamination.models.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,16 +24,22 @@ public class StudentDAO implements DAO<Student> {
     }
 
     @Override
-    public void save(Student student) {
+    public Integer save(Student student) {
+        Integer studentId =-1;
         try (Connection connection = DBConnectionFactory.getConnection();
              // TODO: check email sau do create user va account student hoac teacher
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Student (user_id) VALUES ( ?)")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Student (user_id) VALUES ( ?)", Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setInt(1, student.getUser_id());
             System.out.println(preparedStatement);
             preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                studentId = rs.getInt(1);
+            }
         } catch (SQLException e) {
             DBConnectionFactory.printSQLException(e);
         }
+        return  studentId;
     }
 
     @Override

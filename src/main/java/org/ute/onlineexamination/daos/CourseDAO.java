@@ -9,10 +9,7 @@ import org.ute.onlineexamination.models.Teacher;
 import org.ute.onlineexamination.models.User;
 import org.ute.onlineexamination.utils.AppUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,9 +30,10 @@ public class CourseDAO implements DAO<Course> {
     }
 
     @Override
-    public void save(Course course) {
+    public Integer save(Course course) {
+        Integer courseId = -1;
         try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Course (teacher_id, name , description, start , end , created_at , category) VALUES ( ?,?,?,?,?,?,?)")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Course (teacher_id, name , description, start , end , created_at , category) VALUES ( ?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
             Teacher teacher = teacherDAO.getByUserId(AppUtils.CURRENT_USER.getId());
             preparedStatement.setInt(1, teacher.getId());
             preparedStatement.setString(2, course.getName());
@@ -46,9 +44,14 @@ public class CourseDAO implements DAO<Course> {
             preparedStatement.setString(7, course.getCategory());
             System.out.println(preparedStatement);
             preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                courseId = rs.getInt(1);
+            }
         } catch (SQLException e) {
             DBConnectionFactory.printSQLException(e);
         }
+        return courseId;
     }
 
     @Override

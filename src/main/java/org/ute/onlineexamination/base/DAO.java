@@ -9,7 +9,7 @@ public interface DAO<T> {
 
     Optional<T> get(int id);
 
-    void save(T t);
+    Integer save(T t);
 
     void update(T t);
 
