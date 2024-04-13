@@ -63,12 +63,11 @@ public class StudentDAO implements DAO<Student> {
         return user;
     }
 
-    public User getStudentEmail(String email) {
+    public User getStudentEmail(int id) {
         User user = new User();
-        Student student = new Student();
         try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT User.email FROM User JOIN Student ON User.id = ?")){
-            preparedStatement.setInt(1, student.getUser_id());
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT email FROM User WHERE id = ?")){
+            preparedStatement.setInt(1, user.getId());
             preparedStatement.executeUpdate();
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()){
@@ -79,8 +78,6 @@ public class StudentDAO implements DAO<Student> {
         }
         return user;
     }
-
-
     @Override
     public void delete(Student student) {
 

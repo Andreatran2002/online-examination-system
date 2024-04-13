@@ -13,7 +13,6 @@ public class User {
     private String email;
     private String mobile;
     private Boolean is_admin;
-
     public Boolean getIs_admin() {
         return is_admin;
     }

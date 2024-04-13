@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.ute.onlineexamination.MainApplication;
+import org.ute.onlineexamination.daos.StudentDAO;
 import org.ute.onlineexamination.daos.UserDAO;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ public class UpdateStudentController implements Initializable{
     public TextField textFieldPhoneNumber;
     public TextField textFieldPassword;
     UserDAO userDAO;
+    StudentDAO studentDAO;
 
 
     public UpdateStudentController(){
@@ -30,6 +32,10 @@ public class UpdateStudentController implements Initializable{
     }
     @Override
     public void initialize(URL Location, ResourceBundle resources){
+
+    }
+
+    public void onUpdateStudent (ActionEvent event){
 
     }
 

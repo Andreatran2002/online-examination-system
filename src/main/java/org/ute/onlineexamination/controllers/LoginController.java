@@ -21,6 +21,7 @@ import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.daos.StudentDAO;
 import org.ute.onlineexamination.daos.TeacherDAO;
 import org.ute.onlineexamination.daos.UserDAO;
+import org.ute.onlineexamination.models.RoleData;
 import org.ute.onlineexamination.models.Student;
 import org.ute.onlineexamination.models.Teacher;
 import org.ute.onlineexamination.models.User;
@@ -30,6 +31,8 @@ import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 public class LoginController {
     public ChoiceBox loginAs;
     @FXML
@@ -63,7 +66,7 @@ public class LoginController {
         appStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         wrongLogin.setText("");
         User user = userDAO.getByEmail(loginEmail.getText());
-        if (user.getCreated_at() == null){
+        if (Objects.equals(user.getEmail(), "")){
             wrongLogin.setText("Account not exist. Please try again !");
             return ;
         }
@@ -75,6 +78,7 @@ public class LoginController {
                         wrongLogin.setText("This account is not admin");
                         return ;
                     }
+                    AppUtils.saveUser(user, new RoleData(user.getId(), "Admin"));
                     navToHomePage("AdminPage",user);
                     break;
                 case "Teacher":
@@ -83,6 +87,7 @@ public class LoginController {
                         wrongLogin.setText("This account is not teacher");
                         return ;
                     }
+                    AppUtils.saveUser(user, new RoleData(teacher.getId(), "Teacher"));
                     navToHomePage("TeacherPage",user);
                     break;
                 case "Student":
@@ -91,6 +96,7 @@ public class LoginController {
                         wrongLogin.setText("This account is not teacher");
                         return ;
                     }
+                    AppUtils.saveUser(user, new RoleData(student.getId(), "Student"));
                     navToHomePage("StudentPage",user);
                     break;
             }
@@ -109,6 +115,23 @@ public class LoginController {
         panel = FXMLLoader.load(MainApplication.class.getResource("RegisterPage.fxml"));
         appStage.setScene(new Scene(panel, 600, 400));
         appStage.show();
+    }
+    private static int loggedInUserId;
+
+    public static boolean login(String username, String password) {
+        // Logic to authenticate user
+        // If authentication succeeds, set the loggedInUserId
+        loggedInUserId = retrieveUserIdByUsername(username);
+        return true; // or false based on authentication success
+    }
+
+    public static int getLoggedInUserId() {
+        return loggedInUserId;
+    }
+
+    private static int retrieveUserIdByUsername(String username) {
+        // Logic to retrieve user ID from the database based on username
+        return;
     }
 
 }

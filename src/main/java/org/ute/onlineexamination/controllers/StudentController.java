@@ -8,9 +8,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.ute.onlineexamination.MainApplication;
+import org.ute.onlineexamination.daos.StudentDAO;
+import org.ute.onlineexamination.models.Student;
 
 import java.io.IOException;
 import java.net.URL;
@@ -21,6 +24,10 @@ public class StudentController implements Initializable {
     public GridPane testListContent;
     public Pagination myTestPagination;
     public GridPane mycourseListPane;
+    public TextField textFieldEmail;
+    StudentDAO studentDAO;
+    Student student;
+
 
     public StudentController(){
 
@@ -45,6 +52,8 @@ public class StudentController implements Initializable {
                     mycourseListPane.add(course, x, y, 1,1);
                 }
             }
+            String email = String.valueOf(studentDAO.getStudentEmail(LoginController.getLoggedInUserId()));
+            textFieldEmail.setText("email");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -64,5 +73,8 @@ public class StudentController implements Initializable {
         Pane panel = FXMLLoader.load(MainApplication.class.getResource("UpdateStudentPage.fxml"));
         stage.setScene(new Scene(panel, 400, 400));
         stage.show();
+    }
+    public void loadEmail(int id){
+
     }
 }
