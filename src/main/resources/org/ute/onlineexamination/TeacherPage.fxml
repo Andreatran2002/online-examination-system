@@ -199,13 +199,12 @@
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TableView layoutX="16.0" layoutY="80.0" prefHeight="642.0" prefWidth="969.0">
+                  <TableView fx:id="questionView" layoutX="16.0" layoutY="80.0" prefHeight="642.0" prefWidth="969.0">
                      <columns>
-                        <TableColumn prefWidth="343.0" text="Question" />
-                        <TableColumn prefWidth="256.0" text="Course" />
-                        <TableColumn prefWidth="116.0" text="Active" />
-                        <TableColumn minWidth="0.0" prefWidth="104.0" text="Priority" />
-                        <TableColumn prefWidth="148.0" text="Action" />
+                        <TableColumn fx:id="questionContentColumn" prefWidth="343.0" text="Question" />
+                        <TableColumn fx:id="questionCourseColumn" prefWidth="359.0" text="Course" />
+                        <TableColumn fx:id="questionActiveColumn" prefWidth="144.0" text="Active" />
+                        <TableColumn fx:id="questionActionColumn" prefWidth="112.0" text="Action" />
                      </columns>
                   </TableView>
                   <Label layoutX="16.0" layoutY="23.0" text="List Question">
@@ -218,7 +217,7 @@
                   <Label layoutX="688.0" layoutY="26.0" prefHeight="17.0" prefWidth="45.0" text="Course" />
                   <ChoiceBox layoutX="748.0" layoutY="22.0" prefWidth="150.0" />
                   <Button layoutX="929.0" layoutY="22.0" mnemonicParsing="false" text="Search" />
-                  <Button layoutX="166.0" layoutY="22.0" mnemonicParsing="false" onAction="#navToNewExam" text="New" />
+                  <Button layoutX="166.0" layoutY="22.0" mnemonicParsing="false" onAction="#navToNewQuestion" text="New" />
                </children>
             </AnchorPane>
          </content>
