@@ -11,13 +11,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import org.ute.onlineexamination.daos.AnswerDAO;
-import org.ute.onlineexamination.daos.CourseDAO;
-import org.ute.onlineexamination.daos.QuestionDAO;
-import org.ute.onlineexamination.models.Answer;
-import org.ute.onlineexamination.models.Course;
-import org.ute.onlineexamination.models.Examination;
-import org.ute.onlineexamination.models.Question;
+import org.ute.onlineexamination.daos.*;
+import org.ute.onlineexamination.models.*;
 import org.ute.onlineexamination.utils.AlertActionInterface;
 import org.ute.onlineexamination.utils.AppUtils;
 
@@ -36,15 +31,30 @@ public class NewTestController implements Initializable {
     public DatePicker toDate;
     public TextField toTime;
     public TextField timeRetry;
-    public ChoiceBox scoringType;
+    public RadioButton scoringHighest;
+    public RadioButton scoringAverage;
+    public RadioButton noLimit;
+    ExamDAO examDAO;
+    ExamQuestionDAO examQuestionDAO;
 
     CourseDAO courseDAO;
     ObservableList<Course> coursesByTeacher;
+    ObservableList<ExamQuestion> examQuestions;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         courseDAO = new CourseDAO();
+        examDAO = new ExamDAO();
+        examQuestionDAO = new ExamQuestionDAO();
         coursesByTeacher= courseDAO.getByTeacherId(AppUtils.CURRENT_ROLE.id);
+
+        ObservableList<String> cOption =  FXCollections.observableArrayList();
+        for (int i = 0; i < coursesByTeacher.size(); i++) {
+            cOption.add(coursesByTeacher.get(i).getName());
+        }
+        course.setItems(cOption);
+
+
     }
 
     boolean checkValidData(){
@@ -76,12 +86,12 @@ public class NewTestController implements Initializable {
             exam.setEnd(AppUtils.fromDateAndTime(toDate.getValue(),toTime.getText()));
             exam.setStart(AppUtils.fromDateAndTime(fromDate.getValue(),fromTime.getText()));
 
-            Integer id = questionDAO.save(question);
-            for (Answer answerOption : answerList) {
-                answerOption.setQuestion_id(id);
-                answerDAO.save(answerOption);
+            Integer id = examDAO.save(exam);
+            for (ExamQuestion examQuestion : examQuestions) {
+                examQuestion.setExam_id(id);
+                examQuestionDAO.save(examQuestion);
             }
-            AppUtils.showInfo(event, "Create question success", "Create question successfull", new AlertActionInterface() {
+            AppUtils.showInfo(event, "Create test success", "Create test successfull", new AlertActionInterface() {
                 @Override
                 public void action() {
                     Stage appStage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
@@ -89,7 +99,7 @@ public class NewTestController implements Initializable {
                 }
             });
         }catch (Exception e){
-            AppUtils.showAlert(event,"Create question false",e.getMessage());
+            AppUtils.showAlert(event,"Create test false",e.getMessage());
         }
 
     }

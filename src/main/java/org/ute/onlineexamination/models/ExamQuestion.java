@@ -5,15 +5,20 @@ import java.sql.Time;
 public class ExamQuestion {
     private Integer id;
     private Integer question_id;
+    private Integer exam_id;
     private String content;
-    private Boolean correct;
-    private Boolean active;
 
-    public ExamQuestion(Integer question_id, String content, Boolean correct, Boolean active) {
+    public Integer getExam_id() {
+        return exam_id;
+    }
+
+    public void setExam_id(Integer exam_id) {
+        this.exam_id = exam_id;
+    }
+
+    public ExamQuestion(Integer question_id, String content) {
         this.question_id = question_id;
         this.content = content;
-        this.correct = correct;
-        this.active = active;
     }
 
 
@@ -39,22 +44,6 @@ public class ExamQuestion {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public Boolean getCorrect() {
-        return correct;
-    }
-
-    public void setCorrect(Boolean correct) {
-        this.correct = correct;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
     }
 
 
