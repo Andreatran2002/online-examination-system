@@ -1,5 +1,7 @@
 package org.ute.onlineexamination.models;
 
+import javafx.collections.ObservableList;
+
 import java.sql.Timestamp;
 
 public class Question {
@@ -10,6 +12,16 @@ public class Question {
 
     public Integer getId() {
         return id;
+    }
+
+    private ObservableList<Answer> answers;
+
+    public ObservableList<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(ObservableList<Answer> answers) {
+        this.answers = answers;
     }
 
     public void setId(Integer id) {

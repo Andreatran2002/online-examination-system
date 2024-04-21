@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
+import org.ute.onlineexamination.models.Answer;
 import org.ute.onlineexamination.models.Course;
 import org.ute.onlineexamination.models.Question;
 import org.ute.onlineexamination.models.Teacher;
@@ -15,8 +16,10 @@ import java.util.Optional;
 
 public class QuestionDAO implements DAO<Question> {
     TeacherDAO teacherDAO ;
+    AnswerDAO answerDAO;
     public QuestionDAO(){
         teacherDAO = new TeacherDAO();
+        answerDAO = new AnswerDAO();
     }
     @Override
     public List<Question> getAll() {
@@ -68,10 +71,11 @@ public class QuestionDAO implements DAO<Question> {
     }
 
     @Override
-    public void delete(Question course) {
+    public void delete(Question question) {
         try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Course WHERE id=? ")) {
-            preparedStatement.setInt(1, course.getId());
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Question SET deleted_at=? WHERE id=? ")) {
+            preparedStatement.setTimestamp(1, AppUtils.getCurrentDateTime());
+            preparedStatement.setInt(2, question.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             DBConnectionFactory.printSQLException(e);
@@ -94,6 +98,7 @@ public class QuestionDAO implements DAO<Question> {
                 question.setActive(rs.getBoolean("active"));
                 question.setCourse_id(rs.getInt("course_id"));
                 question.setDeleted_at(rs.getTimestamp("deleted_at"));
+                question.setAnswers( answerDAO.getByQuestionId(question.getId()));
                 questions.add(question);
             }
         } catch (SQLException e) {

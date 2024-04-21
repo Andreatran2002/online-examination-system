@@ -74,7 +74,8 @@ public class CourseDAO implements DAO<Course> {
     @Override
     public void delete(Course course) {
         try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Course WHERE id=? ")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Course SET deleted_at=? WHERE id=? ")) {
+            preparedStatement.setTimestamp(1, AppUtils.getCurrentDateTime());
             preparedStatement.setInt(1, course.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -85,7 +86,7 @@ public class CourseDAO implements DAO<Course> {
     public ObservableList<Course> getByTeacherId(Integer id ){
         ObservableList<Course> courses = FXCollections.observableArrayList();
         try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Course WHERE teacher_id=? ")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Course WHERE teacher_id=? AND deleted_at IS NULL ")) {
             preparedStatement.setInt(1, id );
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()){

@@ -147,7 +147,7 @@ public class TeacherController implements Initializable {
                                     });
                                     deleteBtn.setOnAction(event -> {
                                         Question question = getTableView().getItems().get(getIndex());
-                                        AppUtils.showYesNoOption(event, "Delete question ",  "Are you sure to delte this course?", new AlertActionInterface() {
+                                        AppUtils.showYesNoOption(event, "Delete question ",  "Are you sure to delete this question?", new AlertActionInterface() {
                                             @Override
                                             public void action() {
                                                 try{
@@ -241,15 +241,20 @@ public class TeacherController implements Initializable {
         Stage stage = new Stage();
         stage.setTitle(AppUtils.APP_TITLE);
         FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource("UpdateQuestionPage.fxml"));
-//        UpdateQuestionController controller = new UpdateQuestionController();
-//        controller.setQuestion(question);
-//        loader.setController(controller);
+        UpdateQuestionController controller = new UpdateQuestionController();
+        controller.setQuestion(question);
+        loader.setController(controller);
         Pane panel = loader.load();
         stage.setScene(new Scene(panel, 600, 500));
         stage.show();
     }
 
-    public void navToNewExam(ActionEvent event) {
+    public void navToNewExam(ActionEvent event) throws IOException {
+        Stage stage = new Stage();
+        stage.setTitle(AppUtils.APP_TITLE);
+        Pane panel = FXMLLoader.load(MainApplication.class.getResource("NewTestPage.fxml"));
+        stage.setScene(new Scene(panel, 600, 800));
+        stage.show();
     }
 
     public void onReloadCourse(ActionEvent event) {
