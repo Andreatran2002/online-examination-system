@@ -172,13 +172,15 @@
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TableView layoutX="16.0" layoutY="80.0" prefHeight="642.0" prefWidth="969.0">
+                  <TableView fx:id="examTableView" layoutX="16.0" layoutY="80.0" prefHeight="642.0" prefWidth="969.0">
                     <columns>
-                      <TableColumn prefWidth="183.0" text="Exam Titile" />
-                      <TableColumn prefWidth="115.0" text="Course" />
-                        <TableColumn prefWidth="312.0" text="Description" />
-                        <TableColumn minWidth="0.0" prefWidth="201.0" text="Total Examinee" />
-                        <TableColumn prefWidth="156.0" text="Action" />
+                      <TableColumn fx:id="examTitleColumn" prefWidth="186.02786445617676" text="Exam Titile" />
+                      <TableColumn fx:id="examCourseColumn" prefWidth="150.4167022705078" text="Course" />
+                        <TableColumn fx:id="examDescriptionColumn" prefWidth="190.63900756835938" text="Description" />
+                        <TableColumn fx:id="examTotalQuestionColumn" minWidth="0.0" prefWidth="88.86102294921875" text="Total" />
+                        <TableColumn fx:id="examStartColumn" prefWidth="98.541748046875" text="Start" />
+                        <TableColumn fx:id="examEndColumn" prefWidth="101.04180908203125" text="End" />
+                        <TableColumn fx:id="examActionColumn" prefWidth="145.4581298828125" text="Action" />
                     </columns>
                   </TableView>
                   <Label layoutX="16.0" layoutY="23.0" text="List Examinations">

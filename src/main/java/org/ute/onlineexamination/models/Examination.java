@@ -17,6 +17,8 @@ public class Examination {
         
     }
 
+    public Course course ;
+
     public Examination(Integer course_id, String name, String description, Timestamp start, Timestamp end, Integer time_retry, Integer scoring_type, Boolean active) {
         this.course_id = course_id;
         this.name = name;

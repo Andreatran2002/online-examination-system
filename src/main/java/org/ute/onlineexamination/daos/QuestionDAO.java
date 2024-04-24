@@ -106,5 +106,26 @@ public class QuestionDAO implements DAO<Question> {
         }
         return questions;
     }
+    public ObservableList<Question> getByCourseId(Integer id ){
+        ObservableList<Question> questions = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Question WHERE course_id = ? AND deleted_at IS NULL")) {
+            preparedStatement.setInt(1, id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                Question question = new Question();
+                question.setId(rs.getInt("id"));
+                question.setContent(rs.getString("content"));
+                question.setActive(rs.getBoolean("active"));
+                question.setCourse_id(rs.getInt("course_id"));
+                question.setDeleted_at(rs.getTimestamp("deleted_at"));
+                question.setAnswers( answerDAO.getByQuestionId(question.getId()));
+                questions.add(question);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return questions;
+    }
 
 }

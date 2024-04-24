@@ -33,7 +33,6 @@ public class AppUtils {
         CURRENT_ROLE = role;
     }
     public AppUtils(){
-
     }
 
     public static void changeScreen(Event event , String page) throws IOException {

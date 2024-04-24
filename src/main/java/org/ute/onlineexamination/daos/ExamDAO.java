@@ -17,6 +17,11 @@ import java.util.Optional;
 
 public class ExamDAO implements DAO<Examination> {
 
+    CourseDAO courseDAO;
+    public ExamDAO(){
+        courseDAO = new CourseDAO();
+    }
+
     @Override
     public List<Examination> getAll() {
         return null;
@@ -85,25 +90,32 @@ public class ExamDAO implements DAO<Examination> {
 
     public ObservableList<Examination> getByTeacherId(Integer id ){
         ObservableList<Examination> examinations = FXCollections.observableArrayList();
-//        try (Connection connection = DBConnectionFactory.getConnection();
-//             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Examination WHERE teacher_id=? AND deleted_at IS NULL ")) {
-//            preparedStatement.setInt(1, id );
-//            ResultSet rs = preparedStatement.executeQuery();
-//            while (rs.next()){
-//                Course course = new Course();
-//                // TODO: lay thong tin User
-//                course.setId(rs.getInt("id"));
-//                course.setName(rs.getString("name"));
-//                course.setDescription(rs.getString("description"));
-//                course.setDeleted_at(rs.getTimestamp("deleted_at"));
-//                course.setStart(rs.getTimestamp("start"));
-//                course.setEnd(rs.getTimestamp("end"));
-//                course.setCategory(rs.getString("category"));
-//                courses.add(course);
-//            }
-//        } catch (SQLException e) {
-//            DBConnectionFactory.printSQLException(e);
-//        }
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT q.*\n" +
+                     "FROM Examination q\n" +
+                     "INNER JOIN Course c ON q.course_id = c.id\n" +
+                     "INNER JOIN Teacher t ON c.teacher_id = t.id\n" +
+                     "WHERE t.id = ? AND q.deleted_at IS NULL \n")) {
+            preparedStatement.setInt(1, id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                Examination exam = new Examination();
+                exam.setId(rs.getInt("id"));
+                exam.setName(rs.getString("name"));
+                exam.setCourse_id(rs.getInt("course_id"));
+                exam.setDescription(rs.getString("description"));
+                exam.setStart(rs.getTimestamp("start"));
+                exam.setEnd(rs.getTimestamp("end"));
+                exam.setTime_retry(rs.getInt("times_retry"));
+                exam.setTime_retry(rs.getInt("scoring_type"));
+                Optional<Course> course = courseDAO.get(rs.getInt("course_id"));
+                exam.course = course.get();
+                examinations.add(exam);
+
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
         return examinations;
     }
 }

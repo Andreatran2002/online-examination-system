@@ -26,7 +26,26 @@ public class CourseDAO implements DAO<Course> {
 
     @Override
     public Optional<Course> get(int id) {
-        return Optional.empty();
+        Course course = new Course();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Course WHERE id=? ")) {
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                course.setId(rs.getInt("id"));
+                course.setEnd(rs.getTimestamp("end"));
+                course.setStart(rs.getTimestamp("start"));
+                course.setCreated_at(rs.getTimestamp("created_at"));
+                course.setCategory(rs.getString("category"));
+                course.setDescription(rs.getString("description"));
+                course.setName(rs.getString("name"));
+                course.setTeacher_id(rs.getInt("teacher_id"));
+
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return Optional.of(course);
     }
 
     @Override
