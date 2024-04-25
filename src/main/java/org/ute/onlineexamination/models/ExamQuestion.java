@@ -29,6 +29,10 @@ public class ExamQuestion {
         this.exam_id = examId ;
     }
 
+    public ExamQuestion(){
+
+    }
+
 
     public ExamQuestion(Integer question_id) {
         this.question_id = question_id;

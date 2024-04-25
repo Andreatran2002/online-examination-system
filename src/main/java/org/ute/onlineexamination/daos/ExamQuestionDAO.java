@@ -1,8 +1,11 @@
 package org.ute.onlineexamination.daos;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
 import org.ute.onlineexamination.models.ExamQuestion;
+import org.ute.onlineexamination.models.Question;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.*;
@@ -51,5 +54,25 @@ public class ExamQuestionDAO implements DAO<ExamQuestion> {
     @Override
     public void delete(ExamQuestion examQuestion) {
 
+    }
+
+    public ObservableList<ExamQuestion> getByExamId(Integer id ){
+        ObservableList<ExamQuestion> questions = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM ExamQuestion WHERE exam_id = ? AND deleted_at IS NULL")) {
+            preparedStatement.setInt(1, id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                ExamQuestion question = new ExamQuestion();
+                question.setId(rs.getInt("id"));
+                question.setExam_id(rs.getInt("exam_id"));
+                question.setQuestion_id(rs.getInt("question_id"));
+                question.setPriority(rs.getInt("priority"));
+                questions.add(question);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return questions;
     }
 }

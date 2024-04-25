@@ -17,8 +17,10 @@ import javafx.util.Callback;
 import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.daos.CourseDAO;
 import org.ute.onlineexamination.daos.ExamDAO;
+import org.ute.onlineexamination.daos.ExamQuestionDAO;
 import org.ute.onlineexamination.daos.QuestionDAO;
 import org.ute.onlineexamination.models.Course;
+import org.ute.onlineexamination.models.ExamQuestion;
 import org.ute.onlineexamination.models.Examination;
 import org.ute.onlineexamination.models.Question;
 import org.ute.onlineexamination.utils.AlertActionInterface;
@@ -58,17 +60,25 @@ public class TeacherController implements Initializable {
     private ObservableList<Examination> examList;
     QuestionDAO questionDAO;
     ExamDAO examDAO;
+    ExamQuestionDAO examQuestionDAO;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         courseDAO = new CourseDAO();
         questionDAO = new QuestionDAO();
         examDAO = new ExamDAO();
+        examQuestionDAO = new ExamQuestionDAO();
         currentUserName.setText(AppUtils.CURRENT_USER.getFull_name());
         courseList =  FXCollections.observableArrayList();
         questionList =   FXCollections.observableArrayList();
         examList =   FXCollections.observableArrayList();
 
+        initCourseView();
+        initQuestionView();
+        initExamView();
+    }
+
+    void initCourseView(){
         // Course
         courseNameColumn.setCellValueFactory(new PropertyValueFactory<Course, String>("name")) ;
         courseCategoryColumn. setCellValueFactory (new PropertyValueFactory<Course, String > ("category")) ;
@@ -134,7 +144,10 @@ public class TeacherController implements Initializable {
                 };
 
         courseActionColumn.setCellFactory(cellFactory);
+        resetCourseView();
+    }
 
+    void initQuestionView(){
         // Question
         questionContentColumn.setCellValueFactory(new PropertyValueFactory<Question, String>("content")) ;
         questionActiveColumn.setCellValueFactory(new PropertyValueFactory<Question, Boolean>("active")) ;
@@ -217,7 +230,10 @@ public class TeacherController implements Initializable {
 
         questionActionColumn.setCellFactory(questionActionCell);
         questionCourseColumn.setCellFactory(questionCourseCell) ;
+        resetQuestionView();
+    }
 
+    void initExamView(){
         // Exam
         examTitleColumn.setCellValueFactory(new PropertyValueFactory<Examination, String>("name")) ;
         examDescriptionColumn.setCellValueFactory(new PropertyValueFactory<Examination, String>("description")) ;
@@ -306,11 +322,32 @@ public class TeacherController implements Initializable {
                         return cell;
                     }
                 };
+        Callback<TableColumn<Examination, String>, TableCell<Examination, String>> examTotalQuestionCell = //
+                new Callback<TableColumn<Examination, String>, TableCell<Examination, String>>() {
+                    @Override
+                    public TableCell call(final TableColumn<Examination, String> param) {
+                        final TableCell<Examination, String> cell = new TableCell<Examination, String>() {
+                            @Override
+                            public void updateItem(String item, boolean empty) {
+                                super.updateItem(item, empty);
+                                if (empty) {
+                                    setGraphic(null);
+                                    setText(null);
+                                } else {
+                                    Examination q = getTableView().getItems().get(getIndex());
+                                    ObservableList<ExamQuestion> totalQuestion = examQuestionDAO.getByExamId(q.getId());
+                                    setText(String.valueOf(totalQuestion.size()));
+                                }
+                            }
+                        };
+                        return cell;
+                    }
+                };
         examActionColumn.setCellFactory(examActionCell);
-
-        resetCourseView();
-        resetQuestionView();
+        examCourseColumn.setCellFactory(examCourseCell);
+        examTotalQuestionColumn.setCellFactory(examTotalQuestionCell);
         resetExamView();
+
     }
 
     public void resetCourseView(){
