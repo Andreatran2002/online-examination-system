@@ -15,10 +15,12 @@ import org.ute.onlineexamination.models.User;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -73,7 +75,11 @@ public class AppUtils {
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.OK) {
-            action.action();
+            try {
+                action.action();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
     public static  void showYesNoOption(Event event , String title, String message , AlertActionInterface okeAction ){
@@ -86,7 +92,11 @@ public class AppUtils {
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.OK) {
-            okeAction.action();
+            try {
+                okeAction.action();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
     }
@@ -97,6 +107,12 @@ public class AppUtils {
         LocalDateTime localDateTime = LocalDateTime.now();
         Timestamp timestamp = Timestamp.valueOf(localDateTime);
         return timestamp;
+    }
+
+    public  static String formatTime(Timestamp time){
+        Date date = new Date(time.getTime());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM, h:mm a");
+        return dateFormat.format(date);
     }
 
 }

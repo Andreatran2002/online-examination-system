@@ -7,6 +7,7 @@ public class ExamQuestion {
     private Integer question_id;
     private Integer exam_id;
     private Integer priority;
+    public Question question;
 
     public Integer getPriority() {
         return priority;

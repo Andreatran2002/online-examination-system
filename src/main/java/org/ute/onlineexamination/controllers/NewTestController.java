@@ -44,6 +44,7 @@ public class NewTestController implements Initializable {
     public TableColumn actionColumn;
     public TableView questionView;
     public ChoiceBox<String> questionOptions;
+    public TextField totalMinutes;
     ExamDAO examDAO;
     ExamQuestionDAO examQuestionDAO;
     QuestionDAO questionDAO;
@@ -207,7 +208,7 @@ public class NewTestController implements Initializable {
             exam.setScoring_type(scoringHighest.isSelected()? 1 : 2);
             exam.setEnd(AppUtils.fromDateAndTime(toDate.getValue(),toTime.getText()));
             exam.setStart(AppUtils.fromDateAndTime(fromDate.getValue(),fromTime.getText()));
-
+            exam.setTotal_minutes(Integer.valueOf(totalMinutes.getText()));
             Integer id = examDAO.save(exam);
             for (Question question : examQuestions) {
                 ExamQuestion examQuestion = new ExamQuestion(question.getId(), id);

@@ -16,7 +16,7 @@
          <top>
             <AnchorPane prefHeight="34.0" prefWidth="278.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label layoutX="19.0" layoutY="9.0" text="CSS Test ( part 1)">
+                  <Label fx:id="title" layoutX="19.0" layoutY="9.0" text="CSS Test ( part 1)">
                      <font>
                         <Font size="16.0" />
                      </font>
@@ -45,17 +45,17 @@
 <!--                        <Icon content="SETTINGS_INPUT_HDMI" />-->
 <!--                        <Icon content="HELP_OUTLINE" GridPane.columnIndex="2" />-->
 <!--                        <Icon content="HELP_OUTLINE" prefHeight="36.0" prefWidth="26.0" GridPane.rowIndex="1" />-->
-                        <Label prefHeight="17.0" prefWidth="92.0" text="21 Oct , 1:00 pm" GridPane.columnIndex="1" />
-                        <Label prefHeight="17.0" prefWidth="92.0" text="21 Oct , 1:00 pm" GridPane.columnIndex="4" />
+                        <Label fx:id="start" prefHeight="17.0" prefWidth="92.0" text="21 Oct , 1:00 pm" GridPane.columnIndex="1" />
+                        <Label fx:id="end" prefHeight="17.0" prefWidth="92.0" text="21 Oct , 1:00 pm" GridPane.columnIndex="4" />
 <!--                        <Icon content="HELP_OUTLINE" GridPane.columnIndex="3" />-->
 <!--                        <Icon content="HELP_OUTLINE" GridPane.columnIndex="3" GridPane.rowIndex="1" />-->
 <!--                        <Icon content="HELP_OUTLINE" GridPane.rowIndex="2" />-->
-                        <Label text="3 min" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Label text="32 questions " GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                        <Label text="245 enrolled" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="totalTime" text="3 min" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="totalQuestions" text="32 questions " GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                        <Label fx:id="enrolledTotal" text="245 enrolled" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
-                  <Button layoutX="14.0" layoutY="97.0" mnemonicParsing="false" style="-fx-background-color: #0018ff;" text="Start now " textFill="WHITE" />
+                  <Button layoutX="14.0" layoutY="97.0" mnemonicParsing="false" onAction="#startTest" style="-fx-background-color: #0018ff;" text="Start now " textFill="WHITE" />
                </children>
             </AnchorPane>
          </bottom>

@@ -4,10 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
-import org.ute.onlineexamination.models.Answer;
-import org.ute.onlineexamination.models.Course;
-import org.ute.onlineexamination.models.Question;
-import org.ute.onlineexamination.models.Teacher;
+import org.ute.onlineexamination.models.*;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.*;
@@ -28,7 +25,23 @@ public class QuestionDAO implements DAO<Question> {
 
     @Override
     public Optional<Question> get(int id) {
-        return Optional.empty();
+        Question question = new Question();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Question WHERE id=? AND deleted_at IS NULL AND active=1")) {
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                question.setId(rs.getInt("id"));
+                question.setActive(rs.getBoolean("active"));
+                question.setCourse_id(rs.getInt("course_id"));
+                question.setContent(rs.getString("content"));
+                ObservableList<Answer> answers = answerDAO.getByQuestionId(id);
+                question.setAnswers(answers);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return Optional.of(question);
     }
 
     @Override

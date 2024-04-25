@@ -1,5 +1,7 @@
 package org.ute.onlineexamination.models;
 
+import javafx.collections.ObservableList;
+
 import java.sql.Timestamp;
 
 public class Examination {
@@ -12,9 +14,20 @@ public class Examination {
     private Integer time_retry ;
     private Integer scoring_type;
     private Boolean active;
+    private Integer total_minutes;
+
+    public ObservableList<ExamQuestion> questions;
     
     public Examination(){
         
+    }
+
+    public Integer getTotal_minutes() {
+        return total_minutes;
+    }
+
+    public void setTotal_minutes(Integer total_minutes) {
+        this.total_minutes = total_minutes;
     }
 
     public Course course ;
