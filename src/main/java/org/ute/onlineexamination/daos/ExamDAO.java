@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
 public class ExamDAO implements DAO<Examination> {
 
     CourseDAO courseDAO;
@@ -173,5 +174,59 @@ public class ExamDAO implements DAO<Examination> {
             DBConnectionFactory.printSQLException(e);
         }
         return examinations;
+    }
+
+    public Double mark(Integer take_exam_id) throws SQLException {
+         Double score = 0.0;
+         Integer totalPriority = 0 ;
+         Connection connection = DBConnectionFactory.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement("SELECT eq.id , eq.question_id, eq.priority  FROM `TakeExam` te \n" +
+                     "\tINNER JOIN Examination e ON e.id = te.exam_id \n" +
+                     "    INNER JOIN ExamQuestion eq ON eq.exam_id = e.id\n" +
+                     "    WHERE te.id = ? ");
+        preparedStatement.setInt(1, take_exam_id );
+        ResultSet rs = preparedStatement.executeQuery();
+        ObservableList<Double> results = FXCollections.observableArrayList();
+        while (rs.next()){
+            Integer totalCorrect = 0 ;
+            Integer correctCount = 0 ;
+            Integer questionId = rs.getInt("question_id");
+            Integer examQuestionId = rs.getInt("id");
+            Integer priority = rs.getInt("priority");
+            preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM `Answer` WHERE question_id = ? AND correct=1");
+            preparedStatement.setInt(1,questionId);
+            ResultSet countRs = preparedStatement.executeQuery();
+            while (countRs.next()){
+                totalCorrect = countRs.getInt(1);
+            }
+            preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM `TakeExamAnswer` t \n" +
+                    "INNER JOIN Answer a ON a.id = t.answer_id AND a.correct = 1\n" +
+                    "WHERE t.exam_question_id = ? AND t.take_exam_id = ?");
+            preparedStatement.setInt(1,examQuestionId);
+            preparedStatement.setInt(2,take_exam_id);
+            countRs = preparedStatement.executeQuery();
+            while (countRs.next()){
+                correctCount = countRs.getInt(1);
+            }
+
+            preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM `TakeExamAnswer` t INNER JOIN Answer a ON a.id = t.answer_id WHERE a.correct = 0 AND t.exam_question_id = ? AND t.take_exam_id = ?");
+            preparedStatement.setInt(1,examQuestionId);
+            preparedStatement.setInt(2,take_exam_id);
+            countRs = preparedStatement.executeQuery();
+            while (countRs.next()){
+                if (correctCount >= countRs.getInt(1)){
+                    correctCount = correctCount - countRs.getInt(1);
+                }
+                else correctCount = 0 ;
+            }
+            totalPriority = totalPriority + priority;
+            results.add((double) (correctCount*priority/totalCorrect));
+        }
+
+        for (int i = 0; i < results.size(); i++) {
+            score = score + (results.get(i))/(totalPriority) ;
+        }
+
+        return AppUtils.round(score*10,2);
     }
 }

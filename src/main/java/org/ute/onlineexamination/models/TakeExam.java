@@ -10,6 +10,9 @@ public class TakeExam {
     private Timestamp end;
     private double scoring ;
 
+    public TakeExam() {
+    }
+
     public TakeExam(Integer student_id, Integer exam_id, Timestamp start, Timestamp end, double scoring) {
         this.student_id = student_id;
         this.exam_id = exam_id;

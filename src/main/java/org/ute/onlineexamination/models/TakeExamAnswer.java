@@ -6,6 +6,16 @@ public class TakeExamAnswer {
     private Integer id;
     private Integer take_exam_id;
     private Integer answer_id;
+
+    public Integer getExam_question_id() {
+        return exam_question_id;
+    }
+
+    public void setExam_question_id(Integer exam_question_id) {
+        this.exam_question_id = exam_question_id;
+    }
+
+    private Integer exam_question_id;
     private Time deleted_at;
     private Time created_at;
 

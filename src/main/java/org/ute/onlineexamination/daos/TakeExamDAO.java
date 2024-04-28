@@ -1,7 +1,10 @@
 package org.ute.onlineexamination.daos;
 
+import javafx.collections.ObservableList;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
+import org.ute.onlineexamination.models.ExamQuestion;
+import org.ute.onlineexamination.models.Examination;
 import org.ute.onlineexamination.models.TakeExam;
 import org.ute.onlineexamination.utils.AppUtils;
 
@@ -17,7 +20,23 @@ public class TakeExamDAO implements DAO<TakeExam> {
 
     @Override
     public Optional<TakeExam> get(int id) {
-        return Optional.empty();
+        TakeExam takeExam = new TakeExam();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM TakeExam WHERE id=? AND deleted_at IS NULL")) {
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                takeExam.setId(rs.getInt("id"));
+                takeExam.setEnd(rs.getTimestamp("end"));
+                takeExam.setStart(rs.getTimestamp("start"));
+                takeExam.setStudent_id(rs.getInt("student_id"));
+                takeExam.setScoring(rs.getDouble("scoring"));
+                takeExam.setExam_id(rs.getInt("exam_id"));
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return Optional.of(takeExam);
     }
 
     @Override
@@ -42,8 +61,17 @@ public class TakeExamDAO implements DAO<TakeExam> {
     }
 
     @Override
-    public void update(TakeExam TakeExam) {
-
+    public void update(TakeExam takeExam) {
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE TakeExam SET scoring = ?, end = ? , updated_at = ? WHERE id=? ")) {
+            preparedStatement.setDouble(1, takeExam.getScoring());
+            preparedStatement.setTimestamp(2, AppUtils.getCurrentDateTime());
+            preparedStatement.setTimestamp(3, AppUtils.getCurrentDateTime());
+            preparedStatement.setInt(4, takeExam.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
     }
 
     @Override

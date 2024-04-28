@@ -67,7 +67,7 @@ public class TestCardController  implements Initializable{
         TestController controller = new TestController(examination);
         loader.setController(controller);
         Pane panel = loader.load();
-        stage.setScene(new Scene(panel, 600, 400));
+        stage.setScene(new Scene(panel, 600, 500));
         stage.show();
     }
 }

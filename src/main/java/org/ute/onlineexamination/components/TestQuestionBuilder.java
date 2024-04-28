@@ -1,5 +1,6 @@
 package org.ute.onlineexamination.components;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -24,9 +25,6 @@ public class TestQuestionBuilder implements Builder<Pane> {
     Integer takeExamId;
     TakeExamAnswerDAO takeExamAnswerDAO;
 
-    public TestQuestionBuilder(ExamQuestion examQuestion) {
-        this.examQuestion = examQuestion;
-    }
     public TestQuestionBuilder(Integer takeExamId,  ExamQuestion examQuestion) {
         this.examQuestion = examQuestion;
         this.takeExamId = takeExamId;
@@ -43,6 +41,7 @@ public class TestQuestionBuilder implements Builder<Pane> {
 
         Label questionLabel = new Label(examQuestion.question.getContent());
         questionPane.getChildren().add(questionLabel);
+        listOptions = FXCollections.observableArrayList();
 
         List<Answer> answers = examQuestion.question.getAnswers();
         for (Answer answer : answers) {
@@ -62,6 +61,7 @@ public class TestQuestionBuilder implements Builder<Pane> {
                 takeExamAnswer = new TakeExamAnswer();
                 takeExamAnswer.setTake_exam_id(takeExamId);
                 takeExamAnswer.setAnswer_id(answer.getId());
+                takeExamAnswer.setExam_question_id(this.examQuestion.getId());
                 takeExamAnswerDAO.save(takeExamAnswer);
             }
         }
