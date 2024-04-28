@@ -229,4 +229,18 @@ public class ExamDAO implements DAO<Examination> {
 
         return AppUtils.round(score*10,2);
     }
+    public  Integer checkTakeExamTimes ( Integer exam_id){
+        Integer times = 0 ;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM TakeExam WHERE exam_id = ? AND deleted_at IS NULL")) {
+            preparedStatement.setInt(1, exam_id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                times = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return times;
+    }
 }

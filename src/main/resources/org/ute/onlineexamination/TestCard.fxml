@@ -51,7 +51,7 @@
                         <Label fx:id="totalQuestions" text="32 questions " GridPane.columnIndex="2" GridPane.rowIndex="1" />
                      </children>
                   </GridPane>
-                  <Button layoutX="14.0" layoutY="97.0" mnemonicParsing="false" onAction="#startTest" style="-fx-background-color: #0018ff;" text="Start now " textFill="WHITE" />
+                  <Button layoutX="14.0" fx:id="testActionBtn" layoutY="97.0" mnemonicParsing="false" style="-fx-background-color: #0018ff;" text="Start now " textFill="WHITE" />
                </children>
             </AnchorPane>
          </bottom>

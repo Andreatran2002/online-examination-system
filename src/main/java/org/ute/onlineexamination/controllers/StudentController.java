@@ -12,6 +12,7 @@ import javafx.scene.control.Pagination;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.components.CourseCardBuilder;
 import org.ute.onlineexamination.components.TestCardBuilder;
@@ -36,6 +37,8 @@ public class StudentController implements Initializable {
     ObservableList<Course> myCourses;
     ExamDAO examDAO;
     CourseDAO courseDAO;
+    Integer currentTestPage = 0 ;
+    Integer totalTestPage ;
 
     public StudentController(){
 
@@ -45,8 +48,13 @@ public class StudentController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         examDAO = new ExamDAO();
         courseDAO = new CourseDAO() ;
-        myExams = examDAO.getByStudentId(AppUtils.CURRENT_ROLE.id);
+        getExams();
         getCourse();
+        addDataPane();
+        totalTestPage = (int) Math.ceil( myExams.size()/9);
+    }
+
+    void addDataPane(){
         for (int i = 0; i < myExams.size(); i++) {
             TestCardBuilder test = new TestCardBuilder(myExams.get(i));
             Parent content = test.build();
@@ -58,7 +66,6 @@ public class StudentController implements Initializable {
             Parent content = course.build();
             mycourseListPane.add(content , i % 3, round(i/3), 1,1);
         }
-
     }
 
     public void navToCoursePage(ActionEvent event) throws IOException {
@@ -70,6 +77,8 @@ public class StudentController implements Initializable {
     }
     void getCourse(){
         myCourses = courseDAO.getFilterAndPaging();
-
+    }
+    void getExams(){
+        myExams = examDAO.getByStudentId(AppUtils.CURRENT_ROLE.id);
     }
 }
