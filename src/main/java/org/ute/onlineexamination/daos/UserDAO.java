@@ -2,6 +2,7 @@ package org.ute.onlineexamination.daos;
 
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
+import org.ute.onlineexamination.models.Teacher;
 import org.ute.onlineexamination.models.User;
 import org.ute.onlineexamination.utils.AppUtils;
 
@@ -19,7 +20,21 @@ public class UserDAO implements DAO<User> {
 
     @Override
     public Optional<User> get(int id) {
-        return Optional.empty();
+        User user = new User();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM User WHERE id=? AND deleted_at IS NULL")) {
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                user.setId(rs.getInt("id"));
+                user.setMobile(rs.getString("mobile"));
+                user.setEmail(rs.getString("email"));
+                user.setFull_name(rs.getString("full_name"));
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return Optional.of(user);
     }
 
     @Override

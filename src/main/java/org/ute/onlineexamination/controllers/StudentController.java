@@ -13,8 +13,11 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.ute.onlineexamination.MainApplication;
+import org.ute.onlineexamination.components.CourseCardBuilder;
 import org.ute.onlineexamination.components.TestCardBuilder;
+import org.ute.onlineexamination.daos.CourseDAO;
 import org.ute.onlineexamination.daos.ExamDAO;
+import org.ute.onlineexamination.models.Course;
 import org.ute.onlineexamination.models.Examination;
 import org.ute.onlineexamination.utils.AppUtils;
 
@@ -30,7 +33,9 @@ public class StudentController implements Initializable {
     public Pagination myTestPagination;
     public GridPane mycourseListPane;
     ObservableList<Examination> myExams;
+    ObservableList<Course> myCourses;
     ExamDAO examDAO;
+    CourseDAO courseDAO;
 
     public StudentController(){
 
@@ -39,23 +44,19 @@ public class StudentController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         examDAO = new ExamDAO();
+        courseDAO = new CourseDAO() ;
         myExams = examDAO.getByStudentId(AppUtils.CURRENT_ROLE.id);
-        try {
-            for (int i = 0; i < myExams.size(); i++) {
-                TestCardBuilder test = new TestCardBuilder(myExams.get(i));
-                Parent content = test.build();
-                testListContent.add(content , i % 3, round(i/3), 1,1);
-            }
-            Pane course = new Pane();
-            for (int x = 0; x < 3; x++) {
-                for (int y = 0; y < 3; y++) {
-                    course = FXMLLoader.load(MainApplication.class.getResource("CourseCard.fxml"));
-                    course.setId("course "+ x + "-"+ y); ;
-                    mycourseListPane.add(course, x, y, 1,1);
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        getCourse();
+        for (int i = 0; i < myExams.size(); i++) {
+            TestCardBuilder test = new TestCardBuilder(myExams.get(i));
+            Parent content = test.build();
+            testListContent.add(content , i % 3, round(i/3), 1,1);
+        }
+
+        for (int i = 0; i < myCourses.size(); i++) {
+            CourseCardBuilder course = new CourseCardBuilder(myCourses.get(i));
+            Parent content = course.build();
+            mycourseListPane.add(content , i % 3, round(i/3), 1,1);
         }
 
     }
@@ -66,5 +67,9 @@ public class StudentController implements Initializable {
         Pane panel = FXMLLoader.load(MainApplication.class.getResource("CoursesPage.fxml"));
         stage.setScene(new Scene(panel, 1000, 800));
         stage.show();
+    }
+    void getCourse(){
+        myCourses = courseDAO.getFilterAndPaging();
+
     }
 }

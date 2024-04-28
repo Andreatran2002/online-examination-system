@@ -124,4 +124,15 @@ public class AppUtils {
         return (double) tmp / factor;
     }
 
+    public static long between ( Timestamp startTimestamp , Timestamp endTimestamp){
+        long millisecondsDifference = endTimestamp.getTime() - startTimestamp.getTime();
+
+        // Convert milliseconds to days, hours, minutes, and seconds
+        long seconds = millisecondsDifference / 1000;
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        long days = hours / 24;
+        return days;
+    }
+
 }

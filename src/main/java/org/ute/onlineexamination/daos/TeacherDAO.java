@@ -3,6 +3,7 @@ package org.ute.onlineexamination.daos;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
 import org.ute.onlineexamination.models.Student;
+import org.ute.onlineexamination.models.TakeExam;
 import org.ute.onlineexamination.models.Teacher;
 import org.ute.onlineexamination.models.User;
 import org.ute.onlineexamination.utils.AppUtils;
@@ -21,7 +22,21 @@ public class TeacherDAO implements DAO<Teacher> {
 
     @Override
     public Optional<Teacher> get(int id) {
-        return Optional.empty();
+        Teacher teacher = new Teacher();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Teacher WHERE id=? AND deleted_at IS NULL")) {
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                teacher.setId(rs.getInt("id"));
+                teacher.setAddress(rs.getString("address"));
+                teacher.setTitle(rs.getString("title"));
+                teacher.setUser_id(rs.getInt("user_id"));
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return Optional.of(teacher);
     }
 
     @Override
