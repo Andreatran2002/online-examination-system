@@ -5,6 +5,7 @@ import org.ute.onlineexamination.database.DBConnectionFactory;
 import org.ute.onlineexamination.models.Student;
 import org.ute.onlineexamination.models.Teacher;
 import org.ute.onlineexamination.models.User;
+import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.*;
 import java.util.List;
@@ -44,7 +45,32 @@ public class StudentDAO implements DAO<Student> {
 
     @Override
     public void update(Student student) {
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Student SET updated_at=? WHERE user_id=? ")) {
+            preparedStatement.setTimestamp(1,AppUtils.getCurrentDateTime());
+            preparedStatement.setInt(2, student.getUser_id());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+    }
 
+
+    public User updateStudentByEmail(String email) {
+        User user = new User();
+        try (Connection connection = DBConnectionFactory.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Student JOIN User ON Student.user_id = User.id SET last_login=? , full_name=? , updated_at=? , password_hash=?, mobile=? WHERE email=?  ")){
+            preparedStatement.setTimestamp(1, user.getLast_login());
+            preparedStatement.setString(2, user.getFull_name());
+            preparedStatement.setTimestamp(3, AppUtils.getCurrentDateTime());
+            preparedStatement.setString(4, user.getPassword_hash());
+            preparedStatement.setString(5, user.getMobile());
+            preparedStatement.setString(6, user.getEmail());
+            preparedStatement.executeUpdate();
+        }catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return user;
     }
 
     @Override
@@ -60,9 +86,9 @@ public class StudentDAO implements DAO<Student> {
             while (rs.next()){
                 // TODO: lay thong tin User
                 student.setId(rs.getInt("id"));
-                student.setCreated_at(rs.getTime("created_at"));
-                student.setUpdated_at(rs.getTime("updated_at"));
-                student.setDeleted_at(rs.getTime("deleted_at"));
+                student.setCreated_at(rs.getTimestamp("created_at"));
+                student.setUpdated_at(rs.getTimestamp("updated_at"));
+                student.setDeleted_at(rs.getTimestamp("deleted_at"));
                 student.setUser_id(rs.getInt("user_id"));
             }
         } catch (SQLException e) {

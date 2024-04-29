@@ -13,6 +13,11 @@ public class User {
     private String email;
     private String mobile;
     private Boolean is_admin;
+    private String password_hash;
+    private Timestamp created_at;
+    private Timestamp updated_at;
+    private Timestamp last_login;
+    private Timestamp deleted_at;
     public Boolean getIs_admin() {
         return is_admin;
     }
@@ -98,8 +103,8 @@ public class User {
         return updated_at;
     }
 
-    public void setUpdated_at(Timestamp uptimestampd_at) {
-        this.updated_at = uptimestampd_at;
+    public void setUpdated_at(Timestamp updated_at) {
+        this.updated_at = updated_at;
     }
 
     public Timestamp getDeleted_at() {
@@ -122,14 +127,6 @@ public class User {
         this.deleted_at = deleted_at;
     }
 
-    private String password_hash;
-    private Timestamp last_login;
-
     public User() {
     }
-
-    private Timestamp created_at;
-    private Timestamp updated_at;
-    private Timestamp deleted_at;
-
 }

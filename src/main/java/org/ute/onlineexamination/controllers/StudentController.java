@@ -7,18 +7,26 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+
 import javafx.scene.chart.LineChart;
+
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.ute.onlineexamination.MainApplication;
+
+import org.ute.onlineexamination.daos.StudentDAO;
+import org.ute.onlineexamination.models.Student;
+import org.ute.onlineexamination.models.User;
+
 import org.ute.onlineexamination.components.CourseCardBuilder;
 import org.ute.onlineexamination.components.TestCardBuilder;
 import org.ute.onlineexamination.daos.CourseDAO;
 import org.ute.onlineexamination.daos.ExamDAO;
 import org.ute.onlineexamination.models.Course;
 import org.ute.onlineexamination.models.Examination;
+
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.io.IOException;
@@ -32,6 +40,15 @@ public class StudentController implements Initializable {
     public GridPane testListContent;
     public Pagination myTestPagination;
     public GridPane mycourseListPane;
+
+    public Label labelEmail;
+    public Label labelFullname;
+    public Label labelPhonenumber;
+    StudentDAO studentDAO;
+    Student student;
+    User user;
+
+
     public Label dbMoreInfo;
     public Label dbWelcome;
     public Label dbOverallScore;
@@ -45,6 +62,7 @@ public class StudentController implements Initializable {
     public Tab dbTab;
     public Tab courseTab;
     public Tab settingTab;
+
     ObservableList<Examination> myExams;
     ObservableList<Course> myCourses;
     ExamDAO examDAO;
@@ -57,8 +75,9 @@ public class StudentController implements Initializable {
     Integer finishedTest = 0 ;
     Integer totalCourse = 0 ;
 
-    public StudentController(){
 
+    public StudentController(){
+        studentDAO = new StudentDAO();
     }
 
     @Override
@@ -104,6 +123,9 @@ public class StudentController implements Initializable {
             testListContent.add(content , i % 3, round(i/3), 1,1);
         }
 
+        loadUser();
+
+
         for (int i = 0; i < myCourses.size(); i++) {
             CourseCardBuilder course = new CourseCardBuilder(myCourses.get(i));
             Parent content = course.build();
@@ -118,6 +140,32 @@ public class StudentController implements Initializable {
         stage.setScene(new Scene(panel, 1000, 800));
         stage.show();
     }
+
+    public void navToUpdateStudentPage(ActionEvent event) throws IOException {
+        Stage stage = new Stage();
+        stage.setTitle("Update Student");
+        Pane panel = FXMLLoader.load(MainApplication.class.getResource("UpdateStudentPage.fxml"));
+        stage.setScene(new Scene(panel, 400, 400));
+        stage.show();
+    }
+    public void navToChangePasswordPage(ActionEvent event) throws IOException {
+        Stage stage = new Stage();
+        stage.setTitle("Change Password");
+        Pane panel = FXMLLoader.load(MainApplication.class.getResource("ChangePasswordPage.fxml"));
+        stage.setScene(new Scene(panel, 400, 400));
+        stage.show();
+    }
+    public void loadUser(){
+        user = AppUtils.CURRENT_USER;
+        labelEmail.setText(user.getEmail());
+        labelFullname.setText(user.getFull_name());
+        labelPhonenumber.setText(user.getMobile());
+
+
+    }
+
+
+
     void getCourse(){
         myCourses = courseDAO.getFilterAndPaging();
     }
@@ -125,7 +173,9 @@ public class StudentController implements Initializable {
         myExams = examDAO.getByStudentId(AppUtils.CURRENT_ROLE.id);
     }
 
+
     public void goToTestTab(ActionEvent event) {
         studentTabPane.getSelectionModel().select(testTab);
     }
+
 }

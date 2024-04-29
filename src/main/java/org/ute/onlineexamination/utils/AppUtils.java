@@ -7,13 +7,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.models.RoleData;
 import org.ute.onlineexamination.models.User;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -23,6 +22,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+
 
 public class AppUtils {
 
@@ -109,6 +110,16 @@ public class AppUtils {
         return timestamp;
     }
 
+    public static Time getTime(){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Timestamp timestamp = Timestamp.valueOf(localDateTime);
+        Time time = convertToTime(timestamp);
+        return time;
+    }
+    public static Time convertToTime(Timestamp timestamp) {
+        long milliseconds = timestamp.getTime();
+        return new Time(milliseconds);
+    }
     public  static String formatTime(Timestamp time){
         Date date = new Date(time.getTime());
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM, h:mm a");
@@ -134,5 +145,4 @@ public class AppUtils {
         long days = hours / 24;
         return days;
     }
-
 }
