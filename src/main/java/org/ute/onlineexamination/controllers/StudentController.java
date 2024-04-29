@@ -7,9 +7,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.chart.LineChart;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -33,12 +32,30 @@ public class StudentController implements Initializable {
     public GridPane testListContent;
     public Pagination myTestPagination;
     public GridPane mycourseListPane;
+    public Label dbMoreInfo;
+    public Label dbWelcome;
+    public Label dbOverallScore;
+    public Label dbFinishedTest;
+    public TabPane studentTabPane;
+    public Label dbFinishedCourse;
+    public Label dbTotalCourse;
+    public LineChart dbPerformanceChart;
+    public ListView dbListCourseStatus;
+    public Tab testTab;
+    public Tab dbTab;
+    public Tab courseTab;
+    public Tab settingTab;
     ObservableList<Examination> myExams;
     ObservableList<Course> myCourses;
     ExamDAO examDAO;
     CourseDAO courseDAO;
     Integer currentTestPage = 0 ;
+    Integer testLeft = 0 ;
     Integer totalTestPage ;
+    Integer overallScore = 0 ;
+    Integer finishedCourse = 0 ;
+    Integer finishedTest = 0 ;
+    Integer totalCourse = 0 ;
 
     public StudentController(){
 
@@ -50,9 +67,35 @@ public class StudentController implements Initializable {
         courseDAO = new CourseDAO() ;
         getExams();
         getCourse();
+        getHomePageData();
         addDataPane();
+        displayHomePage();
         totalTestPage = (int) Math.ceil( myExams.size()/9);
     }
+
+    void getHomePageData(){
+        testLeft = examDAO.getTestLeft(AppUtils.CURRENT_ROLE.id);
+        overallScore = examDAO.getOverallScore(AppUtils.CURRENT_ROLE.id);
+        finishedCourse = examDAO.getFinishedCourse(AppUtils.CURRENT_ROLE.id);
+        finishedTest = examDAO.getFinishedTest(AppUtils.CURRENT_ROLE.id);
+        totalCourse = examDAO.getTotalCourse(AppUtils.CURRENT_ROLE.id);
+
+    }
+
+    void displayHomePage(){
+        dbWelcome.setText("Welcome "+AppUtils.CURRENT_USER.getFull_name());
+        if (testLeft == 0){
+            dbMoreInfo.setText("You done have any tests to complete. Enroll more course!!" );
+        }
+        else {
+            dbMoreInfo.setText("You have "+ testLeft + " tests to complete. Finish it!" );
+        }
+        dbOverallScore.setText(String.valueOf(overallScore));
+        dbFinishedCourse.setText(String.valueOf(finishedCourse));
+        dbFinishedTest.setText(String.valueOf(finishedTest));
+        dbTotalCourse.setText(String.valueOf(totalCourse));
+    }
+
 
     void addDataPane(){
         for (int i = 0; i < myExams.size(); i++) {
@@ -80,5 +123,9 @@ public class StudentController implements Initializable {
     }
     void getExams(){
         myExams = examDAO.getByStudentId(AppUtils.CURRENT_ROLE.id);
+    }
+
+    public void goToTestTab(ActionEvent event) {
+        studentTabPane.getSelectionModel().select(testTab);
     }
 }

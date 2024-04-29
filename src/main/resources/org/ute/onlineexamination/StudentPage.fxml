@@ -19,9 +19,9 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ute.onlineexamination.controllers.StudentController">
+<TabPane fx:id="studentTabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ute.onlineexamination.controllers.StudentController">
    <tabs>
-      <Tab text="Dashboard">
+      <Tab fx:id="dbTab" text="Dashboard">
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="381.0" prefWidth="598.0">
                <children>
@@ -49,17 +49,17 @@
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label prefHeight="17.0" prefWidth="104.0" text="Hello Vy " textFill="WHITE">
+                                          <Label fx:id="dbWelcome" prefHeight="29.0" prefWidth="420.0" text="Hello ..." textFill="WHITE">
                                              <font>
                                                 <Font name="System Bold" size="24.0" />
                                              </font>
                                           </Label>
-                                          <Label text="You have 4 tests to complete . Finish it ! " textFill="WHITE" GridPane.rowIndex="1">
+                                          <Label fx:id="dbMoreInfo" prefHeight="59.0" prefWidth="433.0" text="You have ... tests to complete . Finish it ! " textFill="WHITE" GridPane.rowIndex="1">
                                              <font>
                                                 <Font size="16.0" />
                                              </font>
                                           </Label>
-                                          <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="141.0" style="-fx-border-color: white; -fx-background-color: white;" text="Go to test" textFill="#001eff" GridPane.rowIndex="2">
+                                          <Button mnemonicParsing="false" onAction="#goToTestTab" prefHeight="26.0" prefWidth="141.0" style="-fx-border-color: white; -fx-background-color: white;" text="Go to test" textFill="#001eff" GridPane.rowIndex="2">
                                              <font>
                                                 <Font size="16.0" />
                                              </font>
@@ -85,7 +85,7 @@
                                     <AnchorPane layoutX="27.0" layoutY="58.0" prefHeight="64.0" prefWidth="143.0" style="-fx-background-color: white; -fx-background-radius: 5;">
                                        <children>
                                           <Circle fill="#2655ff" layoutX="11.0" layoutY="-8.0" radius="33.0" stroke="WHITE" strokeType="INSIDE" />
-                                          <Label layoutX="-2.0" layoutY="-22.0" text="18" textAlignment="CENTER" textFill="WHITE">
+                                          <Label fx:id="dbOverallScore" layoutX="-2.0" layoutY="-22.0" text="0" textAlignment="CENTER" textFill="WHITE">
                                              <font>
                                                 <Font size="24.0" />
                                              </font>
@@ -104,12 +104,12 @@
                                     <AnchorPane layoutX="27.0" layoutY="58.0" prefHeight="64.0" prefWidth="143.0" style="-fx-background-color: white; -fx-background-radius: 5;">
                                        <children>
                                           <Circle fill="#2655ff" layoutX="11.0" layoutY="-8.0" radius="33.0" stroke="WHITE" strokeType="INSIDE" />
-                                          <Label layoutX="-2.0" layoutY="-22.0" text="18" textAlignment="CENTER" textFill="WHITE">
+                                          <Label fx:id="dbFinishedTest" layoutX="-2.0" layoutY="-22.0" text="0" textAlignment="CENTER" textFill="WHITE">
                                              <font>
                                                 <Font size="24.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="20.0" layoutY="19.0" text="Overall Score">
+                                          <Label layoutX="20.0" layoutY="19.0" text="Finished test">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
@@ -123,12 +123,12 @@
                                     <AnchorPane layoutX="27.0" layoutY="58.0" prefHeight="64.0" prefWidth="143.0" style="-fx-background-color: white; -fx-background-radius: 5;">
                                        <children>
                                           <Circle fill="#2655ff" layoutX="11.0" layoutY="-8.0" radius="33.0" stroke="WHITE" strokeType="INSIDE" />
-                                          <Label layoutX="-2.0" layoutY="-22.0" text="18" textAlignment="CENTER" textFill="WHITE">
+                                          <Label fx:id="dbTotalCourse" layoutX="-2.0" layoutY="-22.0" text="0" textAlignment="CENTER" textFill="WHITE">
                                              <font>
                                                 <Font size="24.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="20.0" layoutY="19.0" text="Overall Score">
+                                          <Label layoutX="20.0" layoutY="19.0" text="Total course">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
@@ -142,12 +142,12 @@
                                     <AnchorPane layoutX="27.0" layoutY="58.0" prefHeight="64.0" prefWidth="143.0" style="-fx-background-color: white; -fx-background-radius: 5;">
                                        <children>
                                           <Circle fill="#2655ff" layoutX="11.0" layoutY="-8.0" radius="33.0" stroke="WHITE" strokeType="INSIDE" />
-                                          <Label layoutX="-2.0" layoutY="-22.0" text="18" textAlignment="CENTER" textFill="WHITE">
+                                          <Label fx:id="dbFinishedCourse" layoutX="-2.0" layoutY="-22.0" text="0" textAlignment="CENTER" textFill="WHITE">
                                              <font>
                                                 <Font size="24.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="20.0" layoutY="19.0" text="Overall Score">
+                                          <Label layoutX="20.0" layoutY="19.0" text="Finished course">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
@@ -162,7 +162,7 @@
                            <children>
                               <AnchorPane layoutX="24.0" layoutY="3.0" prefHeight="402.0" prefWidth="488.0" style="-fx-background-color: white; -fx-background-radius: 10;">
                                  <children>
-                                    <LineChart layoutX="-2.0" layoutY="14.0" prefHeight="391.0" prefWidth="487.0" title="Performance Overview">
+                                    <LineChart fx:id="dbPerformanceChart" layoutX="-2.0" layoutY="14.0" prefHeight="391.0" prefWidth="487.0" title="Performance Overview">
                                        <xAxis>
                                           <CategoryAxis side="BOTTOM" />
                                        </xAxis>
@@ -176,7 +176,7 @@
                         </AnchorPane>
                         <AnchorPane prefHeight="397.0" prefWidth="400.0" style="-fx-background-color: white; -fx-background-radius: 10;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <children>
-                              <ListView layoutX="12.0" layoutY="50.0" prefHeight="328.0" prefWidth="369.0" style="-fx-background-radius: 5;" />
+                              <ListView fx:id="dbListCourseStatus" layoutX="12.0" layoutY="50.0" prefHeight="328.0" prefWidth="369.0" style="-fx-background-radius: 5;" />
                               <Label layoutX="104.0" layoutY="16.0" text="Current course status" textAlignment="CENTER">
                                  <font>
                                     <Font size="20.0" />
@@ -190,7 +190,7 @@
             </AnchorPane>
          </content>
       </Tab>
-      <Tab text="My tests">
+      <Tab fx:id="testTab" text="My tests">
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="740.0" prefWidth="1000.0">
                <children>
@@ -247,7 +247,7 @@
             </AnchorPane>
          </content>
       </Tab>
-      <Tab text="My Courses">
+      <Tab fx:id="courseTab" text="My Courses">
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
@@ -296,7 +296,7 @@
                </children></AnchorPane>
          </content>
       </Tab>
-      <Tab text="Setting">
+      <Tab fx:id="settingTab" text="Setting">
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>

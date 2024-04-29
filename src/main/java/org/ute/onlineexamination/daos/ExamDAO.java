@@ -243,4 +243,83 @@ public class ExamDAO implements DAO<Examination> {
         }
         return times;
     }
+
+    public Integer getTestLeft(Integer student_id){
+        Integer lefts = 0 ;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM Examination e INNER JOIN CourseRegistration cr ON e.course_id = cr.course_id WHERE cr.student_id = ? AND e.id NOT IN ( SELECT exam_id FROM TakeExam );")) {
+            preparedStatement.setInt(1, student_id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                lefts = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return lefts;
+    }
+
+    public Integer getOverallScore(Integer student_id) {
+        Integer score = 0 ;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT AVG(scoring) FROM `TakeExam` WHERE student_id=?")) {
+            preparedStatement.setInt(1, student_id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                score = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return score;
+    }
+
+    public Integer getFinishedCourse(Integer student_id) {
+        Integer totals = 0 ;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM CourseRegistration cr \n" +
+                     "INNER JOIN Course c ON c.id = cr.course_id \n" +
+                     "WHERE c.end < CURRENT_DATE() AND cr.student_id = ?")) {
+            preparedStatement.setInt(1, student_id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                totals = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return totals;
+    }
+
+    public Integer getFinishedTest(Integer student_id) {
+        Integer totals = 0 ;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(DISTINCT exam_id) \n" +
+                     "FROM TakeExam \n" +
+                     "WHERE student_id = ?")) {
+            preparedStatement.setInt(1, student_id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                totals = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return totals;
+    }
+
+    public Integer getTotalCourse(Integer student_id) {
+        Integer totals = 0 ;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM CourseRegistration WHERE student_id=?")) {
+            preparedStatement.setInt(1, student_id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                totals = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return totals;
+    }
 }
