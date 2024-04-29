@@ -1,5 +1,7 @@
 package org.ute.onlineexamination.models;
 
+import javafx.collections.ObservableList;
+
 import java.sql.Timestamp;
 
 public class Question {
@@ -7,9 +9,31 @@ public class Question {
     private Integer course_id;
     private String content;
     private Boolean active;
+    private Integer priority;
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
 
     public Integer getId() {
         return id;
+    }
+
+    private ObservableList<Answer> answers;
+    public Question(String content){
+        this.content = content;
+    }
+
+    public ObservableList<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(ObservableList<Answer> answers) {
+        this.answers = answers;
     }
 
     public void setId(Integer id) {

@@ -1,25 +1,44 @@
 package org.ute.onlineexamination.models;
 
-import java.sql.Time;
+import javafx.collections.ObservableList;
+
+import java.sql.Timestamp;
 
 public class Examination {
     private Integer id;
     private Integer course_id;
     private String name;
     private String description;
-    private Time start;
-    private Time end;
-    private Integer times_retry ;
+    private Timestamp start;
+    private Timestamp end;
+    private Integer time_retry ;
     private Integer scoring_type;
     private Boolean active;
+    private Integer total_minutes;
 
-    public Examination(Integer course_id, String name, String description, Time start, Time end, Integer times_retry, Integer scoring_type, Boolean active) {
+    public ObservableList<ExamQuestion> questions;
+    
+    public Examination(){
+        
+    }
+
+    public Integer getTotal_minutes() {
+        return total_minutes;
+    }
+
+    public void setTotal_minutes(Integer total_minutes) {
+        this.total_minutes = total_minutes;
+    }
+
+    public Course course ;
+
+    public Examination(Integer course_id, String name, String description, Timestamp start, Timestamp end, Integer time_retry, Integer scoring_type, Boolean active) {
         this.course_id = course_id;
         this.name = name;
         this.description = description;
         this.start = start;
         this.end = end;
-        this.times_retry = times_retry;
+        this.time_retry = time_retry;
         this.scoring_type = scoring_type;
         this.active = active;
     }
@@ -56,28 +75,28 @@ public class Examination {
         this.description = description;
     }
 
-    public Time getStart() {
+    public Timestamp getStart() {
         return start;
     }
 
-    public void setStart(Time start) {
+    public void setStart(Timestamp start) {
         this.start = start;
     }
 
-    public Time getEnd() {
+    public Timestamp getEnd() {
         return end;
     }
 
-    public void setEnd(Time end) {
+    public void setEnd(Timestamp end) {
         this.end = end;
     }
 
-    public Integer getTimes_retry() {
-        return times_retry;
+    public Integer getTime_retry() {
+        return time_retry;
     }
 
-    public void setTimes_retry(Integer times_retry) {
-        this.times_retry = times_retry;
+    public void setTime_retry(Integer time_retry) {
+        this.time_retry = time_retry;
     }
 
     public Integer getScoring_type() {
@@ -96,31 +115,31 @@ public class Examination {
         this.active = active;
     }
 
-    public Time getDeleted_at() {
+    public Timestamp getDeleted_at() {
         return deleted_at;
     }
 
-    public void setDeleted_at(Time deleted_at) {
+    public void setDeleted_at(Timestamp deleted_at) {
         this.deleted_at = deleted_at;
     }
 
-    public Time getCreated_at() {
+    public Timestamp getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Time created_at) {
+    public void setCreated_at(Timestamp created_at) {
         this.created_at = created_at;
     }
 
-    public Time getUpdated_at() {
+    public Timestamp getUpdated_at() {
         return updated_at;
     }
 
-    public void setUpdated_at(Time updated_at) {
+    public void setUpdated_at(Timestamp updated_at) {
         this.updated_at = updated_at;
     }
 
-    private Time deleted_at;
-    private Time created_at;
-    private Time updated_at;
+    private Timestamp deleted_at;
+    private Timestamp created_at;
+    private Timestamp updated_at;
 }

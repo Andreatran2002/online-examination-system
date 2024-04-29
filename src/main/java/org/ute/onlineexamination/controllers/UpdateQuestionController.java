@@ -20,14 +20,12 @@ import org.ute.onlineexamination.models.Question;
 import org.ute.onlineexamination.utils.AlertActionInterface;
 import org.ute.onlineexamination.utils.AppUtils;
 
-import java.io.IOException;
 import java.net.URL;
-import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 
-public class NewQuestionController implements Initializable {
-    public ChoiceBox answer;
+public class UpdateQuestionController implements Initializable {
     public CheckBox active;
     public ChoiceBox course;
     public TextField content;
@@ -41,6 +39,25 @@ public class NewQuestionController implements Initializable {
     CourseDAO courseDAO;
     ObservableList<Course> coursesByTeacher;
     AnswerDAO answerDAO;
+    Question question ;
+
+    public Question getQuestion() {
+        return question;
+    }
+
+    String getCourseName(Integer id){
+        FilteredList<Course> courses = coursesByTeacher.filtered(new Predicate<Course>() {
+            @Override
+            public boolean test(Course course) {
+                return Objects.equals(course.getId(), id);
+            }
+        });
+        return courses.getFirst().getName();
+    }
+
+    public void setQuestion(Question question) {
+        this.question = question;
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         questionDAO = new QuestionDAO();
@@ -87,11 +104,13 @@ public class NewQuestionController implements Initializable {
                         return cell;
                     }
                 };
-
-
         actionColumn.setCellFactory(actionCell);
+        // Set values :
+        course.setValue(getCourseName(question.getCourse_id()));
+        content.setText(question.getContent());
+        active.setText(String.valueOf(question.getActive()));
+        answerList = question.getAnswers();
         resetDataView();
-
     }
 
     boolean checkValidData(){
@@ -102,7 +121,7 @@ public class NewQuestionController implements Initializable {
         return true;
     }
 
-    public void onCreateNewQuestion(ActionEvent event) {
+    public void onUpdateQuestion(ActionEvent event) {
         Boolean isValid = checkValidData();
         if (!isValid) {
             return ;
@@ -118,12 +137,9 @@ public class NewQuestionController implements Initializable {
             });
             question.setCourse_id(courseSelected.getFirst().getId());
             question.setActive(active.isSelected());
-            Integer id = questionDAO.save(question);
-            for (Answer answerOption : answerList) {
-                answerOption.setQuestion_id(id);
-                answerDAO.save(answerOption);
-            }
-            AppUtils.showInfo(event, "Create question success", "Create question successfull", new AlertActionInterface() {
+            questionDAO.update(question);
+            updateAnswers();
+            AppUtils.showInfo(event, "Update question success", "Update question successfull", new AlertActionInterface() {
                 @Override
                 public void action() {
                     Stage appStage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
@@ -131,7 +147,42 @@ public class NewQuestionController implements Initializable {
                 }
             });
         }catch (Exception e){
-            AppUtils.showAlert(event,"Create question false",e.getMessage());
+            AppUtils.showAlert(event,"Update question false",e.getMessage());
+        }
+    }
+    void updateAnswers(){
+        for (Answer answer : answerList) {
+            boolean found = false;
+            for (Answer a : question.getAnswers()) {
+                if (answer.getId() == -1){
+                    continue;
+                }
+                if (Objects.equals(answer.getId(), a.getId())) {
+                    found = true;
+                    answerDAO.update(answer);
+                    break;
+                }
+            }
+            if (!found) {
+                answer.setQuestion_id(question.getId());
+                answerDAO.save(answer);
+            }
+        }
+
+        for (Answer answer : question.getAnswers()) {
+            boolean found = false;
+            for (Answer a : answerList) {
+                if (a.getId() == -1){
+                    continue;
+                }
+                if (Objects.equals(answer.getId(), a.getId())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                answerDAO.delete(answer);
+            }
         }
     }
 

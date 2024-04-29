@@ -51,52 +51,46 @@ public class AnswerDAO implements DAO<Answer> {
 
     @Override
     public void update(Answer answer) {
-//        try (Connection connection = DBConnectionFactory.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Course SET name=? , description=? , start=? , end=?, category=?, updated_at=? WHERE id=? ")) {
-//            preparedStatement.setString(1, course.getName());
-//            preparedStatement.setString(2, course.getDescription());
-//            preparedStatement.setTimestamp(3, course.getStart());
-//            preparedStatement.setTimestamp(4, course.getEnd());
-//            preparedStatement.setString(5, course.getCategory());
-//            preparedStatement.setTimestamp(6, AppUtils.getCurrentDateTime());
-//            preparedStatement.setInt(7, course.getId());
-//            preparedStatement.executeUpdate();
-//        } catch (SQLException e) {
-//            DBConnectionFactory.printSQLException(e);
-//        }
-    }
-
-    @Override
-    public void delete(Answer course) {
-        try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Course WHERE id=? ")) {
-            preparedStatement.setInt(1, course.getId());
+        try (Connection connection = DBConnectionFactory.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Answer SET content=? , correct=? , updated_at=? WHERE id=? ")) {
+            preparedStatement.setString(1, answer.getContent());
+            preparedStatement.setBoolean(2, answer.getCorrect());
+            preparedStatement.setTimestamp(3, AppUtils.getCurrentDateTime());
+            preparedStatement.setInt(4, answer.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             DBConnectionFactory.printSQLException(e);
         }
     }
-    public ObservableList<Answer> getByCourseId(Integer id ){
+
+    @Override
+    public void delete(Answer course) {
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Answer SET deleted_at=? , WHERE id=? ")) {
+            preparedStatement.setTimestamp(1, AppUtils.getCurrentDateTime());
+            preparedStatement.setInt(2, course.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+    }
+    public ObservableList<Answer> getByQuestionId(Integer id ){
         ObservableList<Answer> answers = FXCollections.observableArrayList();
-//        try (Connection connection = DBConnectionFactory.getConnection();
-//             PreparedStatement preparedStatement = connection.prepareStatement("SELECT q.*\n" +
-//                     "FROM Question q\n" +
-//                     "INNER JOIN Course c ON q.course_id = c.id\n" +
-//                     "INNER JOIN Teacher t ON c.teacher_id = t.id\n" +
-//                     "WHERE t.id = ?\n")) {
-//            preparedStatement.setInt(1, id );
-//            ResultSet rs = preparedStatement.executeQuery();
-//            while (rs.next()){
-//                Question question = new Question();
-//                question.setId(rs.getInt("id"));
-//                question.setContent(rs.getString("content"));
-//                question.setActive(rs.getBoolean("active"));
-//                question.setCourse_id(rs.getInt("course_id"));
-//                question.setDeleted_at(rs.getTimestamp("deleted_at"));
-//                questions.add(question);
-//            }
-//        } catch (SQLException e) {
-//            DBConnectionFactory.printSQLException(e);
-//        }
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement( "select * from Answer where question_id = ? AND deleted_at IS NULL")) {
+            preparedStatement.setInt(1, id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                Answer answer = new Answer();
+                answer.setId(rs.getInt("id"));
+                answer.setContent(rs.getString("content"));
+                answer.setCorrect(rs.getBoolean("correct"));
+                answer.setQuestion_id(rs.getInt("question_id"));
+                answer.setDeleted_at(rs.getTimestamp("deleted_at"));
+                answers.add(answer);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
         return answers;
     }
 

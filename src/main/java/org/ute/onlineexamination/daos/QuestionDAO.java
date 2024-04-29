@@ -4,9 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
-import org.ute.onlineexamination.models.Course;
-import org.ute.onlineexamination.models.Question;
-import org.ute.onlineexamination.models.Teacher;
+import org.ute.onlineexamination.models.*;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.*;
@@ -15,8 +13,10 @@ import java.util.Optional;
 
 public class QuestionDAO implements DAO<Question> {
     TeacherDAO teacherDAO ;
+    AnswerDAO answerDAO;
     public QuestionDAO(){
         teacherDAO = new TeacherDAO();
+        answerDAO = new AnswerDAO();
     }
     @Override
     public List<Question> getAll() {
@@ -25,7 +25,23 @@ public class QuestionDAO implements DAO<Question> {
 
     @Override
     public Optional<Question> get(int id) {
-        return Optional.empty();
+        Question question = new Question();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Question WHERE id=? AND deleted_at IS NULL AND active=1")) {
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                question.setId(rs.getInt("id"));
+                question.setActive(rs.getBoolean("active"));
+                question.setCourse_id(rs.getInt("course_id"));
+                question.setContent(rs.getString("content"));
+                ObservableList<Answer> answers = answerDAO.getByQuestionId(id);
+                question.setAnswers(answers);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return Optional.of(question);
     }
 
     @Override
@@ -68,10 +84,11 @@ public class QuestionDAO implements DAO<Question> {
     }
 
     @Override
-    public void delete(Question course) {
+    public void delete(Question question) {
         try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Course WHERE id=? ")) {
-            preparedStatement.setInt(1, course.getId());
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Question SET deleted_at=? WHERE id=? ")) {
+            preparedStatement.setTimestamp(1, AppUtils.getCurrentDateTime());
+            preparedStatement.setInt(2, question.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             DBConnectionFactory.printSQLException(e);
@@ -94,6 +111,7 @@ public class QuestionDAO implements DAO<Question> {
                 question.setActive(rs.getBoolean("active"));
                 question.setCourse_id(rs.getInt("course_id"));
                 question.setDeleted_at(rs.getTimestamp("deleted_at"));
+                question.setAnswers( answerDAO.getByQuestionId(question.getId()));
                 questions.add(question);
             }
         } catch (SQLException e) {
@@ -101,5 +119,27 @@ public class QuestionDAO implements DAO<Question> {
         }
         return questions;
     }
+    public ObservableList<Question> getByCourseId(Integer id ){
+        ObservableList<Question> questions = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Question WHERE course_id = ? AND deleted_at IS NULL")) {
+            preparedStatement.setInt(1, id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                Question question = new Question();
+                question.setId(rs.getInt("id"));
+                question.setContent(rs.getString("content"));
+                question.setActive(rs.getBoolean("active"));
+                question.setCourse_id(rs.getInt("course_id"));
+                question.setDeleted_at(rs.getTimestamp("deleted_at"));
+                question.setAnswers( answerDAO.getByQuestionId(question.getId()));
+                questions.add(question);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return questions;
+    }
+
 
 }

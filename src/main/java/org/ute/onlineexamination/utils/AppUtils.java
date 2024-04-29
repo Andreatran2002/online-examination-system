@@ -14,10 +14,12 @@ import org.ute.onlineexamination.models.User;
 import java.io.IOException;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -34,7 +36,6 @@ public class AppUtils {
         CURRENT_ROLE = role;
     }
     public AppUtils(){
-
     }
 
     public static void changeScreen(Event event , String page) throws IOException {
@@ -75,7 +76,11 @@ public class AppUtils {
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.OK) {
-            action.action();
+            try {
+                action.action();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
     public static  void showYesNoOption(Event event , String title, String message , AlertActionInterface okeAction ){
@@ -88,7 +93,11 @@ public class AppUtils {
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.OK) {
-            okeAction.action();
+            try {
+                okeAction.action();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
     }
@@ -110,5 +119,30 @@ public class AppUtils {
     public static Time convertToTime(Timestamp timestamp) {
         long milliseconds = timestamp.getTime();
         return new Time(milliseconds);
+    }
+    public  static String formatTime(Timestamp time){
+        Date date = new Date(time.getTime());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM, h:mm a");
+        return dateFormat.format(date);
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
+    }
+
+    public static long between ( Timestamp startTimestamp , Timestamp endTimestamp){
+        long millisecondsDifference = endTimestamp.getTime() - startTimestamp.getTime();
+
+        // Convert milliseconds to days, hours, minutes, and seconds
+        long seconds = millisecondsDifference / 1000;
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        long days = hours / 24;
+        return days;
     }
 }

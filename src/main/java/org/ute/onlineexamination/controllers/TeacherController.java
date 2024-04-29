@@ -16,10 +16,19 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.daos.CourseDAO;
+import org.ute.onlineexamination.daos.ExamDAO;
+import org.ute.onlineexamination.daos.ExamQuestionDAO;
 import org.ute.onlineexamination.daos.QuestionDAO;
+<<<<<<< HEAD
 import org.ute.onlineexamination.daos.StudentDAO;
 import org.ute.onlineexamination.daos.TeacherDAO;
 import org.ute.onlineexamination.models.*;
+=======
+import org.ute.onlineexamination.models.Course;
+import org.ute.onlineexamination.models.ExamQuestion;
+import org.ute.onlineexamination.models.Examination;
+import org.ute.onlineexamination.models.Question;
+>>>>>>> 5cb2844c91b4a0c21cd7b7ecbf9d8a5ddf567bda
 import org.ute.onlineexamination.utils.AlertActionInterface;
 import org.ute.onlineexamination.utils.AppUtils;
 
@@ -41,6 +50,14 @@ public class TeacherController implements Initializable {
     public TableColumn<Question, Boolean>  questionActiveColumn;
     public TableColumn questionActionColumn;
     public TableView<Question> questionView;
+    public TableView<Examination> examTableView;
+    public TableColumn<Examination, String> examTitleColumn;
+    public TableColumn examCourseColumn;
+    public TableColumn<Examination, String>  examDescriptionColumn;
+    public TableColumn examTotalQuestionColumn;
+    public TableColumn examActionColumn;
+    public TableColumn examStartColumn;
+    public TableColumn examEndColumn;
     CourseDAO courseDAO;
     public TableView<Course> courseView;
     public Label labelEmailAddress;
@@ -51,7 +68,9 @@ public class TeacherController implements Initializable {
 
     private ObservableList<Course> courseList;
     private ObservableList<Question> questionList;
+    private ObservableList<Examination> examList;
     QuestionDAO questionDAO;
+<<<<<<< HEAD
     User user;
     TeacherDAO teacherDAO;
     Teacher teacher;
@@ -59,14 +78,28 @@ public class TeacherController implements Initializable {
     public TeacherController() {
         teacherDAO = new TeacherDAO();
     }
+=======
+    ExamDAO examDAO;
+    ExamQuestionDAO examQuestionDAO;
+>>>>>>> 5cb2844c91b4a0c21cd7b7ecbf9d8a5ddf567bda
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         courseDAO = new CourseDAO();
         questionDAO = new QuestionDAO();
+        examDAO = new ExamDAO();
+        examQuestionDAO = new ExamQuestionDAO();
         currentUserName.setText(AppUtils.CURRENT_USER.getFull_name());
         courseList =  FXCollections.observableArrayList();
         questionList =   FXCollections.observableArrayList();
+        examList =   FXCollections.observableArrayList();
+
+        initCourseView();
+        initQuestionView();
+        initExamView();
+    }
+
+    void initCourseView(){
         // Course
         courseNameColumn.setCellValueFactory(new PropertyValueFactory<Course, String>("name")) ;
         courseCategoryColumn. setCellValueFactory (new PropertyValueFactory<Course, String > ("category")) ;
@@ -132,7 +165,10 @@ public class TeacherController implements Initializable {
                 };
 
         courseActionColumn.setCellFactory(cellFactory);
+        resetCourseView();
+    }
 
+    void initQuestionView(){
         // Question
         questionContentColumn.setCellValueFactory(new PropertyValueFactory<Question, String>("content")) ;
         questionActiveColumn.setCellValueFactory(new PropertyValueFactory<Question, Boolean>("active")) ;
@@ -160,7 +196,7 @@ public class TeacherController implements Initializable {
                                     });
                                     deleteBtn.setOnAction(event -> {
                                         Question question = getTableView().getItems().get(getIndex());
-                                        AppUtils.showYesNoOption(event, "Delete question ",  "Are you sure to delte this course?", new AlertActionInterface() {
+                                        AppUtils.showYesNoOption(event, "Delete question ",  "Are you sure to delete this question?", new AlertActionInterface() {
                                             @Override
                                             public void action() {
                                                 try{
@@ -215,16 +251,136 @@ public class TeacherController implements Initializable {
 
         questionActionColumn.setCellFactory(questionActionCell);
         questionCourseColumn.setCellFactory(questionCourseCell) ;
-
-        resetCourseView();
         resetQuestionView();
 
         loadUser();
     }
 
+    void initExamView(){
+        // Exam
+        examTitleColumn.setCellValueFactory(new PropertyValueFactory<Examination, String>("name")) ;
+        examDescriptionColumn.setCellValueFactory(new PropertyValueFactory<Examination, String>("description")) ;
+        examStartColumn.setCellValueFactory(new PropertyValueFactory<Examination, String>("start")) ;
+        examEndColumn.setCellValueFactory(new PropertyValueFactory<Examination, String>("end")) ;
+
+        Callback<TableColumn<Examination, String>, TableCell<Examination, String>> examActionCell = //
+                new Callback<TableColumn<Examination, String>, TableCell<Examination, String>>() {
+                    @Override
+                    public TableCell call(final TableColumn<Examination, String> param) {
+                        final TableCell<Examination, String> cell = new TableCell<Examination, String>() {
+                            final Button editBtn = new Button("Edit");
+                            final Button deleteBtn = new Button("Delete");
+                            final Button detailBtn = new Button("Detail");
+                            @Override
+                            public void updateItem(String item, boolean empty) {
+                                super.updateItem(item, empty);
+                                if (empty) {
+                                    setGraphic(null);
+                                    setText(null);
+                                } else {
+                                    detailBtn.setOnAction(event -> {
+                                        Examination exam = getTableView().getItems().get(getIndex());
+                                        //TODO : Open Detail course page
+                                    });
+                                    editBtn.setOnAction(event -> {
+                                        Examination exam = getTableView().getItems().get(getIndex());
+//                                        try {
+//                                            navToUpdateExam(exam);
+//                                        } catch (IOException e) {
+//                                            throw new RuntimeException(e);
+//                                        }
+                                    });
+                                    deleteBtn.setOnAction(event -> {
+                                        Examination exam = getTableView().getItems().get(getIndex());
+                                        AppUtils.showYesNoOption(event, "Delete examination " + exam.getName(), "Are you sure to delete this exam?", new AlertActionInterface() {
+                                            @Override
+                                            public void action() {
+                                                try{
+//                                                    examDAO.delete(exam);
+                                                    AppUtils.showInfo(event, "Delete exam", "Delete exam " + exam.getName() + " successfull", new AlertActionInterface() {
+                                                        @Override
+                                                        public void action() {
+                                                            resetCourseView();
+                                                        }
+                                                    });
+                                                }catch (Exception e){
+                                                    AppUtils.showAlert(event, "Delete exam", "Delete exam " + exam.getName() + " false");
+                                                }
+                                            }
+                                        });
+                                    });
+                                    HBox hbox = new HBox(detailBtn,editBtn,deleteBtn);
+                                    setGraphic(hbox);
+                                    setText(null);
+                                }
+                            }
+                        };
+                        return cell;
+                    }
+                };
+
+        Callback<TableColumn<Examination, String>, TableCell<Examination, String>> examCourseCell = //
+                new Callback<TableColumn<Examination, String>, TableCell<Examination, String>>() {
+                    @Override
+                    public TableCell call(final TableColumn<Examination, String> param) {
+                        final TableCell<Examination, String> cell = new TableCell<Examination, String>() {
+                            @Override
+                            public void updateItem(String item, boolean empty) {
+                                super.updateItem(item, empty);
+                                if (empty) {
+                                    setGraphic(null);
+                                    setText(null);
+                                } else {
+                                    Examination q = getTableView().getItems().get(getIndex());
+                                    FilteredList<Course> courseSelected = courseList.filtered(new Predicate<Course>() {
+                                        @Override
+                                        public boolean test(Course c) {
+                                            return c.getId() == q.getCourse_id();
+                                        }
+                                    });
+                                    setText(courseSelected.getFirst().getName());
+                                }
+                            }
+                        };
+                        return cell;
+                    }
+                };
+        Callback<TableColumn<Examination, String>, TableCell<Examination, String>> examTotalQuestionCell = //
+                new Callback<TableColumn<Examination, String>, TableCell<Examination, String>>() {
+                    @Override
+                    public TableCell call(final TableColumn<Examination, String> param) {
+                        final TableCell<Examination, String> cell = new TableCell<Examination, String>() {
+                            @Override
+                            public void updateItem(String item, boolean empty) {
+                                super.updateItem(item, empty);
+                                if (empty) {
+                                    setGraphic(null);
+                                    setText(null);
+                                } else {
+                                    Examination q = getTableView().getItems().get(getIndex());
+                                    ObservableList<ExamQuestion> totalQuestion = examQuestionDAO.getByExamId(q.getId());
+                                    setText(String.valueOf(totalQuestion.size()));
+                                }
+                            }
+                        };
+                        return cell;
+                    }
+                };
+        examActionColumn.setCellFactory(examActionCell);
+        examCourseColumn.setCellFactory(examCourseCell);
+        examTotalQuestionColumn.setCellFactory(examTotalQuestionCell);
+        resetExamView();
+
+    }
+
     public void resetCourseView(){
         courseList = courseDAO.getByTeacherId(AppUtils.CURRENT_ROLE.id);
         courseView.setItems(courseList);
+    }
+
+    public void resetExamView(){
+        examList = examDAO.getByTeacherId(AppUtils.CURRENT_ROLE.id);
+        examTableView.setItems(examList);
     }
 
     public void resetQuestionView(){
@@ -256,15 +412,20 @@ public class TeacherController implements Initializable {
         Stage stage = new Stage();
         stage.setTitle(AppUtils.APP_TITLE);
         FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource("UpdateQuestionPage.fxml"));
-//        UpdateQuestionController controller = new UpdateQuestionController();
-//        controller.setQuestion(question);
-//        loader.setController(controller);
+        UpdateQuestionController controller = new UpdateQuestionController();
+        controller.setQuestion(question);
+        loader.setController(controller);
         Pane panel = loader.load();
         stage.setScene(new Scene(panel, 600, 500));
         stage.show();
     }
 
-    public void navToNewExam(ActionEvent event) {
+    public void navToNewExam(ActionEvent event) throws IOException {
+        Stage stage = new Stage();
+        stage.setTitle(AppUtils.APP_TITLE);
+        Pane panel = FXMLLoader.load(MainApplication.class.getResource("NewTestPage.fxml"));
+        stage.setScene(new Scene(panel, 600, 800));
+        stage.show();
     }
 
     public void onReloadCourse(ActionEvent event) {
