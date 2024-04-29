@@ -74,6 +74,17 @@ public class UserDAO implements DAO<User> {
             DBConnectionFactory.printSQLException(e);
         }
     }
+    public void changePassword(User user) {
+        try (Connection connection = DBConnectionFactory.getConnection();
+//             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE User SET last_login=? , full_name=? , updated_at=? , password_hash=?, mobile=? WHERE id=? ", Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE User SET password_hash=? WHERE id=? ", Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, user.getPassword_hash());
+            preparedStatement.setInt(2, user.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+    }
     public void updatelast_login(User user) {
         try (Connection connection = DBConnectionFactory.getConnection();
 //             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE User SET last_login=? , full_name=? , updated_at=? , password_hash=?, mobile=? WHERE id=? ", Statement.RETURN_GENERATED_KEYS)) {

@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.mindrot.jbcrypt.BCrypt;
@@ -26,6 +27,7 @@ public class UpdateTeacherController implements Initializable {
     public TextField textFieldPhoneNumber;
     public TextField textFieldTitle;
     public TextField textFieldAddress;
+    public Label labelEmailAddress;
     Teacher teacher;
     TeacherDAO teacherDAO;
     User user;
@@ -44,7 +46,7 @@ public class UpdateTeacherController implements Initializable {
     }
     public void loadUser(){
         user = AppUtils.CURRENT_USER;
-        textFieldAddress.setText(user.getEmail());
+        labelEmailAddress.setText(user.getEmail());
         textFieldFullName.setText(user.getFull_name());
         textFieldPhoneNumber.setText(user.getMobile());
         teacher = teacherDAO.getByUserId(user.getId());
