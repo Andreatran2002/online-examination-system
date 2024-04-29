@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import org.ute.onlineexamination.components.TestQuestionBuilder;
 import org.ute.onlineexamination.daos.ExamDAO;
@@ -43,8 +44,10 @@ public class TestController implements Initializable {
     TakeExamDAO takeExamDAO;
     private int secondsRemaining ;
     Integer takeExamId;
-    public TestController(Examination examination){
+    private Callback callback;
+    public TestController(Examination examination, Callback callback){
         this.examination = examination;
+        this.callback = callback;
     }
 
     public void finishTest(ActionEvent event) {
@@ -122,6 +125,7 @@ public class TestController implements Initializable {
         AppUtils.showInfo(event, "Your test mark", "Your test mark : " + score, new AlertActionInterface() {
             @Override
             public void action() throws IOException {
+                callback.call(true);
                 Stage appStage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
                 appStage.close();
             }

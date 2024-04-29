@@ -311,7 +311,7 @@ public class ExamDAO implements DAO<Examination> {
     public Integer getTotalCourse(Integer student_id) {
         Integer totals = 0 ;
         try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM CourseRegistration WHERE student_id=?")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM CourseRegistration WHERE student_id=?")) {
             preparedStatement.setInt(1, student_id);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()){

@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.daos.CourseDAO;
 import org.ute.onlineexamination.daos.TeacherDAO;
@@ -36,6 +37,7 @@ public class CourseCardController implements Initializable{
     public Label teacherName;
     public Label name;
     public Button courseCardBtn;
+    public Callback callBackFunction;
 
     Course course;
     TeacherDAO teacherDAO;
@@ -46,9 +48,12 @@ public class CourseCardController implements Initializable{
 
     }
 
-    public CourseCardController(Course course) {
+    public CourseCardController(Course course,Callback callBackFunction) {
         this.course = course;
+        this.callBackFunction = callBackFunction;
     }
+
+
 
 
     public void initialize(URL location, ResourceBundle resources) {
@@ -75,7 +80,7 @@ public class CourseCardController implements Initializable{
                     AppUtils.showInfo(event, "Enroll new course success", "Enroll course " + course.getName() + " success", new AlertActionInterface() {
                         @Override
                         public void action() throws IOException {
-
+                            callBackFunction.call(true);
                         }
                     });
                 }
@@ -97,7 +102,6 @@ public class CourseCardController implements Initializable{
                 @Override
                 public void handle(ActionEvent event) {
                     enrollCourse(event);
-
                 }
             });
         }

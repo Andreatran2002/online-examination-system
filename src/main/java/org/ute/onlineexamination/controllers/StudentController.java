@@ -84,12 +84,17 @@ public class StudentController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         examDAO = new ExamDAO();
         courseDAO = new CourseDAO() ;
+        loadData();
+        totalTestPage = (int) Math.ceil( myExams.size()/9);
+    }
+
+    void loadData(){
         getExams();
         getCourse();
         getHomePageData();
         addDataPane();
         displayHomePage();
-        totalTestPage = (int) Math.ceil( myExams.size()/9);
+        loadUser();
     }
 
     void getHomePageData(){
@@ -98,7 +103,6 @@ public class StudentController implements Initializable {
         finishedCourse = examDAO.getFinishedCourse(AppUtils.CURRENT_ROLE.id);
         finishedTest = examDAO.getFinishedTest(AppUtils.CURRENT_ROLE.id);
         totalCourse = examDAO.getTotalCourse(AppUtils.CURRENT_ROLE.id);
-
     }
 
     void displayHomePage(){
@@ -118,16 +122,27 @@ public class StudentController implements Initializable {
 
     void addDataPane(){
         for (int i = 0; i < myExams.size(); i++) {
-            TestCardBuilder test = new TestCardBuilder(myExams.get(i));
+            TestCardBuilder test = new TestCardBuilder(myExams.get(i), new Callback() {
+                @Override
+                public Object call(Object param) {
+                    loadData();
+                    return true;
+                }
+            });
             Parent content = test.build();
             testListContent.add(content , i % 3, round(i/3), 1,1);
         }
 
-        loadUser();
 
 
         for (int i = 0; i < myCourses.size(); i++) {
-            CourseCardBuilder course = new CourseCardBuilder(myCourses.get(i));
+            CourseCardBuilder course = new CourseCardBuilder(myCourses.get(i), new Callback() {
+                @Override
+                public Object call(Object param) {
+                    loadData();
+                    return true ;
+                }
+            });
             Parent content = course.build();
             mycourseListPane.add(content , i % 3, round(i/3), 1,1);
         }
@@ -160,11 +175,7 @@ public class StudentController implements Initializable {
         labelEmail.setText(user.getEmail());
         labelFullname.setText(user.getFull_name());
         labelPhonenumber.setText(user.getMobile());
-
-
     }
-
-
 
     void getCourse(){
         myCourses = courseDAO.getFilterAndPaging();
