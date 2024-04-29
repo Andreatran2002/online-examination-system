@@ -95,7 +95,7 @@ public class CourseDAO implements DAO<Course> {
         try (Connection connection = DBConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Course SET deleted_at=? WHERE id=? ")) {
             preparedStatement.setTimestamp(1, AppUtils.getCurrentDateTime());
-            preparedStatement.setInt(1, course.getId());
+            preparedStatement.setInt(2, course.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             DBConnectionFactory.printSQLException(e);

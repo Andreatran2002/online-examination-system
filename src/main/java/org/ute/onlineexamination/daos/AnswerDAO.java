@@ -63,11 +63,11 @@ public class AnswerDAO implements DAO<Answer> {
     }
 
     @Override
-    public void delete(Answer course) {
+    public void delete(Answer answer) {
         try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Answer SET deleted_at=? , WHERE id=? ")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Answer SET deleted_at=? WHERE id=? ")) {
             preparedStatement.setTimestamp(1, AppUtils.getCurrentDateTime());
-            preparedStatement.setInt(2, course.getId());
+            preparedStatement.setInt(2, answer.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             DBConnectionFactory.printSQLException(e);

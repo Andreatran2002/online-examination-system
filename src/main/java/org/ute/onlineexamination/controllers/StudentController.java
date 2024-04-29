@@ -4,6 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -216,4 +217,12 @@ public class StudentController implements Initializable {
         studentTabPane.getSelectionModel().select(testTab);
     }
 
+    public void logout(ActionEvent event) throws IOException {
+        Stage stage = new Stage();
+        stage.setTitle(AppUtils.APP_TITLE);
+        Pane panel = FXMLLoader.load(MainApplication.class.getResource("LoginPage.fxml"));
+        stage.setScene(new Scene(panel, 600, 400));
+        stage.show();
+        ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();;
+    }
 }

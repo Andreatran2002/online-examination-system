@@ -337,11 +337,11 @@
                               <Label fx:id="labelEmail" text="123" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
-                        <Button layoutX="824.0" layoutY="15.0" mnemonicParsing="false" onAction="#navToUpdateStudentPage" prefHeight="26.0" prefWidth="88.0" text="Update" textFill="WHITE" />
-                        <Button layoutX="824.0" layoutY="51.0" mnemonicParsing="false" onAction="#navToChangePasswordPage" prefHeight="26.0" prefWidth="87.0" text="Đổi mật khẩu" />
+                        <Button layoutX="804.0" layoutY="15.0" mnemonicParsing="false" onAction="#navToUpdateStudentPage" prefHeight="26.0" prefWidth="108.0" text="Update" textFill="WHITE" />
+                        <Button layoutX="804.0" layoutY="51.0" mnemonicParsing="false" onAction="#navToChangePasswordPage" prefHeight="26.0" prefWidth="107.0" text="Đổi mật khẩu" />
                      </children>
                   </AnchorPane>
-                  <Button layoutX="22.0" layoutY="245.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="118.0" style="-fx-background-color: red;" text="Logout">
+                  <Button layoutX="22.0" layoutY="245.0" mnemonicParsing="false" onAction="#logout" prefHeight="26.0" prefWidth="118.0" style="-fx-background-color: red;" text="Logout">
                      <font>
                         <Font size="16.0" />
                      </font>

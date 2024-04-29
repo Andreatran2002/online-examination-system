@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -13,6 +14,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.daos.CourseDAO;
@@ -91,6 +93,14 @@ public class TeacherController implements Initializable {
         initCourseView();
         initQuestionView();
         initExamView();
+        resetData();
+        loadUser();
+    }
+
+    void resetData(){
+        resetCourseView();
+        resetQuestionView();
+        resetExamView();
     }
 
     void initCourseView(){
@@ -115,12 +125,6 @@ public class TeacherController implements Initializable {
                                     setGraphic(null);
                                     setText(null);
                                 } else {
-                                    detailBtn.setOnAction(event -> {
-                                        Course course = getTableView().getItems().get(getIndex());
-                                        //TODO : Open Detail course page
-                                        System.out.println(course.getId()
-                                                + "   " + course.getName());
-                                    });
                                     editBtn.setOnAction(event -> {
                                         Course course = getTableView().getItems().get(getIndex());
                                         try {
@@ -139,7 +143,7 @@ public class TeacherController implements Initializable {
                                                     AppUtils.showInfo(event, "Delete course", "Delete course " + course.getName() + " successfull", new AlertActionInterface() {
                                                         @Override
                                                         public void action() {
-                                                            resetCourseView();
+                                                            resetData();
                                                         }
                                                     });
                                                 }catch (Exception e){
@@ -159,7 +163,6 @@ public class TeacherController implements Initializable {
                 };
 
         courseActionColumn.setCellFactory(cellFactory);
-        resetCourseView();
     }
 
     void initQuestionView(){
@@ -198,7 +201,7 @@ public class TeacherController implements Initializable {
                                                     AppUtils.showInfo(event, "Delete question", "Delete question successfull", new AlertActionInterface() {
                                                         @Override
                                                         public void action() {
-                                                            resetCourseView();
+                                                            resetData();
                                                         }
                                                     });
                                                 }catch (Exception e){
@@ -245,9 +248,6 @@ public class TeacherController implements Initializable {
 
         questionActionColumn.setCellFactory(questionActionCell);
         questionCourseColumn.setCellFactory(questionCourseCell) ;
-        resetQuestionView();
-
-        loadUser();
     }
 
     void initExamView(){
@@ -290,11 +290,11 @@ public class TeacherController implements Initializable {
                                             @Override
                                             public void action() {
                                                 try{
-//                                                    examDAO.delete(exam);
+                                                    examDAO.delete(exam);
                                                     AppUtils.showInfo(event, "Delete exam", "Delete exam " + exam.getName() + " successfull", new AlertActionInterface() {
                                                         @Override
                                                         public void action() {
-                                                            resetCourseView();
+                                                            resetData();
                                                         }
                                                     });
                                                 }catch (Exception e){
@@ -363,7 +363,6 @@ public class TeacherController implements Initializable {
         examActionColumn.setCellFactory(examActionCell);
         examCourseColumn.setCellFactory(examCourseCell);
         examTotalQuestionColumn.setCellFactory(examTotalQuestionCell);
-        resetExamView();
 
     }
 
@@ -389,6 +388,12 @@ public class TeacherController implements Initializable {
         stage.setTitle(AppUtils.APP_TITLE);
         Pane panel = FXMLLoader.load(MainApplication.class.getResource("NewCoursePage.fxml"));
         stage.setScene(new Scene(panel, 600, 400));
+        stage.setOnHiding(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                resetData();
+            }
+        });
         stage.show();
     }
     void navToUpdateCourse(Course course) throws IOException {
@@ -400,6 +405,12 @@ public class TeacherController implements Initializable {
         loader.setController(controller);
         Pane panel = loader.load();
         stage.setScene(new Scene(panel, 600, 400));
+        stage.setOnHiding(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                resetData();
+            }
+        });
         stage.show();
     }
     void navToUpdateQuestion(Question question) throws IOException {
@@ -411,6 +422,12 @@ public class TeacherController implements Initializable {
         loader.setController(controller);
         Pane panel = loader.load();
         stage.setScene(new Scene(panel, 600, 500));
+        stage.setOnHiding(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                resetData();
+            }
+        });
         stage.show();
     }
 
@@ -419,6 +436,12 @@ public class TeacherController implements Initializable {
         stage.setTitle(AppUtils.APP_TITLE);
         Pane panel = FXMLLoader.load(MainApplication.class.getResource("NewTestPage.fxml"));
         stage.setScene(new Scene(panel, 600, 800));
+        stage.setOnHiding(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                resetData();
+            }
+        });
         stage.show();
     }
 
@@ -431,6 +454,12 @@ public class TeacherController implements Initializable {
         stage.setTitle(AppUtils.APP_TITLE);
         Pane panel = FXMLLoader.load(MainApplication.class.getResource("NewQuestionPage.fxml"));
         stage.setScene(new Scene(panel, 600, 500));
+        stage.setOnHiding(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                resetData();
+            }
+        });
         stage.show();
     }
     public void loadUser(){
@@ -447,6 +476,12 @@ public class TeacherController implements Initializable {
         stage.setTitle("Change Password");
         Pane panel = FXMLLoader.load(MainApplication.class.getResource("ChangePasswordPage.fxml"));
         stage.setScene(new Scene(panel, 400, 400));
+        stage.setOnHiding(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                resetData();
+            }
+        });
         stage.show();
     }
     public void navToUpdateTeacherPage(ActionEvent event) throws IOException {
@@ -454,6 +489,12 @@ public class TeacherController implements Initializable {
         stage.setTitle("Update Teacher");
         Pane panel = FXMLLoader.load(MainApplication.class.getResource("UpdateTeacherPage.fxml"));
         stage.setScene(new Scene(panel, 500, 500));
+        stage.setOnHiding(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                resetData();
+            }
+        });
         stage.show();
     }
 

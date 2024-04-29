@@ -104,7 +104,7 @@ public class ExamDAO implements DAO<Examination> {
         try (Connection connection = DBConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Examination SET deleted_at=? WHERE id=? ")) {
             preparedStatement.setTimestamp(1, AppUtils.getCurrentDateTime());
-            preparedStatement.setInt(1, examination.getId());
+            preparedStatement.setInt(2, examination.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             DBConnectionFactory.printSQLException(e);

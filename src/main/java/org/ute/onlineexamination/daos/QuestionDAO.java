@@ -68,19 +68,17 @@ public class QuestionDAO implements DAO<Question> {
     }
 
     @Override
-    public void update(Question course) {
-//        try (Connection connection = DBConnectionFactory.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Course SET name=? , description=? , start=? , end=?, category=?, updated_at=? WHERE id=? ")) {
-//            preparedStatement.setString(1, course.getName());
-//            preparedStatement.setString(2, course.getDescription());
-//            preparedStatement.setTimestamp(3, course.getStart());
-//            preparedStatement.setTimestamp(4, course.getEnd());
-//            preparedStatement.setString(5, course.getCategory());
-//            preparedStatement.setTimestamp(6, AppUtils.getCurrentDateTime());
-//            preparedStatement.setInt(7, course.getId());
-//            preparedStatement.executeUpdate();
-//        } catch (SQLException e) {
-//            DBConnectionFactory.printSQLException(e);
-//        }
+    public void update(Question question) {
+        try (Connection connection = DBConnectionFactory.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Question SET content=? , active=?, course_id =?, updated_at=? WHERE id=? ")) {
+            preparedStatement.setString(1, question.getContent());
+            preparedStatement.setBoolean(2, question.getActive());
+            preparedStatement.setInt(3, question.getCourse_id());
+            preparedStatement.setTimestamp(4, AppUtils.getCurrentDateTime());
+            preparedStatement.setInt(5, question.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
     }
 
     @Override
@@ -101,7 +99,7 @@ public class QuestionDAO implements DAO<Question> {
                      "FROM Question q\n" +
                      "INNER JOIN Course c ON q.course_id = c.id\n" +
                      "INNER JOIN Teacher t ON c.teacher_id = t.id\n" +
-                     "WHERE t.id = ?\n")) {
+                     "WHERE t.id = ? AND q.deleted_at IS NULL \n")) {
             preparedStatement.setInt(1, id );
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()){

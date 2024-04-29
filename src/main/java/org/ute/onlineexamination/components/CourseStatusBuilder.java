@@ -15,11 +15,8 @@ import java.io.IOException;
 public class CourseStatusBuilder implements Builder<Pane> {
 
     Course course;
-    Callback callBackFunction;
-
     public CourseStatusBuilder(Course course) {
         this.course = course;
-//        this.callBackFunction = callBackFunction;
     }
 
     @Override

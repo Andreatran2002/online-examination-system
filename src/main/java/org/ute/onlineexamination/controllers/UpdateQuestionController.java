@@ -1,5 +1,7 @@
 package org.ute.onlineexamination.controllers;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -108,7 +110,7 @@ public class UpdateQuestionController implements Initializable {
         // Set values :
         course.setValue(getCourseName(question.getCourse_id()));
         content.setText(question.getContent());
-        active.setText(String.valueOf(question.getActive()));
+        active.setSelected(question.getActive());
         answerList = question.getAnswers();
         resetDataView();
     }
@@ -127,7 +129,6 @@ public class UpdateQuestionController implements Initializable {
             return ;
         }
         try {
-            Question question = new Question();
             question.setContent(content.getText());
             FilteredList<Course> courseSelected = coursesByTeacher.filtered(new Predicate<Course>() {
                 @Override
