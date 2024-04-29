@@ -227,6 +227,8 @@ public class ExamDAO implements DAO<Examination> {
             score = score + (results.get(i))/(totalPriority) ;
         }
 
+        if (score > 10 ) return -1.0;
+;
         return AppUtils.round(score*10,2);
     }
     public  Integer checkTakeExamTimes ( Integer exam_id){
@@ -322,4 +324,20 @@ public class ExamDAO implements DAO<Examination> {
         }
         return totals;
     }
+
+    public ObservableList<Double> getTestPerformance(Integer student_id) {
+        ObservableList<Double> data = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT scoring FROM TakeExam WHERE student_id=?")) {
+            preparedStatement.setInt(1, student_id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                data.add(rs.getDouble(1));
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return data;
+    }
+
 }

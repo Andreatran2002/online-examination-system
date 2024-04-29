@@ -4,18 +4,20 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
 import javafx.scene.chart.LineChart;
 
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.ute.onlineexamination.MainApplication;
 
+import org.ute.onlineexamination.components.CourseStatusBuilder;
 import org.ute.onlineexamination.daos.StudentDAO;
 import org.ute.onlineexamination.models.Student;
 import org.ute.onlineexamination.models.User;
@@ -39,7 +41,7 @@ public class StudentController implements Initializable {
 
     public GridPane testListContent;
     public Pagination myTestPagination;
-    public GridPane mycourseListPane;
+    public GridPane allCourseListPane;
 
     public Label labelEmail;
     public Label labelFullname;
@@ -56,8 +58,9 @@ public class StudentController implements Initializable {
     public TabPane studentTabPane;
     public Label dbFinishedCourse;
     public Label dbTotalCourse;
-    public LineChart dbPerformanceChart;
-    public ListView dbListCourseStatus;
+    public AnchorPane dbPerfomancePane;
+    public ScrollPane dbCourseStatusPane;
+    public VBox dbListCourseStatus;
     public Tab testTab;
     public Tab dbTab;
     public Tab courseTab;
@@ -65,6 +68,7 @@ public class StudentController implements Initializable {
 
     ObservableList<Examination> myExams;
     ObservableList<Course> myCourses;
+    ObservableList<Course> allCourses;
     ExamDAO examDAO;
     CourseDAO courseDAO;
     Integer currentTestPage = 0 ;
@@ -74,6 +78,8 @@ public class StudentController implements Initializable {
     Integer finishedCourse = 0 ;
     Integer finishedTest = 0 ;
     Integer totalCourse = 0 ;
+    LineChart<Number,Number> dbPerformanceChart;
+    XYChart.Series performanceSeries ;
 
 
     public StudentController(){
@@ -84,6 +90,14 @@ public class StudentController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         examDAO = new ExamDAO();
         courseDAO = new CourseDAO() ;
+        performanceSeries = new XYChart.Series();
+        dbListCourseStatus = new VBox();
+        NumberAxis xAxis = new NumberAxis();
+        NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Times");
+        yAxis.setLabel("Score");
+        dbPerformanceChart = new LineChart<Number,Number>(xAxis,yAxis);
+        dbPerformanceChart.setTitle("Examination Performance");
         loadData();
         totalTestPage = (int) Math.ceil( myExams.size()/9);
     }
@@ -103,6 +117,13 @@ public class StudentController implements Initializable {
         finishedCourse = examDAO.getFinishedCourse(AppUtils.CURRENT_ROLE.id);
         finishedTest = examDAO.getFinishedTest(AppUtils.CURRENT_ROLE.id);
         totalCourse = examDAO.getTotalCourse(AppUtils.CURRENT_ROLE.id);
+        ObservableList<Double> testPerformances = examDAO.getTestPerformance(AppUtils.CURRENT_ROLE.id);
+        for (int i = 0; i < testPerformances.size(); i++) {
+            performanceSeries.getData().add(new XYChart.Data(i,testPerformances.get(i)));
+        }
+        dbPerformanceChart.getData().setAll(performanceSeries);
+        myCourses = courseDAO.getByStudentId(AppUtils.CURRENT_ROLE.id);
+
     }
 
     void displayHomePage(){
@@ -117,6 +138,12 @@ public class StudentController implements Initializable {
         dbFinishedCourse.setText(String.valueOf(finishedCourse));
         dbFinishedTest.setText(String.valueOf(finishedTest));
         dbTotalCourse.setText(String.valueOf(totalCourse));
+        dbPerfomancePane.getChildren().add(dbPerformanceChart);
+        for (int i = 0; i < myCourses.size(); i++) {
+
+            dbListCourseStatus.getChildren().add(new CourseStatusBuilder(myCourses.get(i)).build());
+        }
+        dbCourseStatusPane.setContent(dbListCourseStatus);
     }
 
 
@@ -135,8 +162,8 @@ public class StudentController implements Initializable {
 
 
 
-        for (int i = 0; i < myCourses.size(); i++) {
-            CourseCardBuilder course = new CourseCardBuilder(myCourses.get(i), new Callback() {
+        for (int i = 0; i < allCourses.size(); i++) {
+            CourseCardBuilder course = new CourseCardBuilder(allCourses.get(i), new Callback() {
                 @Override
                 public Object call(Object param) {
                     loadData();
@@ -144,7 +171,7 @@ public class StudentController implements Initializable {
                 }
             });
             Parent content = course.build();
-            mycourseListPane.add(content , i % 3, round(i/3), 1,1);
+            allCourseListPane.add(content , i % 3, round(i/3), 1,1);
         }
     }
 
@@ -178,7 +205,7 @@ public class StudentController implements Initializable {
     }
 
     void getCourse(){
-        myCourses = courseDAO.getFilterAndPaging();
+        allCourses = courseDAO.getFilterAndPaging();
     }
     void getExams(){
         myExams = examDAO.getByStudentId(AppUtils.CURRENT_ROLE.id);

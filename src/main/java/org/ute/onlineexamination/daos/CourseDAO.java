@@ -126,6 +126,31 @@ public class CourseDAO implements DAO<Course> {
         }
         return courses;
     }
+    public ObservableList<Course> getByStudentId(Integer student_id ){
+        ObservableList<Course> courses = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT c.* FROM CourseRegistration cr\n" +
+                     "INNER JOIN Course c ON cr.course_id = c.id \n" +
+                     "WHERE cr.student_id=? ")) {
+            preparedStatement.setInt(1, student_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                Course course = new Course();
+                course.setId(rs.getInt("id"));
+                course.setName(rs.getString("name"));
+                course.setDescription(rs.getString("description"));
+                course.setDeleted_at(rs.getTimestamp("deleted_at"));
+                course.setStart(rs.getTimestamp("start"));
+                course.setEnd(rs.getTimestamp("end"));
+                course.setCategory(rs.getString("category"));
+                course.setTeacher_id(rs.getInt("teacher_id"));
+                courses.add(course);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return courses;
+    }
     //TODO update function
     public ObservableList<Course> getFilterAndPaging(){
         ObservableList<Course> courses = FXCollections.observableArrayList();

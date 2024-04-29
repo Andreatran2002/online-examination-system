@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
-<?import javafx.scene.chart.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
-<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
@@ -23,11 +13,11 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
-
-
-
 
 <TabPane fx:id="studentTabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ute.onlineexamination.controllers.StudentController">
 
@@ -36,7 +26,7 @@
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="381.0" prefWidth="598.0">
                <children>
-                  <GridPane layoutX="34.0" layoutY="30.0" prefHeight="697.0" prefWidth="926.0">
+                  <GridPane layoutX="6.0" layoutY="5.0" prefHeight="763.0" prefWidth="994.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="539.0599365234375" minWidth="10.0" prefWidth="529.71923828125" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="457.6624755859375" minWidth="10.0" prefWidth="396.28076171875" />
@@ -46,11 +36,11 @@
                         <RowConstraints maxHeight="488.7665710449219" minHeight="10.0" prefHeight="410.47161865234375" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <AnchorPane prefHeight="314.0" prefWidth="495.0">
+                        <AnchorPane prefHeight="315.0" prefWidth="516.0">
                            <children>
-                              <AnchorPane layoutX="28.0" layoutY="30.0" prefHeight="229.0" prefWidth="483.0" style="-fx-background-color: #2655ff; -fx-background-radius: 10;">
+                              <AnchorPane layoutX="28.0" layoutY="30.0" prefHeight="264.0" prefWidth="483.0" style="-fx-background-color: #2655ff; -fx-background-radius: 10;">
                                  <children>
-                                    <GridPane layoutX="34.0" layoutY="23.0" prefHeight="189.0" prefWidth="414.0">
+                                    <GridPane layoutX="34.0" layoutY="23.0" prefHeight="220.0" prefWidth="414.0">
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                        </columnConstraints>
@@ -169,26 +159,15 @@
                               </AnchorPane>
                            </children>
                         </GridPane>
-                        <AnchorPane prefHeight="411.0" prefWidth="483.0" GridPane.rowIndex="1">
+                        <AnchorPane fx:id="dbPerfomancePane" prefHeight="411.0" prefWidth="483.0" GridPane.rowIndex="1" />
+                        <AnchorPane prefHeight="397.0" prefWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <children>
-                              <AnchorPane layoutX="24.0" layoutY="3.0" prefHeight="402.0" prefWidth="488.0" style="-fx-background-color: white; -fx-background-radius: 10;">
-                                 <children>
-                                    <LineChart fx:id="dbPerformanceChart" layoutX="-2.0" layoutY="14.0" prefHeight="391.0" prefWidth="487.0" title="Performance Overview">
-                                       <xAxis>
-                                          <CategoryAxis side="BOTTOM" />
-                                       </xAxis>
-                                       <yAxis>
-                                          <NumberAxis side="LEFT" />
-                                       </yAxis>
-                                    </LineChart>
-                                 </children>
-                              </AnchorPane>
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="397.0" prefWidth="400.0" style="-fx-background-color: white; -fx-background-radius: 10;" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                           <children>
-                              <ListView fx:id="dbListCourseStatus" layoutX="12.0" layoutY="50.0" prefHeight="328.0" prefWidth="369.0" style="-fx-background-radius: 5;" />
-                              <Label layoutX="104.0" layoutY="16.0" text="Current course status" textAlignment="CENTER">
+                              <ScrollPane fx:id="dbCourseStatusPane" layoutX="23.0" layoutY="30.0" prefHeight="303.0" prefWidth="400.0">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                                </content>
+                              </ScrollPane>
+                              <Label layoutX="124.0" layoutY="2.0" text="Current course status" textAlignment="CENTER">
                                  <font>
                                     <Font size="20.0" />
                                  </font>
@@ -210,11 +189,12 @@
                         <GridPane prefHeight="30.0" prefWidth="977.0" BorderPane.alignment="CENTER">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.7697296142578" minWidth="10.0" prefWidth="145.7697296142578" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="634.9007873535156" minWidth="10.0" prefWidth="394.87481689453125" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="463.71836853027344" minWidth="10.0" prefWidth="91.12518310546875" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="492.86639404296875" minWidth="10.0" prefWidth="140.2109375" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.32269287109375" minWidth="7.85467529296875" prefWidth="51.04791259765625" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="306.34197998046875" minWidth="10.0" prefWidth="177.283203125" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="634.9007873535156" minWidth="10.0" prefWidth="295.2424011230469" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="463.71836853027344" minWidth="10.0" prefWidth="69.33709716796875" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="492.86639404296875" minWidth="10.0" prefWidth="151.40667724609375" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.32269287109375" minWidth="7.85467529296875" prefWidth="78.59332275390625" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="306.34197998046875" minWidth="10.0" prefWidth="193.640625" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="306.34197998046875" minWidth="10.0" prefWidth="110.359375" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -230,9 +210,10 @@
                                  </children>
                               </AnchorPane>
                               <ChoiceBox prefHeight="26.0" prefWidth="166.0" GridPane.columnIndex="5" />
-                              <Label text="Course" GridPane.columnIndex="4" />
-                              <ChoiceBox prefHeight="26.0" prefWidth="107.0" GridPane.columnIndex="3" />
+                              <Label prefHeight="17.0" prefWidth="70.0" text="Course" GridPane.columnIndex="4" />
+                              <ChoiceBox prefHeight="26.0" prefWidth="126.0" GridPane.columnIndex="3" />
                               <Label text="Type" GridPane.columnIndex="2" />
+                              <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="90.0" text="Search" GridPane.columnIndex="6" />
                            </children>
                         </GridPane>
                      </top>
@@ -292,7 +273,7 @@
                      </children>
                   </GridPane>
                   <Pagination layoutX="29.0" layoutY="688.0" prefHeight="59.0" prefWidth="938.0" />
-                  <GridPane fx:id="mycourseListPane" layoutY="48.0" prefHeight="633.0" prefWidth="998.0">
+                  <GridPane fx:id="allCourseListPane" layoutY="48.0" prefHeight="633.0" prefWidth="998.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -357,7 +338,7 @@
                            </children>
                         </GridPane>
                         <Button layoutX="824.0" layoutY="15.0" mnemonicParsing="false" onAction="#navToUpdateStudentPage" prefHeight="26.0" prefWidth="88.0" text="Update" textFill="WHITE" />
-                        <Button layoutX="824.0" layoutY="51.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="87.0" onAction="#navToChangePasswordPage" text="Đổi mật khẩu" />
+                        <Button layoutX="824.0" layoutY="51.0" mnemonicParsing="false" onAction="#navToChangePasswordPage" prefHeight="26.0" prefWidth="87.0" text="Đổi mật khẩu" />
                      </children>
                   </AnchorPane>
                   <Button layoutX="22.0" layoutY="245.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="118.0" style="-fx-background-color: red;" text="Logout">
