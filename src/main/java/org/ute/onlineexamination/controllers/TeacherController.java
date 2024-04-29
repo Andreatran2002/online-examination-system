@@ -17,8 +17,9 @@ import javafx.util.Callback;
 import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.daos.CourseDAO;
 import org.ute.onlineexamination.daos.QuestionDAO;
-import org.ute.onlineexamination.models.Course;
-import org.ute.onlineexamination.models.Question;
+import org.ute.onlineexamination.daos.StudentDAO;
+import org.ute.onlineexamination.daos.TeacherDAO;
+import org.ute.onlineexamination.models.*;
 import org.ute.onlineexamination.utils.AlertActionInterface;
 import org.ute.onlineexamination.utils.AppUtils;
 
@@ -42,10 +43,22 @@ public class TeacherController implements Initializable {
     public TableView<Question> questionView;
     CourseDAO courseDAO;
     public TableView<Course> courseView;
+    public Label labelEmailAddress;
+    public Label labelFullName;
+    public Label labelPhoneNumber;
+    public Label labelTitle;
+    public Label labelAddress;
 
     private ObservableList<Course> courseList;
     private ObservableList<Question> questionList;
     QuestionDAO questionDAO;
+    User user;
+    TeacherDAO teacherDAO;
+    Teacher teacher;
+
+    public TeacherController() {
+        teacherDAO = new TeacherDAO();
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -205,6 +218,8 @@ public class TeacherController implements Initializable {
 
         resetCourseView();
         resetQuestionView();
+
+        loadUser();
     }
 
     public void resetCourseView(){
@@ -261,6 +276,29 @@ public class TeacherController implements Initializable {
         stage.setTitle(AppUtils.APP_TITLE);
         Pane panel = FXMLLoader.load(MainApplication.class.getResource("NewQuestionPage.fxml"));
         stage.setScene(new Scene(panel, 600, 500));
+        stage.show();
+    }
+    public void loadUser(){
+        user = AppUtils.CURRENT_USER;
+        labelEmailAddress.setText(user.getEmail());
+        labelFullName.setText(user.getFull_name());
+        labelPhoneNumber.setText(user.getMobile());
+        teacher = teacherDAO.getByUserId(user.getId());
+        labelTitle.setText(teacher.getTitle());
+        labelAddress.setText(teacher.getAddress());
+    }
+    public void navToChangePasswordPage(ActionEvent event) throws IOException {
+        Stage stage = new Stage();
+        stage.setTitle("Change Password");
+        Pane panel = FXMLLoader.load(MainApplication.class.getResource("ChangePasswordPage.fxml"));
+        stage.setScene(new Scene(panel, 400, 400));
+        stage.show();
+    }
+    public void navToUpdateTeacherPage(ActionEvent event) throws IOException {
+        Stage stage = new Stage();
+        stage.setTitle("Update Teacher");
+        Pane panel = FXMLLoader.load(MainApplication.class.getResource("UpdateTeacherPage.fxml"));
+        stage.setScene(new Scene(panel, 500, 500));
         stage.show();
     }
 

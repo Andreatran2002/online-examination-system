@@ -44,9 +44,20 @@ public class TeacherDAO implements DAO<Teacher> {
         return teacherId;
     }
 
+
+
     @Override
     public void update(Teacher teacher) {
-
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Teacher SET updated_at=?, title=?, address=? WHERE user_id=? ")) {
+            preparedStatement.setTimestamp(1,AppUtils.getCurrentDateTime());
+            preparedStatement.setString(2, teacher.getTitle());
+            preparedStatement.setString(3,teacher.getAddress());
+            preparedStatement.setInt(4, teacher.getUser_id());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
     }
 
     @Override
@@ -63,9 +74,9 @@ public class TeacherDAO implements DAO<Teacher> {
             while (rs.next()){
                 // TODO: lay thong tin User
                 teacher.setId(rs.getInt("id"));
-                teacher.setCreated_at(rs.getTime("created_at"));
-                teacher.setUpdated_at(rs.getTime("updated_at"));
-                teacher.setDeleted_at(rs.getTime("deleted_at"));
+                teacher.setCreated_at(rs.getTimestamp("created_at"));
+                teacher.setUpdated_at(rs.getTimestamp("updated_at"));
+                teacher.setDeleted_at(rs.getTimestamp("deleted_at"));
                 teacher.setTitle(rs.getString("title"));
                 teacher.setAddress(rs.getString("address"));
                 teacher.setUser_id(rs.getInt("user_id"));

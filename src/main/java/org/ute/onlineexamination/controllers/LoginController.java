@@ -29,6 +29,7 @@ import org.ute.onlineexamination.utils.AppUtils;
 
 import java.io.IOException;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -59,7 +60,7 @@ public class LoginController {
         Scene scene = new Scene(panel, 1000, 800);
         appStage.setScene(scene);
         appStage.show();
-        userDAO.update(user);
+        userDAO.updatelast_login(user);
     }
 
     public void userLogIn(ActionEvent event) throws IOException{
@@ -72,6 +73,8 @@ public class LoginController {
         }
         if (user.checkPassword(loginPassword.getText())) {
             user.setLast_login(AppUtils.getCurrentDateTime());
+            Timestamp timestamp = user.getLast_login();
+            System.out.println(timestamp);
             switch (loginAs.getValue().toString()) {
                 case "Admin":
                     if (!user.getIs_admin()){
@@ -93,7 +96,7 @@ public class LoginController {
                 case "Student":
                     Student student = studentDAO.getByUserId(user.getId());
                     if (student.getCreated_at()==null){
-                        wrongLogin.setText("This account is not teacher");
+                        wrongLogin.setText("This account is not student");
                         return ;
                     }
                     AppUtils.saveUser(user, new RoleData(student.getId(), "Student"));
@@ -116,22 +119,4 @@ public class LoginController {
         appStage.setScene(new Scene(panel, 600, 400));
         appStage.show();
     }
-    private static int loggedInUserId;
-
-    public static boolean login(String username, String password) {
-        // Logic to authenticate user
-        // If authentication succeeds, set the loggedInUserId
-        loggedInUserId = retrieveUserIdByUsername(username);
-        return true; // or false based on authentication success
-    }
-
-    public static int getLoggedInUserId() {
-        return loggedInUserId;
-    }
-
-    private static int retrieveUserIdByUsername(String username) {
-        // Logic to retrieve user ID from the database based on username
-        return;
-    }
-
 }

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="466.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ute.onlineexamination.controllers.UpdateTeacherController">
+   <children>
+      <Label layoutX="63.0" layoutY="50.0" text="Email Address">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="246.0" layoutY="51.0" text="LabelEmailAddress">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="63.0" layoutY="101.0" text="Role">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="246.0" layoutY="101.0" text="Teacher">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="63.0" layoutY="157.0" text="Full Name">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="63.0" layoutY="218.0" text="Phone Number">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="60.0" layoutY="272.0" text="Titile">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="60.0" layoutY="338.0" text="Address">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="textFieldFullName" layoutX="246.0" layoutY="154.0" />
+      <TextField fx:id="textFieldPhoneNumber" layoutX="247.0" layoutY="218.0" />
+      <TextField fx:id="textFieldTitle" layoutX="246.0" layoutY="279.0" />
+      <TextField fx:id="textFieldAddress" layoutX="246.0" layoutY="335.0" />
+      <Button layoutX="76.0" layoutY="407.0" mnemonicParsing="false" onAction="#reset" prefHeight="30.0" prefWidth="110.0" text="Tạo lại">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button layoutX="270.0" layoutY="407.0" mnemonicParsing="false" onAction="#updateStudent" prefHeight="30.0" prefWidth="110.0" text="Lưu">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

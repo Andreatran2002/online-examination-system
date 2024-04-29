@@ -3,6 +3,7 @@
 <?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
@@ -304,7 +305,6 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <TextField fx:id="textFieldEmail"  text="" disable="true" prefHeight="18.0" prefWidth="148.0" GridPane.rowIndex="1" />
                               <Label text="Email address ">
                                  <font>
                                     <Font name="System Bold Italic" size="14.0" />
@@ -326,17 +326,35 @@
                                  </font>
                               </Label>
                               <Label text="Student" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Label text="Label" GridPane.rowIndex="3" />
-                              <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label fx:id="labelFullname" text="124" GridPane.rowIndex="3" />
+                              <Label fx:id="labelPhonenumber" text="123" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label fx:id="labelEmail" text="123" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
                         <Button layoutX="824.0" layoutY="15.0" mnemonicParsing="false" onAction="#navToUpdateStudentPage" prefHeight="26.0" prefWidth="88.0" text="Update" textFill="WHITE" />
+                        <Button layoutX="824.0" layoutY="51.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="87.0" onAction="#navToChangePasswordPage" text="Đổi mật khẩu" />
                      </children>
                   </AnchorPane>
-                  <Button layoutX="22.0" layoutY="245.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="118.0" style="-fx-background-color: red;" text="Logout" textFill="WHITE">
+                  <Button layoutX="22.0" layoutY="245.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="118.0" style="-fx-background-color: red;" text="Logout">
                      <font>
                         <Font size="16.0" />
                      </font>
+                     <textFill>
+                        <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                           <stops>
+                              <Stop>
+                                 <color>
+                                    <Color />
+                                 </color>
+                              </Stop>
+                              <Stop offset="1.0">
+                                 <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                 </color>
+                              </Stop>
+                           </stops>
+                        </RadialGradient>
+                     </textFill>
                   </Button>
                </children></AnchorPane>
          </content>

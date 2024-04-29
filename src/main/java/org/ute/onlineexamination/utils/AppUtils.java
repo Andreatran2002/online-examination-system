@@ -12,6 +12,7 @@ import org.ute.onlineexamination.models.RoleData;
 import org.ute.onlineexamination.models.User;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -100,4 +101,14 @@ public class AppUtils {
         return timestamp;
     }
 
+    public static Time getTime(){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Timestamp timestamp = Timestamp.valueOf(localDateTime);
+        Time time = convertToTime(timestamp);
+        return time;
+    }
+    public static Time convertToTime(Timestamp timestamp) {
+        long milliseconds = timestamp.getTime();
+        return new Time(milliseconds);
+    }
 }

@@ -45,7 +45,14 @@ public class StudentDAO implements DAO<Student> {
 
     @Override
     public void update(Student student) {
-
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Student SET updated_at=? WHERE user_id=? ")) {
+            preparedStatement.setTimestamp(1,AppUtils.getCurrentDateTime());
+            preparedStatement.setInt(2, student.getUser_id());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
     }
 
 
@@ -66,21 +73,6 @@ public class StudentDAO implements DAO<Student> {
         return user;
     }
 
-    public User getStudentEmail(int id) {
-        User user = new User();
-        try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT email FROM User WHERE id = ?")){
-            preparedStatement.setInt(1, user.getId());
-            preparedStatement.executeUpdate();
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()){
-                user.setEmail(rs.getString("email"));
-            }
-        }catch (SQLException e) {
-            DBConnectionFactory.printSQLException(e);
-        }
-        return user;
-    }
     @Override
     public void delete(Student student) {
 
@@ -94,9 +86,9 @@ public class StudentDAO implements DAO<Student> {
             while (rs.next()){
                 // TODO: lay thong tin User
                 student.setId(rs.getInt("id"));
-                student.setCreated_at(rs.getTime("created_at"));
-                student.setUpdated_at(rs.getTime("updated_at"));
-                student.setDeleted_at(rs.getTime("deleted_at"));
+                student.setCreated_at(rs.getTimestamp("created_at"));
+                student.setUpdated_at(rs.getTimestamp("updated_at"));
+                student.setDeleted_at(rs.getTimestamp("deleted_at"));
                 student.setUser_id(rs.getInt("user_id"));
             }
         } catch (SQLException e) {

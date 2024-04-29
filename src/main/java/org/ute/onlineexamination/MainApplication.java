@@ -42,10 +42,8 @@ public class MainApplication extends Application {
     public void sceneChangeHandler(Stage primaryStage) {
         primaryStage.sceneProperty().addListener((observable, old, newV) -> {
             System.out.println("sceen change");
-
             System.out.println(old);
             System.out.println(newV);
-
         });
     }
 
