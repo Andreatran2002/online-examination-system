@@ -19,16 +19,13 @@ import org.ute.onlineexamination.daos.CourseDAO;
 import org.ute.onlineexamination.daos.ExamDAO;
 import org.ute.onlineexamination.daos.ExamQuestionDAO;
 import org.ute.onlineexamination.daos.QuestionDAO;
-<<<<<<< HEAD
 import org.ute.onlineexamination.daos.StudentDAO;
 import org.ute.onlineexamination.daos.TeacherDAO;
 import org.ute.onlineexamination.models.*;
-=======
 import org.ute.onlineexamination.models.Course;
 import org.ute.onlineexamination.models.ExamQuestion;
 import org.ute.onlineexamination.models.Examination;
 import org.ute.onlineexamination.models.Question;
->>>>>>> 5cb2844c91b4a0c21cd7b7ecbf9d8a5ddf567bda
 import org.ute.onlineexamination.utils.AlertActionInterface;
 import org.ute.onlineexamination.utils.AppUtils;
 
@@ -70,7 +67,6 @@ public class TeacherController implements Initializable {
     private ObservableList<Question> questionList;
     private ObservableList<Examination> examList;
     QuestionDAO questionDAO;
-<<<<<<< HEAD
     User user;
     TeacherDAO teacherDAO;
     Teacher teacher;
@@ -78,10 +74,8 @@ public class TeacherController implements Initializable {
     public TeacherController() {
         teacherDAO = new TeacherDAO();
     }
-=======
     ExamDAO examDAO;
     ExamQuestionDAO examQuestionDAO;
->>>>>>> 5cb2844c91b4a0c21cd7b7ecbf9d8a5ddf567bda
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
