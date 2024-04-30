@@ -85,7 +85,6 @@ public class TeacherController implements Initializable {
         questionDAO = new QuestionDAO();
         examDAO = new ExamDAO();
         examQuestionDAO = new ExamQuestionDAO();
-        currentUserName.setText(AppUtils.CURRENT_USER.getFull_name());
         courseList =  FXCollections.observableArrayList();
         questionList =   FXCollections.observableArrayList();
         examList =   FXCollections.observableArrayList();
@@ -274,15 +273,19 @@ public class TeacherController implements Initializable {
                                 } else {
                                     detailBtn.setOnAction(event -> {
                                         Examination exam = getTableView().getItems().get(getIndex());
-                                        //TODO : Open Detail course page
+                                        try {
+                                            navToDetailExam(exam);
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
                                     });
                                     editBtn.setOnAction(event -> {
                                         Examination exam = getTableView().getItems().get(getIndex());
-//                                        try {
-//                                            navToUpdateExam(exam);
-//                                        } catch (IOException e) {
-//                                            throw new RuntimeException(e);
-//                                        }
+                                        try {
+                                            navToUpdateExam(exam);
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
                                     });
                                     deleteBtn.setOnAction(event -> {
                                         Examination exam = getTableView().getItems().get(getIndex());
@@ -396,12 +399,43 @@ public class TeacherController implements Initializable {
         });
         stage.show();
     }
+    public void navToDetailExam(Examination examination) throws IOException {
+        Stage stage = new Stage();
+        stage.setTitle(AppUtils.APP_TITLE);
+        FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource("DetailExamPage.fxml"));
+        DetailExamController controller = new DetailExamController(examination);
+        loader.setController(controller);
+        stage.setScene(new Scene(loader.load(), 1000, 600));
+        stage.setOnHiding(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                resetData();
+            }
+        });
+        stage.show();
+    }
     void navToUpdateCourse(Course course) throws IOException {
         Stage stage = new Stage();
         stage.setTitle(AppUtils.APP_TITLE);
         FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource("UpdateCoursePage.fxml"));
         UpdateCourseController controller = new UpdateCourseController();
         controller.setCourse(course);
+        loader.setController(controller);
+        Pane panel = loader.load();
+        stage.setScene(new Scene(panel, 600, 400));
+        stage.setOnHiding(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                resetData();
+            }
+        });
+        stage.show();
+    }
+    void navToUpdateExam(Examination examination) throws IOException {
+        Stage stage = new Stage();
+        stage.setTitle(AppUtils.APP_TITLE);
+        FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource("UpdateTestPage.fxml"));
+        UpdateTestController controller = new UpdateTestController(examination);
         loader.setController(controller);
         Pane panel = loader.load();
         stage.setScene(new Scene(panel, 600, 400));
@@ -498,4 +532,6 @@ public class TeacherController implements Initializable {
         stage.show();
     }
 
+    public void goToTestTab(ActionEvent event) {
+    }
 }

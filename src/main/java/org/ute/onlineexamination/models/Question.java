@@ -9,7 +9,7 @@ public class Question {
     private Integer course_id;
     private String content;
     private Boolean active;
-    private Integer priority;
+    private Integer priority=1;
 
     public Integer getPriority() {
         return priority;

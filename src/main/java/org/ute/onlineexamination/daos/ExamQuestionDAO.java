@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class ExamQuestionDAO implements DAO<ExamQuestion> {
+    QuestionDAO questionDAO;
+    public ExamQuestionDAO(){
+        questionDAO = new QuestionDAO();
+    }
     @Override
     public List<ExamQuestion> getAll() {
         return null;
@@ -68,6 +72,7 @@ public class ExamQuestionDAO implements DAO<ExamQuestion> {
                 question.setExam_id(rs.getInt("exam_id"));
                 question.setQuestion_id(rs.getInt("question_id"));
                 question.setPriority(rs.getInt("priority"));
+                question.question = questionDAO.get(rs.getInt("question_id")).get();
                 questions.add(question);
             }
         } catch (SQLException e) {
