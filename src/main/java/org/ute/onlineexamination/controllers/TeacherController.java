@@ -435,10 +435,11 @@ public class TeacherController implements Initializable {
         Stage stage = new Stage();
         stage.setTitle(AppUtils.APP_TITLE);
         FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource("UpdateTestPage.fxml"));
-        UpdateTestController controller = new UpdateTestController(examination);
+        UpdateTestController controller = new UpdateTestController();
+        controller.setExamination(examination);
         loader.setController(controller);
         Pane panel = loader.load();
-        stage.setScene(new Scene(panel, 600, 400));
+        stage.setScene(new Scene(panel, 600, 800));
         stage.setOnHiding(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {

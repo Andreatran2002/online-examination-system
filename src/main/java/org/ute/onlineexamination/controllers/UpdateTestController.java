@@ -1,5 +1,6 @@
 package org.ute.onlineexamination.controllers;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -26,7 +27,9 @@ import org.ute.onlineexamination.utils.AlertActionInterface;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 
@@ -42,7 +45,6 @@ public class UpdateTestController implements Initializable {
     public TextField timeRetry;
     public RadioButton scoringHighest;
     public RadioButton scoringAverage;
-    public RadioButton noLimit;
     public TableColumn<Question, String> questionColumn;
     public TableColumn priorityColumn;
     public TableColumn actionColumn;
@@ -59,7 +61,12 @@ public class UpdateTestController implements Initializable {
     ObservableList<Question> examQuestions;
     ToggleGroup selectScoringType;
     Examination examination ;
-    public UpdateTestController(Examination examination){
+
+    public Examination getExamination() {
+        return examination;
+    }
+
+    public void setExamination(Examination examination) {
         this.examination = examination;
     }
 
@@ -77,7 +84,12 @@ public class UpdateTestController implements Initializable {
 
     void resetData(){
         coursesByTeacher= courseDAO.getByTeacherId(AppUtils.CURRENT_ROLE.id);
-//        examQuestions = examQuestionDAO.getByExamId(examination.getId());
+        questionByCourse = questionDAO.getByCourseId(examination.getCourse_id());
+        examQuestions = questionDAO.getByExamId(examination.getId());
+        for (int i = 0; i < examQuestions.size(); i++) {
+            System.out.println(examQuestions.get(i).getContent());
+            System.out.println(examQuestions.get(i).getPriority());
+        }
     }
 
     void initView(){
@@ -86,6 +98,24 @@ public class UpdateTestController implements Initializable {
             cOption.add(coursesByTeacher.get(i).getName() );
         }
         course.setItems(cOption);
+
+        course.setValue(examination.course.getName());
+        title.setText(examination.getName());
+        description.setText(examination.getDescription());
+        fromDate.setValue(examination.getStart().toLocalDateTime().toLocalDate());
+        toDate.setValue(examination.getEnd().toLocalDateTime().toLocalDate());
+        fromTime.setText(examination.getStart().toLocalDateTime().format(DateTimeFormatter.ofPattern("hh:mm")));
+        toTime.setText(examination.getEnd().toLocalDateTime().format(DateTimeFormatter.ofPattern("hh:mm")));
+        totalMinutes.setText(String.valueOf(examination.getTotal_minutes()));
+
+        timeRetry.setText(String.valueOf(examination.getTime_retry()));
+        if (examination.getScoring_type()==1){
+            scoringHighest.setSelected(true);
+        }
+        else{
+            scoringAverage.setSelected(true);
+        }
+        //
         selectScoringType = new ToggleGroup();
         scoringHighest.setToggleGroup(selectScoringType);
         scoringAverage.setToggleGroup(selectScoringType);
@@ -107,12 +137,11 @@ public class UpdateTestController implements Initializable {
         });
 
         questionColumn.setCellValueFactory(new PropertyValueFactory<Question, String>("content")) ;
-        Callback<TableColumn<Question, String>, TableCell<Question, String>> priorityCell = //
-                new Callback<TableColumn<Question, String>, TableCell<Question, String>>() {
+        Callback<TableColumn<Question, Integer>, TableCell<Question, Integer>> priorityCell = new Callback<TableColumn<Question, Integer>, TableCell<Question, Integer>>() {
                     @Override
-                    public TableCell call(final TableColumn<Question, String> param) {
+                    public TableCell call(final TableColumn<Question, Integer> param) {
                         final TableCell<Question, String> cell = new TableCell<Question, String>() {
-                            final Spinner<Integer> priority = new Spinner<Integer>(1,10,getTableView().getItems().get(getIndex()).getPriority());
+                            final Spinner<Integer> priority = new Spinner<Integer>(1,10,1);
 
                             @Override
                             public void updateItem(String item, boolean empty) {
@@ -132,8 +161,7 @@ public class UpdateTestController implements Initializable {
                                         }
                                     });
 
-                                    HBox hbox = new HBox(priority);
-                                    setGraphic(hbox);
+                                    setGraphic(priority);
                                     setText(null);
                                 }
                             }
@@ -141,7 +169,6 @@ public class UpdateTestController implements Initializable {
                         return cell;
                     }
                 };
-
         Callback<TableColumn<Question, String>, TableCell<Question, String>> actionCell = //
                 new Callback<TableColumn<Question, String>, TableCell<Question, String>>() {
                     @Override
@@ -159,7 +186,12 @@ public class UpdateTestController implements Initializable {
                                     deleteBtn.setOnAction(new EventHandler<ActionEvent>() {
                                         @Override
                                         public void handle(ActionEvent event) {
+                                            Question q = examQuestions.get(getIndex());
                                             examQuestions.remove(getIndex());
+                                            ExamQuestion currentExamQuestion = examQuestionDAO.getByQuestionId(q.getId(), examination.getId()).get();
+                                            if (currentExamQuestion.getId()!=null){
+                                                examQuestionDAO.delete(currentExamQuestion);
+                                            }
                                         }
                                     });
                                     HBox hbox = new HBox(deleteBtn);
@@ -174,6 +206,9 @@ public class UpdateTestController implements Initializable {
 
         priorityColumn.setCellFactory(priorityCell);
         actionColumn.setCellFactory(actionCell);
+        getQuestionData(examination.getCourse_id());
+        questionView.setItems(examQuestions);
+
     }
 
     void getQuestionData(Integer course_id){
@@ -206,26 +241,23 @@ public class UpdateTestController implements Initializable {
         }
 
         try {
-            Examination exam = new Examination();
-            exam.setName(title.getText());
+            examination.setName(title.getText());
             FilteredList<Course> courseSelected = coursesByTeacher.filtered(new Predicate<Course>() {
                 @Override
                 public boolean test(Course c) {
                     return c.getName() == course.getValue();
                 }
             });
-            exam.setCourse_id(courseSelected.getFirst().getId());
-            exam.setDescription(description.getText());
-            exam.setTime_retry(Integer.valueOf(timeRetry.getText()));
-            exam.setScoring_type(scoringHighest.isSelected()? 1 : 2);
-            exam.setEnd(AppUtils.fromDateAndTime(toDate.getValue(),toTime.getText()));
-            exam.setStart(AppUtils.fromDateAndTime(fromDate.getValue(),fromTime.getText()));
-            exam.setTotal_minutes(Integer.valueOf(totalMinutes.getText()));
-            Integer id = examDAO.save(exam);
+            examination.setCourse_id(courseSelected.getFirst().getId());
+            examination.setDescription(description.getText());
+            examination.setTime_retry(Integer.valueOf(timeRetry.getText()));
+            examination.setScoring_type(scoringHighest.isSelected()? 1 : 2);
+            examination.setEnd(AppUtils.fromDateAndTime(toDate.getValue(),toTime.getText()));
+            examination.setStart(AppUtils.fromDateAndTime(fromDate.getValue(),fromTime.getText()));
+            examination.setTotal_minutes(Integer.valueOf(totalMinutes.getText()));
+            examDAO.update(examination);
             for (Question question : examQuestions) {
-                ExamQuestion examQuestion = new ExamQuestion(question.getId(), id);
-                examQuestion.setPriority(question.getPriority());
-                examQuestionDAO.save(examQuestion);
+                examQuestionDAO.saveOrUpdateQuestion(question, examination.getId());
             }
             AppUtils.showInfo(event, "Update test success", "Update test successfull", new AlertActionInterface() {
                 @Override
@@ -243,7 +275,7 @@ public class UpdateTestController implements Initializable {
     public void onImportTestQuestion(ActionEvent event) {
     }
 
-    public void updateQuestion(ActionEvent event) {
+    public void addQuestion(ActionEvent event) {
         FilteredList<Question> questionSelected = questionByCourse.filtered(new Predicate<Question>() {
             @Override
             public boolean test(Question c) {
@@ -253,16 +285,17 @@ public class UpdateTestController implements Initializable {
         if (questionSelected.isEmpty()){
             return;
         }
-        Question question = new Question();
-        question.setContent(questionOptions.getValue());
-        question.setId( questionSelected.getFirst().getId());
+        Question examQuestion = new Question();
+        examQuestion.setContent(questionOptions.getValue());
+        examQuestion.setId( questionSelected.getFirst().getId());
         for (int i = 0; i <examQuestions.size(); i++) {
-            if (examQuestions.get(i).getId()==question.getId()){
+            if (Objects.equals(examQuestions.get(i).getId(), examQuestion.getId())){
                 return;
             }
         }
 
-        examQuestions.add(question);
-        resetQuestionTableView();
+        examQuestions.add(examQuestion);
+//        resetQuestionTableView();
     }
+
 }

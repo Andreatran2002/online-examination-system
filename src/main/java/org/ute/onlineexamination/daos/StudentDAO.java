@@ -59,7 +59,7 @@ public class StudentDAO implements DAO<Student> {
     public User updateStudentByEmail(String email) {
         User user = new User();
         try (Connection connection = DBConnectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Student JOIN User ON Student.user_id = User.id SET last_login=? , full_name=? , updated_at=? , password_hash=?, mobile=? WHERE email=?  ")){
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Student JOIN User ON Student.user_id = User.id SET last_login=? , full_name=? , updated_at=? , password_hash=?, mobile=? WHERE email=? AND deleted_at IS NULL ")){
             preparedStatement.setTimestamp(1, user.getLast_login());
             preparedStatement.setString(2, user.getFull_name());
             preparedStatement.setTimestamp(3, AppUtils.getCurrentDateTime());
@@ -80,7 +80,7 @@ public class StudentDAO implements DAO<Student> {
     public Student getByUserId(Integer id){
         Student student = new Student();
         try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Student WHERE user_id=? ")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Student WHERE user_id=?  AND deleted_at IS NULL ")) {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()){

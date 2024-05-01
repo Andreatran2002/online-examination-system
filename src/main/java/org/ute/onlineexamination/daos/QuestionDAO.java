@@ -140,4 +140,28 @@ public class QuestionDAO implements DAO<Question> {
     }
 
 
+    public ObservableList<Question> getByExamId(Integer id) {
+        ObservableList<Question> questions = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT q.*, eq.priority FROM ExamQuestion eq\n" +
+                     "INNER JOIN Question q ON q.id = eq.question_id \n" +
+                     "WHERE eq.exam_id =? AND eq.deleted_at IS NULL")) {
+            preparedStatement.setInt(1, id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                Question question = new Question();
+                question.setId(rs.getInt("id"));
+                question.setContent(rs.getString("content"));
+                question.setActive(rs.getBoolean("active"));
+                question.setCourse_id(rs.getInt("course_id"));
+                question.setDeleted_at(rs.getTimestamp("deleted_at"));
+                question.setPriority(rs.getInt("priority"));
+                question.setAnswers( answerDAO.getByQuestionId(question.getId()));
+                questions.add(question);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return questions;
+    }
 }
