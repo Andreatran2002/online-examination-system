@@ -413,7 +413,7 @@ public class TeacherController implements Initializable {
         FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource("DetailExamPage.fxml"));
         DetailExamController controller = new DetailExamController(examination);
         loader.setController(controller);
-        stage.setScene(new Scene(loader.load(), 1000, 600));
+        stage.setScene(new Scene(loader.load(), 1000, 800));
         stage.setOnHiding(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {

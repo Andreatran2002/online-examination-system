@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
 import org.ute.onlineexamination.models.*;
+import org.ute.onlineexamination.models.tablemodels.StudentExamScore;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.*;
@@ -379,5 +380,45 @@ public class ExamDAO implements DAO<Examination> {
             DBConnectionFactory.printSQLException(e);
         }
         return examinations;
+    }
+
+    public ObservableList<StudentExamScore> getStudentExamScore(Integer exam_id) {
+        ObservableList<StudentExamScore> studentExamScores = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT\n" +
+                     "    u.email,\n" +
+                     "    u.full_name,\n" +
+                     "    COUNT(te.id) AS times_retry,\n" +
+                     "    CASE\n" +
+                     "        WHEN e.scoring_type = 1 THEN MAX(te.scoring)\n" +
+                     "        WHEN e.scoring_type = 2 THEN AVG(te.scoring)\n" +
+                     "        ELSE NULL\n" +
+                     "    END AS score\n" +
+                     "FROM\n" +
+                     "    Examination e\n" +
+                     "INNER JOIN\n" +
+                     "    TakeExam te ON e.id = te.exam_id\n" +
+                     "INNER JOIN\n" +
+                     "    Student s ON te.student_id = s.id\n" +
+                     "INNER JOIN\n" +
+                     "    User u ON s.user_id = u.id\n" +
+                     "WHERE\n" +
+                     "    e.id = ?\n" +
+                     "GROUP BY\n" +
+                     "    u.email, u.full_name, e.scoring_type;\n")) {
+            preparedStatement.setInt(1, exam_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                StudentExamScore studentExamScore = new StudentExamScore();
+                studentExamScore.setEmail(rs.getString("email"));
+                studentExamScore.setFullName(rs.getString("full_name"));
+                studentExamScore.setTimesRetry(rs.getInt("times_retry"));
+                studentExamScore.setScore(rs.getDouble("score"));
+                studentExamScores.add(studentExamScore);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return studentExamScores;
     }
 }

@@ -9,6 +9,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import org.apache.poi.wp.usermodel.HeaderFooterType;
 import org.apache.poi.xwpf.usermodel.*;
@@ -18,6 +19,9 @@ import org.ute.onlineexamination.daos.TakeExamDAO;
 import org.ute.onlineexamination.models.Answer;
 import org.ute.onlineexamination.models.ExamQuestion;
 import org.ute.onlineexamination.models.Examination;
+import org.ute.onlineexamination.models.tablemodels.StudentExamScore;
+import org.ute.onlineexamination.tableviews.StudentExamScoreTableView;
+import org.ute.onlineexamination.utils.AlertActionInterface;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.io.FileOutputStream;
@@ -37,14 +41,17 @@ public class DetailExamController implements Initializable {
     public Label scoringType;
     public AnchorPane scoreChartPane;
     public AnchorPane passChartPane;
+    public AnchorPane studentScorePane;
     Examination examination;
     ExamDAO examDAO;
     TakeExamDAO takeExamDAO;
     ExamQuestionDAO examQuestionDAO;
     ObservableList<ExamQuestion> examQuestions;
+    ObservableList<StudentExamScore> studentExamScores;
 
     LineChart<Number,Number> scoreChart;
     PieChart passChart;
+    TableView studentExamScoreTableView;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         examDAO = new ExamDAO();
@@ -73,6 +80,7 @@ public class DetailExamController implements Initializable {
 
     void loadData(){
         examQuestions = examQuestionDAO.getByExamId(examination.getId());
+        studentExamScores = examDAO.getStudentExamScore(examination.getId());
         ObservableList<Double> testPerformances = takeExamDAO.getScoreByExamId(examination.getId());
         // Score chart
         XYChart.Series scoreSeries = new XYChart.Series();
@@ -88,6 +96,9 @@ public class DetailExamController implements Initializable {
                         new PieChart.Data("Fail", 100-percentage));
 
         passChart.setData(passChartData);
+        studentExamScoreTableView = new StudentExamScoreTableView(studentExamScores);
+        studentExamScoreTableView.prefHeightProperty().bind(studentScorePane.heightProperty());
+        studentExamScoreTableView.prefWidthProperty().bind(studentScorePane.widthProperty());
 
     }
 
@@ -95,16 +106,29 @@ public class DetailExamController implements Initializable {
         name.setText(examination.getName());
         course.setText(examination.course.getName());
         retryTimes.setText(String.valueOf(examination.getTime_retry()));
-        scoringType.setText(examination.getScoring_type()==1 ? "Average": "Highest");
+        scoringType.setText(examination.getScoring_type()==1 ? "Highest": "Average");
         start.setText(AppUtils.formatTime(examination.getStart()));
         end.setText(AppUtils.formatTime(examination.getEnd()));
         totalMinutes.setText(String.valueOf(examination.getTotal_minutes()));
         totalQuestion.setText(String.valueOf(examQuestions.size()));
         scoreChartPane.getChildren().add(scoreChart);
         passChartPane.getChildren().add(passChart);
+        studentScorePane.getChildren().add(studentExamScoreTableView);
+
     }
-    public void exportFinalScore(ActionEvent even){
-//            AppUtils.exportTable();
+    public void exportFinalScore(ActionEvent event){
+        try {
+            String fileName="student_score";
+            AppUtils.exportTable(studentExamScoreTableView,fileName);
+            AppUtils.showInfo(event, "Export student score success", "Export student score to file " + fileName, new AlertActionInterface() {
+                @Override
+                public void action() throws IOException {
+
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -180,6 +204,11 @@ public class DetailExamController implements Initializable {
             }
 
             System.out.println("Exam document created successfully!");
+            AppUtils.showInfo(actionEvent, "Export examination to docs successfully!", "Export examination to file " + fileName, new AlertActionInterface() {
+                @Override
+                public void action() throws IOException {
+                }
+            });
 
         } catch (IOException e) {
             e.printStackTrace();
