@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <AnchorPane prefHeight="197.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+         <children>
+            <AnchorPane layoutX="28.0" layoutY="57.0" prefHeight="131.0" prefWidth="513.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+               <children>
+                  <GridPane layoutX="16.0" layoutY="1.0" prefHeight="124.0" prefWidth="497.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="33.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label text="Name">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="Category" GridPane.columnIndex="1">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="name" text="Name" GridPane.rowIndex="1" />
+                        <Label fx:id="category" text="ABC" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label text="Start" GridPane.rowIndex="2">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="End" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="start" text="22/12/2024" GridPane.rowIndex="3" />
+                        <Label fx:id="end" text="22/12/2024" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+            <Label layoutX="31.0" layoutY="17.0" prefHeight="29.0" prefWidth="222.0" text="Overview Information">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <AnchorPane layoutX="596.0" layoutY="53.0">
+               <children>
+                  <AnchorPane layoutY="11.0" prefHeight="48.0" prefWidth="147.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                     <children>
+                        <Label fx:id="totalExams" alignment="CENTER" contentDisplay="CENTER" layoutX="-2.0" layoutY="13.0" prefHeight="39.0" prefWidth="149.0" text="24" textAlignment="CENTER">
+                           <font>
+                              <Font size="32.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <Label layoutX="30.0" text="Total exams">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="811.0" layoutY="53.0">
+               <children>
+                  <AnchorPane layoutY="11.0" prefHeight="52.0" prefWidth="149.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                     <children>
+                        <Label fx:id="totalStudents" alignment="CENTER" contentDisplay="CENTER" layoutY="7.0" prefHeight="39.0" prefWidth="149.0" text="24">
+                           <font>
+                              <Font size="32.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="21.0" layoutY="-12.0" text="Total students">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="595.0" layoutY="126.0">
+               <children>
+                  <AnchorPane layoutY="11.0" prefHeight="50.0" prefWidth="147.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                     <children>
+                        <Label fx:id="totalQuestions" alignment="CENTER" layoutY="7.0" prefHeight="39.0" prefWidth="147.0" text="200" textAlignment="CENTER">
+                           <font>
+                              <Font size="32.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="14.0" layoutY="-12.0" text="Total Questions" textAlignment="CENTER">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="813.0" layoutY="126.0">
+               <children>
+                  <AnchorPane layoutY="11.0" prefHeight="52.0" prefWidth="147.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                     <children>
+                        <Label fx:id="status" alignment="CENTER" layoutX="-6.0" layoutY="6.0" prefHeight="39.0" prefWidth="147.0" text="Started">
+                           <font>
+                              <Font size="32.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <Label layoutX="49.0" text="Status" textAlignment="CENTER">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+   </top>
+   <left>
+      <AnchorPane prefHeight="620.0" prefWidth="995.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="28.0" layoutY="1.0" prefHeight="29.0" prefWidth="222.0" text="Students Overviews">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <GridPane layoutX="28.0" layoutY="28.0" prefHeight="572.0" prefWidth="931.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="300.0" minHeight="10.0" prefHeight="173.89559936523438" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="395.887939453125" minHeight="10.0" prefHeight="384.6044006347656" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <GridPane prefHeight="320.0" prefWidth="931.0" GridPane.rowIndex="1">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints maxHeight="400.0" minHeight="10.0" prefHeight="400.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <AnchorPane fx:id="passChartPane" prefHeight="400.0" prefWidth="200.0" GridPane.columnIndex="1" />
+                        <AnchorPane fx:id="examListPane" prefHeight="400.0" prefWidth="454.0" />
+                     </children>
+                  </GridPane>
+                  <AnchorPane fx:id="studentOverviewPane" prefHeight="158.0" prefWidth="931.0" />
+               </children>
+            </GridPane>
+         </children>
+      </AnchorPane>
+   </left>
+</BorderPane>

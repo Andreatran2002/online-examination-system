@@ -132,6 +132,14 @@ public class TeacherController implements Initializable {
                                             throw new RuntimeException(e);
                                         }
                                     });
+                                    detailBtn.setOnAction(event -> {
+                                        Course course = getTableView().getItems().get(getIndex());
+                                        try {
+                                            navToDetailCourse(course);
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    });
                                     deleteBtn.setOnAction(event -> {
                                         Course course = getTableView().getItems().get(getIndex());
                                         AppUtils.showYesNoOption(event, "Delete course " + course.getName(), "Are you sure to delte this course?", new AlertActionInterface() {
@@ -406,6 +414,22 @@ public class TeacherController implements Initializable {
         DetailExamController controller = new DetailExamController(examination);
         loader.setController(controller);
         stage.setScene(new Scene(loader.load(), 1000, 600));
+        stage.setOnHiding(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                resetData();
+            }
+        });
+        stage.show();
+    }
+    public void navToDetailCourse(Course course) throws IOException {
+        Stage stage = new Stage();
+        stage.setTitle(AppUtils.APP_TITLE);
+        FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource("DetailCoursePage.fxml"));
+        DetailCourseController controller = new DetailCourseController();
+        controller.setCourse(course);
+        loader.setController(controller);
+        stage.setScene(new Scene(loader.load(), 1000, 800));
         stage.setOnHiding(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {

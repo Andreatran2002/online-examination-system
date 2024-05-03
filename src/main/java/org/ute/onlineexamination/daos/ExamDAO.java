@@ -231,11 +231,12 @@ public class ExamDAO implements DAO<Examination> {
 ;
         return AppUtils.round(score*10,2);
     }
-    public  Integer checkTakeExamTimes ( Integer exam_id){
+    public  Integer checkTakeExamTimes ( Integer exam_id, Integer student_id){
         Integer times = 0 ;
         try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM TakeExam WHERE exam_id = ? AND deleted_at IS NULL")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM TakeExam WHERE exam_id = ? AND student_id=? AND deleted_at IS NULL")) {
             preparedStatement.setInt(1, exam_id);
+            preparedStatement.setInt(2, student_id);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()){
                 times = rs.getInt(1);
@@ -340,4 +341,43 @@ public class ExamDAO implements DAO<Examination> {
         return data;
     }
 
+    public Integer getTotalByCourse(Integer course_id) {
+        Integer total = 0;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM `Examination` WHERE course_id = ? AND deleted_at IS NULL ")) {
+            preparedStatement.setInt(1, course_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                total = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return total;
+    }
+
+    public ObservableList<Examination> getByCourseId(Integer id) {
+        ObservableList<Examination> examinations = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Examination WHERE course_id = ? AND deleted_at IS NULL \n")) {
+            preparedStatement.setInt(1, id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                Examination exam = new Examination();
+                exam.setId(rs.getInt("id"));
+                exam.setName(rs.getString("name"));
+                exam.setCourse_id(rs.getInt("course_id"));
+                exam.setDescription(rs.getString("description"));
+                exam.setStart(rs.getTimestamp("start"));
+                exam.setEnd(rs.getTimestamp("end"));
+                exam.setTime_retry(rs.getInt("times_retry"));
+                exam.setScoring_type(rs.getInt("scoring_type"));
+                exam.setTotal_minutes(rs.getInt("total_minutes"));
+                examinations.add(exam);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return examinations;
+    }
 }

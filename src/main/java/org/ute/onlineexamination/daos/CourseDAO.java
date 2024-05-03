@@ -2,11 +2,13 @@ package org.ute.onlineexamination.daos;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.chart.XYChart;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
 import org.ute.onlineexamination.models.Course;
 import org.ute.onlineexamination.models.Teacher;
 import org.ute.onlineexamination.models.User;
+import org.ute.onlineexamination.models.tablemodels.StudentCourseOverview;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.*;
@@ -210,4 +212,104 @@ public class CourseDAO implements DAO<Course> {
         }
         return registId;
     }
+
+    public Integer getTotalStudent(Integer course_id) {
+        Integer total = 0;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM `CourseRegistration` WHERE course_id = ? AND deleted_at IS NULL ")) {
+            preparedStatement.setInt(1, course_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                total = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return total;
+    }
+
+    public ObservableList<StudentCourseOverview> getStudentCourseOverview(Integer course_id) {
+        ObservableList<StudentCourseOverview> data = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT u.full_name, u.mobile, u.email,COUNT(DISTINCT te.exam_id) AS number_of_exams_taken,cr.created_at AS registration_date\n" +
+                     "FROM User u\n" +
+                     "INNER JOIN Student s ON u.id = s.user_id\n" +
+                     "INNER JOIN CourseRegistration cr ON s.id = cr.student_id\n" +
+                     "LEFT JOIN TakeExam te ON s.id = te.student_id \n" +
+                     "WHERE cr.deleted_at IS NULL AND cr.course_id = ? AND te.exam_id IN (SELECT id FROM Examination WHERE course_id = ?)\n" +
+                     "GROUP BY u.full_name, u.mobile, u.email, cr.created_at;\n")) {
+            preparedStatement.setInt(1, course_id );
+            preparedStatement.setInt(2, course_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                StudentCourseOverview student = new StudentCourseOverview();
+                student.setFullName(rs.getString("full_name"));
+                student.setEmail(rs.getString("email"));
+                student.setMobile(rs.getString("mobile"));
+                student.setTotalTestDone(rs.getInt("number_of_exams_taken"));
+                student.setRegisterAt(rs.getTimestamp("registration_date"));
+                data.add(student);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return data;
+    }
+    public  ObservableList<XYChart.Series> getPassChartData(Integer course_id){
+        ObservableList<XYChart.Series> data = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT  e.name,\n" +
+                     "    (COUNT(CASE WHEN te.scoring > 5 THEN 1 END) / COUNT(*)) * 100 AS percentage\n" +
+                     "FROM TakeExam te\n" +
+                     "JOIN Examination e ON te.exam_id = e.id\n" +
+                     "WHERE e.course_id = ? GROUP BY e.name;\n")) {
+            preparedStatement.setInt(1, course_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                XYChart.Series series = new XYChart.Series();
+                series.setName(rs.getString("name"));
+                series.getData().add(new XYChart.Data(rs.getString("name"), rs.getDouble("percentage")));
+                data.add(series);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return data;
+    }
+    public  ObservableList<XYChart.Series> getScoreChartData(Integer course_id){
+        ObservableList<XYChart.Series> data = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT\n" +
+                     "    c.id AS course_id,\n" +
+                     "    u.email AS email,\n" +
+                     "    AVG(\n" +
+                     "        CASE \n" +
+                     "            WHEN e.scoring_type = 1 THEN (SELECT MAX(scoring) FROM TakeExam WHERE exam_id = e.id)\n" +
+                     "            WHEN e.scoring_type = 2 THEN (SELECT AVG(scoring) FROM TakeExam WHERE exam_id = e.id)\n" +
+                     "            ELSE 0\n" +
+                     "        END\n" +
+                     "    ) AS average_score\n" +
+                     "FROM Course c\n" +
+                     "LEFT JOIN Examination e ON c.id = e.course_id\n" +
+                     "LEFT JOIN TakeExam te ON e.id = te.exam_id\n" +
+                     "LEFT JOIN Student s ON te.student_id = s.id\n" +
+                     "LEFT JOIN User u ON s.user_id = u.id\n" +
+                     "WHERE c.id = ? AND u.email IS NOT NULL\n" +
+                     "GROUP BY c.id, u.email")) {
+            preparedStatement.setInt(1, course_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            Integer i = 1;
+            while (rs.next()){
+                XYChart.Series series = new XYChart.Series();
+                series.setName(rs.getString(""));
+                series.getData().add(new XYChart.Data(rs.getString("name"), rs.getDouble("percentage")));
+                data.add(series);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return data;
+    }
+
+
 }

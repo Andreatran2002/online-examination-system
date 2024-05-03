@@ -232,7 +232,7 @@
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="771.0" prefWidth="990.0">
                <children>
-                  <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="242.0" prefWidth="891.0">
+                  <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="242.0" prefWidth="970.0" style="-fx-background-color: white; -fx-background-radius: 10;">
                      <children>
                         <Label layoutX="31.0" layoutY="23.0" text="Personal Infomation">
                            <font>
@@ -289,10 +289,10 @@
                               <Label fx:id="labelAddress" text="Address 1" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                            </children>
                         </GridPane>
-                        <Button layoutX="797.0" layoutY="17.0" mnemonicParsing="false" onAction="#navToUpdateTeacherPage" prefHeight="12.0" prefWidth="90.0" text="Update" textFill="WHITE" />
-                        <Button layoutX="798.0" layoutY="56.0" mnemonicParsing="false" onAction="#navToChangePasswordPage" prefHeight="26.0" prefWidth="90.0" text="Đổi mật khẩu" />
+                        <Button layoutX="797.0" layoutY="17.0" mnemonicParsing="false" onAction="#navToUpdateTeacherPage" prefHeight="12.0" prefWidth="90.0" style="-fx-background-color: blue;" text="Update" textFill="WHITE" />
+                        <Button layoutX="798.0" layoutY="56.0" mnemonicParsing="false" onAction="#navToChangePasswordPage" prefHeight="26.0" prefWidth="90.0" style="-fx-background-color: blue;" text="Đổi mật khẩu" textFill="WHITE" />
                      </children></AnchorPane>
-                  <Button layoutX="37.0" layoutY="278.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="119.0" style="-fx-background-color: red;" text="Logout" textFill="WHITE">
+                  <Button layoutX="15.0" layoutY="275.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="119.0" style="-fx-background-color: red;" text="Logout" textFill="WHITE">
                      <font>
                         <Font size="16.0" />
                      </font></Button>

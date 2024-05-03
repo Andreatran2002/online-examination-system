@@ -56,12 +56,10 @@ public class DetailExamController implements Initializable {
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("Score");
         scoreChart = new LineChart<Number,Number>(xAxis,yAxis);
-//        scoreChart.setPrefSize( scoreChartPane.getWidth(), scoreChartPane.getHeight());
         scoreChart.setTitle("Examination Performance");
 
         passChart = new PieChart();
         passChart.setTitle("Pass Percentage");
-//        passChart.setPrefSize(passChartPane.getWidth(), passChartPane.getHeight());
 
 
         loadData();

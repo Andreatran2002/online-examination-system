@@ -88,7 +88,7 @@ public class TestCardController  implements Initializable{
     }
     void setBtnState(){
 
-        Integer takeExamTimes = examDAO.checkTakeExamTimes(examination.getId());
+        Integer takeExamTimes = examDAO.checkTakeExamTimes(examination.getId(), AppUtils.CURRENT_ROLE.id);
         if (takeExamTimes >= examination.getTime_retry()) {
             testActionBtn.setText("Done");
             testActionBtn.setDisable(true);

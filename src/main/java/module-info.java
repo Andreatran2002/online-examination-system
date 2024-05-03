@@ -18,4 +18,5 @@ module org.ute.onlineexamination {
     exports org.ute.onlineexamination.daos;
     opens org.ute.onlineexamination.daos to javafx.fxml;
     opens org.ute.onlineexamination.models to javafx.base;
+    opens org.ute.onlineexamination.models.tablemodels to javafx.base;
 }
