@@ -1,21 +1,28 @@
 package org.ute.onlineexamination.controllers;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+import org.apache.poi.ss.formula.functions.T;
 import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.daos.CourseDAO;
 import org.ute.onlineexamination.daos.ExamDAO;
@@ -34,6 +41,7 @@ import org.ute.onlineexamination.utils.AppUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 
@@ -57,6 +65,13 @@ public class TeacherController implements Initializable {
     public TableColumn examActionColumn;
     public TableColumn examStartColumn;
     public TableColumn examEndColumn;
+    public TabPane teacherTabPane;
+    public Label dbWelcome;
+    public Label totalQuestion;
+    public Label totalStudents;
+    public Label totalExam;
+    public Label totalCourse;
+    public Tab courseTab;
     CourseDAO courseDAO;
     public TableView<Course> courseView;
     public Label labelEmailAddress;
@@ -64,14 +79,36 @@ public class TeacherController implements Initializable {
     public Label labelPhoneNumber;
     public Label labelTitle;
     public Label labelAddress;
+    public TextField courseFilterName = new TextField("");
 
     private ObservableList<Course> courseList;
+    private FilteredList<Course> filterCourseList;
     private ObservableList<Question> questionList;
+    private FilteredList<Question> filterQuestionList;
     private ObservableList<Examination> examList;
+    private FilteredList<Examination> filterExamList;
     QuestionDAO questionDAO;
     User user;
     TeacherDAO teacherDAO;
+    @FXML
+    TextField examFilterCourse;
+    @FXML
+    TextField examFilterName;
+    @FXML
+    TextField questionFilterCourse ;
+    @FXML
+    TextField questionFilterName ;
     Teacher teacher;
+    @FXML
+    ChoiceBox<String> courseFilterCategory;
+    @FXML
+    public AnchorPane examPerCoursePane;
+    @FXML
+    public AnchorPane studentPerCoursePane;
+
+    BarChart<String,Number> examPerCourseChart;
+    BarChart<String,Number> studentPerCourseChart;
+
 
     public TeacherController() {
         teacherDAO = new TeacherDAO();
@@ -89,10 +126,28 @@ public class TeacherController implements Initializable {
         questionList =   FXCollections.observableArrayList();
         examList =   FXCollections.observableArrayList();
 
+        courseFilterCategory.setItems(FXCollections.observableArrayList("All","Artificial Intelligence", "Machine Learning", "Cybersecurity", "Digital Marketing", "Photography", "Music Production", "Language Learning", "Personal Development", "Finance", "Health & Fitness"));
+        courseFilterCategory.setValue("All");
+
+        final CategoryAxis xAxis = new CategoryAxis();
+        final NumberAxis yAxis = new NumberAxis();
+        examPerCourseChart = new BarChart<String,Number>(xAxis,yAxis);
+        examPerCourseChart.setTitle("Exam number per course");
+        yAxis.setLabel("Total examination");
+        xAxis.setLabel("Course");
+
+        final CategoryAxis xAxis2 = new CategoryAxis();
+        final NumberAxis yAxis2 = new NumberAxis();
+        studentPerCourseChart = new BarChart<String,Number>(xAxis2,yAxis2);
+        studentPerCourseChart.setTitle("Student number per course");
+        yAxis2.setLabel("Total students");
+        xAxis2.setLabel("Course");
+
         initCourseView();
         initQuestionView();
         initExamView();
         resetData();
+        initFilter();
         loadUser();
     }
 
@@ -100,10 +155,73 @@ public class TeacherController implements Initializable {
         resetCourseView();
         resetQuestionView();
         resetExamView();
+        resetDashboardData();
+    }
+    void resetDashboardData(){
+        dbWelcome.setText("Welcome "+ AppUtils.CURRENT_USER.getFull_name());
+        totalExam.setText(String.valueOf(examDAO.getByTeacherId(AppUtils.CURRENT_ROLE.id).size()));
+        totalCourse.setText(String.valueOf(courseDAO.getByTeacherId(AppUtils.CURRENT_ROLE.id).size()));
+        totalQuestion.setText(String.valueOf(questionDAO.getByTeacherId(AppUtils.CURRENT_ROLE.id).size()));
+        totalStudents.setText(String.valueOf(teacherDAO.getTotalStudent(AppUtils.CURRENT_ROLE.id)));
+        ObservableList<XYChart.Series> examPerCourseSeries = teacherDAO.getExamPerCourse(AppUtils.CURRENT_ROLE.id);
+        for (int i = 0; i < examPerCourseSeries.size(); i++) {
+            examPerCourseChart.getData().add(examPerCourseSeries.get(i));
+        }
+
+        examPerCoursePane.getChildren().setAll(examPerCourseChart);
+
+        ObservableList<XYChart.Series> studentPerCourseSeries = teacherDAO.getStudentPerCourse(AppUtils.CURRENT_ROLE.id);
+        for (int i = 0; i < studentPerCourseSeries.size(); i++) {
+            studentPerCourseChart.getData().add(studentPerCourseSeries.get(i));
+        }
+
+        studentPerCoursePane.getChildren().setAll(studentPerCourseChart);
+    }
+
+    void initFilter(){
+        ChangeListener<String> courseListener = (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            filterCourseList.setPredicate(
+                    new Predicate<Course>() {
+                        public boolean test(Course t) {
+                            if (courseFilterCategory.getValue() == "All") {
+                                return t.getName().contains(courseFilterName.getText());
+                            }
+                            return t.getName().contains(courseFilterName.getText()) && courseFilterCategory.getValue().contains(t.getCategory());
+                        }
+                    }
+            );
+        };
+        ChangeListener<String> examListener = (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            filterExamList.setPredicate(
+                    new Predicate<Examination>() {
+                        public boolean test(Examination t) {
+                            return t.getName().contains(examFilterName.getText()) && t.course.getName().contains(examFilterCourse.getText());
+                        }
+                    }
+            );
+        };
+
+        ChangeListener<String> questionListener = (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            filterQuestionList.setPredicate(
+                    new Predicate<Question>() {
+                        public boolean test(Question t) {
+                            return t.getContent().contains(questionFilterName.getText()) && t.course.getName().contains(questionFilterCourse.getText());
+
+                        }
+                    }
+            );
+        };
+        courseFilterName.textProperty().addListener(courseListener);
+        courseFilterCategory.getSelectionModel().selectedItemProperty().addListener(courseListener);
+
+        examFilterCourse.textProperty().addListener(examListener);
+        examFilterName.textProperty().addListener(examListener);
+
+        questionFilterCourse.textProperty().addListener(questionListener);
+        questionFilterName.textProperty().addListener(questionListener);
     }
 
     void initCourseView(){
-        // Course
         courseNameColumn.setCellValueFactory(new PropertyValueFactory<Course, String>("name")) ;
         courseCategoryColumn. setCellValueFactory (new PropertyValueFactory<Course, String > ("category")) ;
         courseFromColumn.setCellValueFactory (new PropertyValueFactory<Course, Timestamp> ("start")) ;
@@ -379,17 +497,20 @@ public class TeacherController implements Initializable {
 
     public void resetCourseView(){
         courseList = courseDAO.getByTeacherId(AppUtils.CURRENT_ROLE.id);
-        courseView.setItems(courseList);
+        filterCourseList = new FilteredList<>(courseList);
+        courseView.setItems(filterCourseList);
     }
 
     public void resetExamView(){
         examList = examDAO.getByTeacherId(AppUtils.CURRENT_ROLE.id);
-        examTableView.setItems(examList);
+        filterExamList = new FilteredList<>(examList);
+        examTableView.setItems(filterExamList);
     }
 
     public void resetQuestionView(){
         questionList = questionDAO.getByTeacherId(AppUtils.CURRENT_ROLE.id);
-        questionView.setItems(questionList);
+        filterQuestionList = new FilteredList<>(questionList);
+        questionView.setItems(filterQuestionList);
     }
 
     public Label currentUserName;
@@ -557,6 +678,7 @@ public class TeacherController implements Initializable {
         stage.show();
     }
 
-    public void goToTestTab(ActionEvent event) {
+    public void goToCourseTab(ActionEvent actionEvent) {
+        teacherTabPane.getSelectionModel().select(courseTab);
     }
 }

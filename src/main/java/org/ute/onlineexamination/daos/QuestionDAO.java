@@ -14,9 +14,11 @@ import java.util.Optional;
 public class QuestionDAO implements DAO<Question> {
     TeacherDAO teacherDAO ;
     AnswerDAO answerDAO;
+    CourseDAO courseDAO;
     public QuestionDAO(){
         teacherDAO = new TeacherDAO();
         answerDAO = new AnswerDAO();
+        courseDAO = new CourseDAO();
     }
     @Override
     public List<Question> getAll() {
@@ -110,6 +112,8 @@ public class QuestionDAO implements DAO<Question> {
                 question.setCourse_id(rs.getInt("course_id"));
                 question.setDeleted_at(rs.getTimestamp("deleted_at"));
                 question.setAnswers( answerDAO.getByQuestionId(question.getId()));
+                Course course =  courseDAO.get(rs.getInt("course_id")).get();
+                question.course = course;
                 questions.add(question);
             }
         } catch (SQLException e) {

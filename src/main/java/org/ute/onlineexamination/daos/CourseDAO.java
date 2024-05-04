@@ -276,6 +276,7 @@ public class CourseDAO implements DAO<Course> {
         }
         return data;
     }
+
     public  ObservableList<XYChart.Series> getScoreChartData(Integer course_id){
         ObservableList<XYChart.Series> data = FXCollections.observableArrayList();
         try (Connection connection = DBConnectionFactory.getConnection();
@@ -310,6 +311,5 @@ public class CourseDAO implements DAO<Course> {
         }
         return data;
     }
-
 
 }
