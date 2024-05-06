@@ -2,6 +2,7 @@ package org.ute.onlineexamination.daos;
 
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
+import org.ute.onlineexamination.models.StudentUser;
 import org.ute.onlineexamination.models.TakeExamAnswer;
 import org.ute.onlineexamination.utils.AppUtils;
 
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 public class TakeExamAnswerDAO implements DAO<TakeExamAnswer> {
     @Override
-    public List<TakeExamAnswer> getAll() {
+    public List<StudentUser> getAll() {
         return null;
     }
 

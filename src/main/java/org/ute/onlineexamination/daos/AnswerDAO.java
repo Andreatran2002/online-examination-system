@@ -5,7 +5,7 @@ import javafx.collections.ObservableList;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
 import org.ute.onlineexamination.models.Answer;
-import org.ute.onlineexamination.models.Question;
+import org.ute.onlineexamination.models.StudentUser;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.*;
@@ -18,7 +18,7 @@ public class AnswerDAO implements DAO<Answer> {
         teacherDAO = new TeacherDAO();
     }
     @Override
-    public List<Answer> getAll() {
+    public List<StudentUser> getAll() {
         return null;
     }
 

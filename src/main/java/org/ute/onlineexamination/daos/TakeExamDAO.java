@@ -1,10 +1,8 @@
 package org.ute.onlineexamination.daos;
 
-import javafx.collections.ObservableList;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
-import org.ute.onlineexamination.models.ExamQuestion;
-import org.ute.onlineexamination.models.Examination;
+import org.ute.onlineexamination.models.StudentUser;
 import org.ute.onlineexamination.models.TakeExam;
 import org.ute.onlineexamination.utils.AppUtils;
 
@@ -14,7 +12,7 @@ import java.util.Optional;
 
 public class TakeExamDAO implements DAO<TakeExam> {
     @Override
-    public List<TakeExam> getAll() {
+    public List<StudentUser> getAll() {
         return null;
     }
 

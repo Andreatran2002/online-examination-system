@@ -19,7 +19,7 @@ public class QuestionDAO implements DAO<Question> {
         answerDAO = new AnswerDAO();
     }
     @Override
-    public List<Question> getAll() {
+    public List<StudentUser> getAll() {
         return null;
     }
 

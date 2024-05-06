@@ -5,12 +5,11 @@ import javafx.collections.ObservableList;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
 import org.ute.onlineexamination.models.Course;
+import org.ute.onlineexamination.models.StudentUser;
 import org.ute.onlineexamination.models.Teacher;
-import org.ute.onlineexamination.models.User;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +19,7 @@ public class CourseDAO implements DAO<Course> {
         teacherDAO = new TeacherDAO();
     }
     @Override
-    public List<Course> getAll() {
+    public List<StudentUser> getAll() {
         return null;
     }
 

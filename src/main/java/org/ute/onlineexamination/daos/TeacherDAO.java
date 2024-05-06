@@ -2,10 +2,7 @@ package org.ute.onlineexamination.daos;
 
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
-import org.ute.onlineexamination.models.Student;
-import org.ute.onlineexamination.models.TakeExam;
-import org.ute.onlineexamination.models.Teacher;
-import org.ute.onlineexamination.models.User;
+import org.ute.onlineexamination.models.*;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.*;
@@ -16,7 +13,7 @@ public class TeacherDAO implements DAO<Teacher> {
 
 
     @Override
-    public List<Teacher> getAll() {
+    public List<StudentUser> getAll() {
         return null;
     }
 

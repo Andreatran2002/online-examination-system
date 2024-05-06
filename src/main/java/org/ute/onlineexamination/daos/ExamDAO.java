@@ -8,7 +8,6 @@ import org.ute.onlineexamination.models.*;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +22,7 @@ public class ExamDAO implements DAO<Examination> {
     }
 
     @Override
-    public List<Examination> getAll() {
+    public List<StudentUser> getAll() {
         return null;
     }
 

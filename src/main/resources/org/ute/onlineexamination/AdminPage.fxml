@@ -2,41 +2,161 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
-   <top>
-      <AnchorPane prefHeight="32.0" prefWidth="602.0" BorderPane.alignment="CENTER">
-         <children>
-            <MenuBar layoutY="1.0" prefHeight="28.0" prefWidth="602.0">
-              <menus>
-                <Menu mnemonicParsing="false" text="Student" />
-                <Menu mnemonicParsing="false" text="Teacher" />
-                  <Menu mnemonicParsing="false" text="Course" />
-                  <Menu mnemonicParsing="false" text="Test" />
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
-                        <MenuItem mnemonicParsing="false" text="Logout" />
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-         </children>
-      </AnchorPane>
-   </top>
-   <right>
-      <TableView prefHeight="368.0" prefWidth="391.0" BorderPane.alignment="CENTER">
-        <columns>
-          <TableColumn prefWidth="75.0" text="C1" />
-          <TableColumn prefWidth="75.0" text="C2" />
-        </columns>
-      </TableView>
-   </right>
-   <center>
-      <AnchorPane prefHeight="368.0" prefWidth="241.0" BorderPane.alignment="CENTER">
-         <children>
-            <TextField layoutX="20.0" layoutY="16.0" />
-            <Icon content="SEARCH" layoutX="172.0" layoutY="19.0" />
-            <Button layoutX="24.0" layoutY="60.0" mnemonicParsing="false" text="Button" />
-         </children></AnchorPane>
-   </center>
-</BorderPane>
+
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<TabPane fx:id="adminPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+         prefHeight="486.0" prefWidth="799.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/17.0.2-ea"
+         xmlns:fx="http://javafx.com/fxml/1">
+    <tabs>
+        <Tab text="Student">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <children>
+                        <TableView fx:id="studentTableView" layoutY="72.0" prefHeight="385.0" prefWidth="799.0">
+                            <columns>
+                                <TableColumn fx:id="studentStudentId" prefWidth="89.60000455379486" text="StudentId">
+                                <cellValueFactory>
+                                    <PropertyValueFactory property="StudentId"/>
+                                </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn fx:id="studentUserId" prefWidth="90.40001678466797" text="UserId">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="UserId"/>
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn fx:id="studentFullName" minWidth="0.0" prefWidth="0.0" text="Tên đầy đủ">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="fullName"/>
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn fx:id="studentMobile" prefWidth="79.20001220703125" text="Số điện thoại">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="mobile"/>
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn fx:id="studentEmail" prefWidth="59.800018310546875" text="Email">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="email"/>
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn fx:id="studentLastLogin" prefWidth="167.39999389648438" text="Lần đăng nhập cuối cùng">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="last_login"/>
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn fx:id="studentCreatedAt" minWidth="0.0" prefWidth="87.60003662109375" text="Ngày tạo">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="created_at"/>
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn fx:id="studentUpdatedAt" prefWidth="117.39996337890625" text="Ngày cập nhật">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="updated_at"/>
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn fx:id="studentDeletedAt" prefWidth="105.800048828125" text="Ngày xoá">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="deleted_at"/>
+                                    </cellValueFactory>
+                                </TableColumn>
+                            </columns>
+                        </TableView>
+                        <Button layoutX="521.0" layoutY="26.0" mnemonicParsing="false" text="Tìm kiếm"/>
+                        <TextField layoutX="355.0" layoutY="26.0"/>
+                        <ChoiceBox layoutX="195.0" layoutY="26.0" prefWidth="150.0"/>
+                    </children>
+                </AnchorPane>
+            </content>
+        </Tab>
+        <Tab text="Teacher">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <children>
+                        <TableView layoutY="70.0" prefHeight="378.0" prefWidth="796.0">
+                            <columns>
+                                <TableColumn prefWidth="66.59999084472656" text="TeacherId"/>
+                                <TableColumn minWidth="3.0" prefWidth="54.19999694824219" text="UserId"/>
+                                <TableColumn prefWidth="76.60000610351562" text="Tên đầy đủ"/>
+                                <TableColumn prefWidth="85.39999389648438" text="Số điện thoại"/>
+                                <TableColumn prefWidth="36.199981689453125" text="Email"/>
+                                <TableColumn prefWidth="37.800018310546875" text="Title"/>
+                                <TableColumn prefWidth="55.5999755859375" text="Address"/>
+                                <TableColumn prefWidth="147.39993286132812" text="Lần đăng nhập cuối cùng"/>
+                                <TableColumn minWidth="0.0" prefWidth="66.199951171875" text="Ngày tạo"/>
+                                <TableColumn prefWidth="90.60003662109375" text="Ngày cập nhật"/>
+                                <TableColumn prefWidth="74.20001220703125" text="Ngày xoá"/>
+                            </columns>
+                        </TableView>
+                        <Button layoutX="519.0" layoutY="25.0" mnemonicParsing="false" text="Tìm kiếm"/>
+                        <ChoiceBox layoutX="171.0" layoutY="25.0" prefWidth="150.0"/>
+                        <TextField layoutX="345.0" layoutY="25.0"/>
+                    </children>
+                </AnchorPane>
+            </content>
+        </Tab>
+        <Tab text="Examination">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <children>
+                        <TableView layoutY="72.0" prefHeight="385.0" prefWidth="799.0">
+                            <columns>
+                                <TableColumn prefWidth="66.59999084472656" text="ExamID"/>
+                                <TableColumn minWidth="3.0" prefWidth="71.4000015258789" text="CourseId"/>
+                                <TableColumn prefWidth="43.20001220703125" text="Tên"/>
+                                <TableColumn prefWidth="53.20001220703125" text="Bắt đầu"/>
+                                <TableColumn prefWidth="60.79998779296875" text="Kết thúc"/>
+                                <TableColumn prefWidth="65.0" text="Lần thử lại"/>
+                                <TableColumn prefWidth="57.600006103515625" text="Điểm&#10;xếp loại"/>
+                                <TableColumn minWidth="0.0" prefWidth="54.4000244140625" text="Mô tả"/>
+                                <TableColumn minWidth="0.0" prefWidth="81.59994506835938" text="Tổng số phút"/>
+                                <TableColumn minWidth="0.0" prefWidth="63.800048828125" text="Ngày tạo"/>
+                                <TableColumn maxWidth="95.20001220703125" prefWidth="95.20001220703125"
+                                             text="Ngày cập nhật"/>
+                                <TableColumn prefWidth="79.20001220703125" text="Ngày xoá"/>
+                            </columns>
+                        </TableView>
+                        <Button layoutX="534.0" layoutY="28.0" mnemonicParsing="false" text="Tìm kiếm"/>
+                        <ChoiceBox layoutX="217.0" layoutY="28.0" prefWidth="150.0"/>
+                        <TextField layoutX="377.0" layoutY="28.0"/>
+                    </children>
+                </AnchorPane>
+            </content>
+        </Tab>
+        <Tab text="Course">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <children>
+                        <TableView layoutY="72.0" prefHeight="385.0" prefWidth="799.0">
+                            <columns>
+                                <TableColumn prefWidth="66.59999084472656" text="CoursId"/>
+                                <TableColumn minWidth="3.0" prefWidth="71.4000015258789" text="TeacherId"/>
+                                <TableColumn prefWidth="43.20001220703125" text="Tên"/>
+                                <TableColumn minWidth="0.0" prefWidth="54.4000244140625" text="Mô tả"/>
+                                <TableColumn prefWidth="71.60000610351562" text="Bắt đầu"/>
+                                <TableColumn prefWidth="64.80001831054688" text="Kết thúc"/>
+                                <TableColumn prefWidth="68.79998779296875" text="Phân loại"/>
+                                <TableColumn minWidth="0.0" prefWidth="93.60000610351562" text="Ngày tạo"/>
+                                <TableColumn maxWidth="193.99996948242188" prefWidth="123.0" text="Ngày cập nhật"/>
+                                <TableColumn prefWidth="140.0" text="Ngày xoá"/>
+                            </columns>
+                        </TableView>
+                        <ChoiceBox layoutX="192.0" layoutY="34.0" prefWidth="150.0"/>
+                        <TextField layoutX="354.0" layoutY="34.0"/>
+                        <Button layoutX="516.0" layoutY="34.0" mnemonicParsing="false" text="Tìm kiếm"/>
+                    </children>
+                </AnchorPane>
+            </content>
+        </Tab>
+        <Tab text="Statistics">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <children>
+                        <ChoiceBox layoutX="192.0" layoutY="34.0" prefWidth="150.0"/>
+                        <TextField layoutX="354.0" layoutY="34.0"/>
+                        <Button layoutX="516.0" layoutY="34.0" mnemonicParsing="false" text="Tìm kiếm"/>
+                    </children>
+                </AnchorPane>
+            </content>
+        </Tab>
+    </tabs>
+</TabPane>
