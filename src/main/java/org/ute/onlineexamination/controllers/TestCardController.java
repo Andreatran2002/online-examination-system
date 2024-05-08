@@ -18,6 +18,7 @@ import org.ute.onlineexamination.utils.AppUtils;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.ResourceBundle;
 
 public class TestCardController  implements Initializable{
@@ -89,26 +90,36 @@ public class TestCardController  implements Initializable{
     void setBtnState(){
 
         Integer takeExamTimes = examDAO.checkTakeExamTimes(examination.getId(), AppUtils.CURRENT_ROLE.id);
-        if (takeExamTimes >= examination.getTimes_retry()) {
-            testActionBtn.setText("Done");
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+        if (currentTimestamp.getTime() < examination.course.getStart().getTime()) {
+            testActionBtn.setText("Not started");
             testActionBtn.setDisable(true);
-        }
-        else if (takeExamTimes == 0 ){
-            testActionBtn.setText("Start now");
-            testActionBtn.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    startTest(event);
-                }
-            });
+        } else if (currentTimestamp.getTime() > examination.course.getEnd().getTime()) {
+            testActionBtn.setText("Outdated");
+            testActionBtn.setDisable(true);
         } else{
-            testActionBtn.setText("Retake");
-            testActionBtn.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    startTest(event);
-                }
-            });
+            if (takeExamTimes >= examination.getTimes_retry()) {
+                testActionBtn.setText("Done");
+                testActionBtn.setDisable(true);
+            }
+            else if (takeExamTimes == 0 ){
+                testActionBtn.setText("Start now");
+                testActionBtn.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        startTest(event);
+                    }
+                });
+            } else{
+                testActionBtn.setText("Retake");
+                testActionBtn.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        startTest(event);
+                    }
+                });
+            }
         }
+
     }
 }

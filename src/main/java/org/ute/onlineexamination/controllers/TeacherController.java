@@ -108,6 +108,8 @@ public class TeacherController implements Initializable {
 
     BarChart<String,Number> examPerCourseChart;
     BarChart<String,Number> studentPerCourseChart;
+    ObservableList<XYChart.Series> examPerCourseSeries;
+    ObservableList<XYChart.Series> studentPerCourseSeries;
 
 
     public TeacherController() {
@@ -125,6 +127,8 @@ public class TeacherController implements Initializable {
         courseList =  FXCollections.observableArrayList();
         questionList =   FXCollections.observableArrayList();
         examList =   FXCollections.observableArrayList();
+        examPerCourseSeries = FXCollections.observableArrayList();
+        studentPerCourseSeries = FXCollections.observableArrayList();
 
         courseFilterCategory.setItems(FXCollections.observableArrayList("All","Artificial Intelligence", "Machine Learning", "Cybersecurity", "Digital Marketing", "Photography", "Music Production", "Language Learning", "Personal Development", "Finance", "Health & Fitness"));
         courseFilterCategory.setValue("All");
@@ -158,19 +162,24 @@ public class TeacherController implements Initializable {
         resetDashboardData();
     }
     void resetDashboardData(){
+        examPerCourseChart.getData().removeAll(examPerCourseSeries);
+        studentPerCourseChart.getData().removeAll(studentPerCourseSeries);
+
         dbWelcome.setText("Welcome "+ AppUtils.CURRENT_USER.getFull_name());
         totalExam.setText(String.valueOf(examDAO.getByTeacherId(AppUtils.CURRENT_ROLE.id).size()));
         totalCourse.setText(String.valueOf(courseDAO.getByTeacherId(AppUtils.CURRENT_ROLE.id).size()));
         totalQuestion.setText(String.valueOf(questionDAO.getByTeacherId(AppUtils.CURRENT_ROLE.id).size()));
         totalStudents.setText(String.valueOf(teacherDAO.getTotalStudent(AppUtils.CURRENT_ROLE.id)));
-        ObservableList<XYChart.Series> examPerCourseSeries = teacherDAO.getExamPerCourse(AppUtils.CURRENT_ROLE.id);
+        examPerCourseSeries = teacherDAO.getExamPerCourse(AppUtils.CURRENT_ROLE.id);
+
+
         for (int i = 0; i < examPerCourseSeries.size(); i++) {
             examPerCourseChart.getData().add(examPerCourseSeries.get(i));
         }
 
         examPerCoursePane.getChildren().setAll(examPerCourseChart);
 
-        ObservableList<XYChart.Series> studentPerCourseSeries = teacherDAO.getStudentPerCourse(AppUtils.CURRENT_ROLE.id);
+        studentPerCourseSeries = teacherDAO.getStudentPerCourse(AppUtils.CURRENT_ROLE.id);
         for (int i = 0; i < studentPerCourseSeries.size(); i++) {
             studentPerCourseChart.getData().add(studentPerCourseSeries.get(i));
         }
@@ -681,12 +690,14 @@ public class TeacherController implements Initializable {
     public void goToCourseTab(ActionEvent actionEvent) {
         teacherTabPane.getSelectionModel().select(courseTab);
     }
-    public void logout(ActionEvent event) throws IOException {
+
+    public void logout(ActionEvent actionEvent) throws IOException {
         Stage stage = new Stage();
         stage.setTitle(AppUtils.APP_TITLE);
         Pane panel = FXMLLoader.load(MainApplication.class.getResource("LoginPage.fxml"));
         stage.setScene(new Scene(panel, 600, 400));
         stage.show();
-        ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();;
+        ((Stage) ((Node) actionEvent.getSource()).getScene().getWindow()).close();;
     }
+
 }
