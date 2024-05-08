@@ -106,7 +106,7 @@ public class DetailExamController implements Initializable {
     void loadView(){
         name.setText(examination.getName());
         course.setText(examination.course.getName());
-        retryTimes.setText(String.valueOf(examination.getTime_retry()));
+        retryTimes.setText(String.valueOf(examination.getTimes_retry()));
         scoringType.setText(examination.getScoring_type()==1 ? "Highest": "Average");
         start.setText(AppUtils.formatTime(examination.getStart()));
         end.setText(AppUtils.formatTime(examination.getEnd()));

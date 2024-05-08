@@ -10,7 +10,6 @@ import org.ute.onlineexamination.models.tablemodels.StudentExamScore;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,8 +24,44 @@ public class ExamDAO implements DAO<Examination> {
     }
 
     @Override
-    public List<Examination> getAll() {
-        return null;
+    public ObservableList<Examination> getAll() {
+        ObservableList<Examination> examinationList = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Examination")) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                int course_id = rs.getInt("course_id");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
+                Timestamp start = rs.getTimestamp("start");
+                Timestamp end = rs.getTimestamp("end");
+                int times_retry = rs.getInt("times_retry");
+                int scoring_type = rs.getInt("scoring_type");
+                int total_minutes = rs.getInt("total_minutes");
+                Timestamp created_at = rs.getTimestamp("created_at");
+                Timestamp updated_at = rs.getTimestamp("updated_at");
+                Timestamp deleted_at = rs.getTimestamp("deleted_at");
+                Examination exam = new Examination(id, course_id, name, description, start, end, times_retry, scoring_type, total_minutes, deleted_at, created_at, updated_at);
+                examinationList.add(exam);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return examinationList;
+    }
+    public int countExaminations() {
+        int count = 0;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) AS count FROM Examination")) {
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return count;
     }
 
     @Override
@@ -43,7 +78,7 @@ public class ExamDAO implements DAO<Examination> {
                 exam.setCourse_id(rs.getInt("course_id"));
                 exam.setDescription(rs.getString("description"));
                 exam.setName(rs.getString("name"));
-                exam.setTime_retry(rs.getInt("times_retry"));
+                exam.setTimes_retry(rs.getInt("times_retry"));
                 exam.setTotal_minutes(rs.getInt("total_minutes"));
                 exam.setScoring_type(rs.getInt("scoring_type"));
                 ObservableList<ExamQuestion> questions = examQuestionDAO.getByExamId(exam.getId());
@@ -65,7 +100,7 @@ public class ExamDAO implements DAO<Examination> {
             preparedStatement.setString(3, examination.getDescription());
             preparedStatement.setTimestamp(4, examination.getStart());
             preparedStatement.setTimestamp(5, examination.getEnd());
-            preparedStatement.setInt(6, examination.getTime_retry());
+            preparedStatement.setInt(6, examination.getTimes_retry());
             preparedStatement.setInt(7, examination.getScoring_type());
             preparedStatement.setInt(8, examination.getTotal_minutes());
             preparedStatement.setTimestamp(9, AppUtils.getCurrentDateTime());
@@ -90,7 +125,7 @@ public class ExamDAO implements DAO<Examination> {
             preparedStatement.setTimestamp(3, examination.getStart());
             preparedStatement.setTimestamp(4, examination.getEnd());
             preparedStatement.setInt(5, examination.getCourse_id());
-            preparedStatement.setInt(6, examination.getTime_retry());
+            preparedStatement.setInt(6, examination.getTimes_retry());
             preparedStatement.setInt(7, examination.getScoring_type());
             preparedStatement.setInt(8, examination.getTotal_minutes());
             preparedStatement.setTimestamp(9, AppUtils.getCurrentDateTime());
@@ -107,6 +142,16 @@ public class ExamDAO implements DAO<Examination> {
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Examination SET deleted_at=? WHERE id=? ")) {
             preparedStatement.setTimestamp(1, AppUtils.getCurrentDateTime());
             preparedStatement.setInt(2, examination.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+    }
+
+    public void restore(Examination examination) {
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Examination SET deleted_at=NULL WHERE id=? ")) {
+            preparedStatement.setInt(1, examination.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             DBConnectionFactory.printSQLException(e);
@@ -131,7 +176,7 @@ public class ExamDAO implements DAO<Examination> {
                 exam.setDescription(rs.getString("description"));
                 exam.setStart(rs.getTimestamp("start"));
                 exam.setEnd(rs.getTimestamp("end"));
-                exam.setTime_retry(rs.getInt("times_retry"));
+                exam.setTimes_retry(rs.getInt("times_retry"));
                 exam.setScoring_type(rs.getInt("scoring_type"));
                 exam.setTotal_minutes(rs.getInt("total_minutes"));
                 Optional<Course> course = courseDAO.get(rs.getInt("course_id"));
@@ -163,7 +208,7 @@ public class ExamDAO implements DAO<Examination> {
                 exam.setDescription(rs.getString("description"));
                 exam.setStart(rs.getTimestamp("start"));
                 exam.setEnd(rs.getTimestamp("end"));
-                exam.setTime_retry(rs.getInt("times_retry"));
+                exam.setTimes_retry(rs.getInt("times_retry"));
                 exam.setScoring_type(rs.getInt("scoring_type"));
                 exam.setTotal_minutes(rs.getInt("total_minutes"));
                 Optional<Course> course = courseDAO.get(rs.getInt("course_id"));
@@ -372,7 +417,7 @@ public class ExamDAO implements DAO<Examination> {
                 exam.setDescription(rs.getString("description"));
                 exam.setStart(rs.getTimestamp("start"));
                 exam.setEnd(rs.getTimestamp("end"));
-                exam.setTime_retry(rs.getInt("times_retry"));
+                exam.setTimes_retry(rs.getInt("times_retry"));
                 exam.setScoring_type(rs.getInt("scoring_type"));
                 exam.setTotal_minutes(rs.getInt("total_minutes"));
                 examinations.add(exam);
@@ -445,7 +490,7 @@ public class ExamDAO implements DAO<Examination> {
                 exam.setDescription(rs.getString("description"));
                 exam.setStart(rs.getTimestamp("start"));
                 exam.setEnd(rs.getTimestamp("end"));
-                exam.setTime_retry(rs.getInt("times_retry"));
+                exam.setTimes_retry(rs.getInt("times_retry"));
                 exam.setScoring_type(rs.getInt("scoring_type"));
                 exam.setTotal_minutes(rs.getInt("total_minutes"));
                 Optional<Course> course = courseDAO.get(rs.getInt("course_id"));

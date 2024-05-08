@@ -4,7 +4,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
-import org.ute.onlineexamination.models.Course;
 import org.ute.onlineexamination.models.ExamQuestion;
 import org.ute.onlineexamination.models.Examination;
 import org.ute.onlineexamination.models.TakeExam;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class TakeExamDAO implements DAO<TakeExam> {
-
     ExamDAO examDAO;
     public TakeExamDAO(){
         examDAO = new ExamDAO();
@@ -122,7 +120,6 @@ public class TakeExamDAO implements DAO<TakeExam> {
         }
         return percentage;
     }
-
     public ObservableList<TakeExam> getByStudentId(Integer student_id, Integer course_id) {
         ObservableList<TakeExam> takeExams = FXCollections.observableArrayList();
         try (Connection connection = DBConnectionFactory.getConnection();

@@ -11,6 +11,9 @@ public class Course {
     private String description ;
     private Timestamp start;
     private Timestamp end;
+    private Timestamp deleted_at;
+    private Timestamp created_at;
+    private Timestamp updated_at;
 
     public Course() {
     }
@@ -27,13 +30,17 @@ public class Course {
         this.category = category;
     }
 
-    public Course(Integer teacher_id, String name, String description, Timestamp start, Timestamp end, String category) {
+    public Course(Integer id, Integer teacher_id, String category, String name, String description, Timestamp start, Timestamp end, Timestamp deleted_at, Timestamp created_at, Timestamp updated_at) {
+        this.id = id;
         this.teacher_id = teacher_id;
+        this.category = category;
         this.name = name;
         this.description = description;
         this.start = start;
         this.end = end;
-        this.category = category;
+        this.deleted_at = deleted_at;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
     }
 
     public void setId(Integer id) {
@@ -104,7 +111,5 @@ public class Course {
         this.updated_at = updated_at;
     }
 
-    private Timestamp deleted_at;
-    private Timestamp created_at;
-    private Timestamp updated_at;
+
 }

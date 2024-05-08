@@ -1,9 +1,10 @@
 package org.ute.onlineexamination.daos;
 
+import javafx.collections.ObservableList;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
 import org.ute.onlineexamination.models.Student;
-import org.ute.onlineexamination.models.Teacher;
+import org.ute.onlineexamination.models.TeacherUser;
 import org.ute.onlineexamination.models.User;
 import org.ute.onlineexamination.utils.AppUtils;
 

@@ -204,7 +204,7 @@ public class NewTestController implements Initializable {
             });
             exam.setCourse_id(courseSelected.getFirst().getId());
             exam.setDescription(description.getText());
-            exam.setTime_retry(Integer.valueOf(timeRetry.getText()));
+            exam.setTimes_retry(Integer.valueOf(timeRetry.getText()));
             exam.setScoring_type(scoringHighest.isSelected()? 1 : 2);
             exam.setEnd(AppUtils.fromDateAndTime(toDate.getValue(),toTime.getText()));
             exam.setStart(AppUtils.fromDateAndTime(fromDate.getValue(),fromTime.getText()));

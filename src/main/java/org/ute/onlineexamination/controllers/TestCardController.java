@@ -98,7 +98,7 @@ public class TestCardController  implements Initializable{
             testActionBtn.setText("Outdated");
             testActionBtn.setDisable(true);
         } else{
-            if (takeExamTimes >= examination.getTime_retry()) {
+            if (takeExamTimes >= examination.getTimes_retry()) {
                 testActionBtn.setText("Done");
                 testActionBtn.setDisable(true);
             }

@@ -108,7 +108,7 @@ public class UpdateTestController implements Initializable {
         toTime.setText(examination.getEnd().toLocalDateTime().format(DateTimeFormatter.ofPattern("hh:mm")));
         totalMinutes.setText(String.valueOf(examination.getTotal_minutes()));
 
-        timeRetry.setText(String.valueOf(examination.getTime_retry()));
+        timeRetry.setText(String.valueOf(examination.getTimes_retry()));
         if (examination.getScoring_type()==1){
             scoringHighest.setSelected(true);
         }
@@ -250,7 +250,7 @@ public class UpdateTestController implements Initializable {
             });
             examination.setCourse_id(courseSelected.getFirst().getId());
             examination.setDescription(description.getText());
-            examination.setTime_retry(Integer.valueOf(timeRetry.getText()));
+            examination.setTimes_retry(Integer.valueOf(timeRetry.getText()));
             examination.setScoring_type(scoringHighest.isSelected()? 1 : 2);
             examination.setEnd(AppUtils.fromDateAndTime(toDate.getValue(),toTime.getText()));
             examination.setStart(AppUtils.fromDateAndTime(fromDate.getValue(),fromTime.getText()));
