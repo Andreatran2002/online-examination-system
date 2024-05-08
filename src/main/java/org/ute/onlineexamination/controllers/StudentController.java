@@ -1,7 +1,10 @@
 package org.ute.onlineexamination.controllers;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -14,6 +17,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.ute.onlineexamination.MainApplication;
@@ -30,6 +34,7 @@ import org.ute.onlineexamination.daos.ExamDAO;
 import org.ute.onlineexamination.models.Course;
 import org.ute.onlineexamination.models.Examination;
 
+import org.ute.onlineexamination.models.enums.PagingType;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.io.IOException;
@@ -41,16 +46,25 @@ import static java.lang.Math.round;
 public class StudentController implements Initializable {
 
     public GridPane testListContent;
-    public Pagination myTestPagination;
     public GridPane allCourseListPane;
-
     public Label labelEmail;
     public Label labelFullname;
     public Label labelPhonenumber;
-    StudentDAO studentDAO;
-    Student student;
-    User user;
+    @FXML
+    public Button testBackBtn;
+    @FXML
+    public Button testNextBtn;
+    @FXML
+    public Button courseBackBtn;
+    @FXML
+    public Button courseNextBtn;
 
+    Boolean testHasNext ;
+    Boolean testHasBefore;
+    Boolean courseHasNext ;
+    Boolean courseHasBefore;
+    StudentDAO studentDAO;
+    User user;
 
     public Label dbMoreInfo;
     public Label dbWelcome;
@@ -72,15 +86,18 @@ public class StudentController implements Initializable {
     ObservableList<Course> allCourses;
     ExamDAO examDAO;
     CourseDAO courseDAO;
-    Integer currentTestPage = 0 ;
     Integer testLeft = 0 ;
-    Integer totalTestPage ;
     Integer overallScore = 0 ;
     Integer finishedCourse = 0 ;
     Integer finishedTest = 0 ;
     Integer totalCourse = 0 ;
     LineChart<Number,Number> dbPerformanceChart;
     XYChart.Series performanceSeries ;
+
+    Integer lastExam = 0 ;
+    Integer firstExam = 0 ;
+    Integer lastCourse = 0 ;
+    Integer firstCourse = 0 ;
 
 
     public StudentController(){
@@ -91,23 +108,42 @@ public class StudentController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         examDAO = new ExamDAO();
         courseDAO = new CourseDAO() ;
+        testHasNext = false;
+        testHasBefore = false;
+        courseHasBefore = false;
+        courseHasNext = false;
+        loadView();
+        loadData();
+    }
+
+    void loadView(){
         performanceSeries = new XYChart.Series();
         dbListCourseStatus = new VBox();
         NumberAxis xAxis = new NumberAxis();
         NumberAxis yAxis = new NumberAxis();
-        xAxis.setLabel("Times");
-        yAxis.setLabel("Score");
         dbPerformanceChart = new LineChart<Number,Number>(xAxis,yAxis);
         dbPerformanceChart.setTitle("Examination Performance");
-        loadData();
-        totalTestPage = (int) Math.ceil( myExams.size()/9);
+        xAxis.setLabel("Times");
+        yAxis.setLabel("Score");
+
+        testNextBtn.setDisable(testHasNext);
+        testBackBtn.setDisable(testHasBefore);
+        testCards = FXCollections.observableArrayList();
+        courseCards = FXCollections.observableArrayList();
+
     }
 
+
     void loadData(){
-        getExams();
-        getCourse();
+        firstExam = 0 ;
+        lastExam = 0 ;
+        firstCourse = 0 ;
+        lastCourse = 0 ;
+        getExams(PagingType.AFTER);
+        getCourses(PagingType.AFTER);
         getHomePageData();
-        addDataPane();
+        getExamDataPane();
+        getCourseDataPane();
         displayHomePage();
         loadUser();
     }
@@ -139,41 +175,52 @@ public class StudentController implements Initializable {
         dbFinishedCourse.setText(String.valueOf(finishedCourse));
         dbFinishedTest.setText(String.valueOf(finishedTest));
         dbTotalCourse.setText(String.valueOf(totalCourse));
-        dbPerfomancePane.getChildren().add(dbPerformanceChart);
+        dbPerfomancePane.getChildren().setAll(dbPerformanceChart);
+        dbListCourseStatus = new VBox();
         for (int i = 0; i < myCourses.size(); i++) {
-
             dbListCourseStatus.getChildren().add(new CourseStatusBuilder(myCourses.get(i)).build());
         }
         dbCourseStatusPane.setContent(dbListCourseStatus);
     }
 
+    ObservableList<Parent> testCards ;
+    ObservableList<Parent> courseCards ;
+    void getExamDataPane(){
+        testListContent.getChildren().removeAll(testCards);
+        testCards = FXCollections.observableArrayList();
+        for (int i = 0; i < 9; i++) {
+            if ( i < myExams.size() ) {
+                TestCardBuilder test = new TestCardBuilder(myExams.get(i), new Callback() {
+                    @Override
+                    public Object call(Object param) {
+                        loadData();
+                        return true;
+                    }
+                });
+                Parent content = test.build();
+                testCards.add(content);
+                testListContent.add(content, i % 3, round(i / 3), 1, 1);
+            }}
+    }
 
-    void addDataPane(){
-        for (int i = 0; i < myExams.size(); i++) {
-            TestCardBuilder test = new TestCardBuilder(myExams.get(i), new Callback() {
-                @Override
-                public Object call(Object param) {
-                    loadData();
-                    return true;
-                }
-            });
-            Parent content = test.build();
-            testListContent.add(content , i % 3, round(i/3), 1,1);
+    void getCourseDataPane(){
+        allCourseListPane.getChildren().removeAll(courseCards);
+        courseCards = FXCollections.observableArrayList();
+        for (int i = 0; i < 9; i++) {
+            if ( i < allCourses.size() ) {
+                CourseCardBuilder course = new CourseCardBuilder(allCourses.get(i), new Callback() {
+                    @Override
+                    public Object call(Object param) {
+                        loadData();
+                        return true ;
+                    }
+                });
+                Parent content = course.build();
+                courseCards.add(content);
+                allCourseListPane.add(content, i % 3, round(i / 3), 1, 1);
+            }
         }
 
-
-
-        for (int i = 0; i < allCourses.size(); i++) {
-            CourseCardBuilder course = new CourseCardBuilder(allCourses.get(i), new Callback() {
-                @Override
-                public Object call(Object param) {
-                    loadData();
-                    return true ;
-                }
-            });
-            Parent content = course.build();
-            allCourseListPane.add(content , i % 3, round(i/3), 1,1);
-        }
     }
 
     public void navToCoursePage(ActionEvent event) throws IOException {
@@ -205,11 +252,27 @@ public class StudentController implements Initializable {
         labelPhonenumber.setText(user.getMobile());
     }
 
-    void getCourse(){
-        allCourses = courseDAO.getFilterAndPaging();
+    void getCourses(PagingType type){
+        allCourses = courseDAO.getPaging(firstCourse, lastCourse,9, type );
+        if (allCourses.size()>0){
+            lastCourse = allCourses.getLast().getId();
+            firstCourse = allCourses.getFirst().getId();
+            courseHasNext = courseDAO.hasNext(lastCourse,AppUtils.CURRENT_ROLE.id);
+            courseHasBefore = courseDAO.hasBefore(firstCourse,AppUtils.CURRENT_ROLE.id);
+            courseNextBtn.setDisable(!courseHasNext);
+            courseBackBtn.setDisable(!courseHasBefore);
+        }
     }
-    void getExams(){
-        myExams = examDAO.getByStudentId(AppUtils.CURRENT_ROLE.id);
+    void getExams(PagingType type){
+        myExams = examDAO.getPagingByStudentId(AppUtils.CURRENT_ROLE.id, firstExam, lastExam,9, type );
+        if (myExams.size()>0){
+            lastExam = myExams.getLast().getId();
+            firstExam = myExams.getFirst().getId();
+            testHasNext = examDAO.hasNext(lastExam,AppUtils.CURRENT_ROLE.id);
+            testHasBefore = examDAO.hasBefore(firstExam,AppUtils.CURRENT_ROLE.id);
+            testNextBtn.setDisable(!testHasNext);
+            testBackBtn.setDisable(!testHasBefore);
+        }
     }
 
 
@@ -224,5 +287,25 @@ public class StudentController implements Initializable {
         stage.setScene(new Scene(panel, 600, 400));
         stage.show();
         ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();;
+    }
+
+    public void onTestBack(ActionEvent actionEvent) {
+        getExams(PagingType.BEFORE);
+        getExamDataPane();
+    }
+
+    public void onTestNext(ActionEvent actionEvent) {
+        getExams(PagingType.AFTER);
+        getExamDataPane();
+    }
+
+    public void onCourseNext(ActionEvent actionEvent) {
+        getCourses(PagingType.AFTER);
+        getCourseDataPane();
+    }
+
+    public void onCourseBack(ActionEvent actionEvent) {
+        getCourses(PagingType.BEFORE);
+        getCourseDataPane();
     }
 }

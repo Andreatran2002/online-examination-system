@@ -52,7 +52,7 @@
                                                 <Font size="24.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="20.0" layoutY="19.0" text="Courses">
+                                          <Label layoutX="20.0" layoutY="19.0" prefHeight="23.0" prefWidth="128.0" text="Courses">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
@@ -71,7 +71,7 @@
                                                 <Font size="24.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="20.0" layoutY="19.0" text="Exam">
+                                          <Label layoutX="20.0" layoutY="19.0" prefHeight="23.0" prefWidth="143.0" text="Exam">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
@@ -90,7 +90,7 @@
                                                 <Font size="24.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="20.0" layoutY="19.0" text="Students">
+                                          <Label layoutX="20.0" layoutY="19.0" prefHeight="23.0" prefWidth="92.0" text="Students">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
@@ -109,7 +109,7 @@
                                                 <Font size="24.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="20.0" layoutY="19.0" text="Question">
+                                          <Label layoutX="20.0" layoutY="19.0" prefHeight="23.0" prefWidth="107.0" text="Question">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
@@ -307,7 +307,9 @@
                         <Button layoutX="797.0" layoutY="17.0" mnemonicParsing="false" onAction="#navToUpdateTeacherPage" prefHeight="12.0" prefWidth="90.0" style="-fx-background-color: blue;" text="Update" textFill="WHITE" />
                         <Button layoutX="798.0" layoutY="56.0" mnemonicParsing="false" onAction="#navToChangePasswordPage" prefHeight="26.0" prefWidth="90.0" style="-fx-background-color: blue;" text="Đổi mật khẩu" textFill="WHITE" />
                      </children></AnchorPane>
-                  <Button layoutX="15.0" layoutY="275.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="119.0" onAction="#logout" style="-fx-background-color: red;" text="Logout" textFill="WHITE">
+                  <Button layoutX="15.0" layoutY="275.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="119.0" onAction="#logout" style="-fx-background-color: red;" text="Logout" textFill="WHITE"/>
+
+                  <Button layoutX="15.0" layoutY="275.0" mnemonicParsing="false" onAction="#logout" prefHeight="37.0" prefWidth="119.0" style="-fx-background-color: red;" text="Logout" textFill="WHITE">
                      <font>
                         <Font size="16.0" />
                      </font></Button>

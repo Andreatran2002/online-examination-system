@@ -9,6 +9,7 @@ public class TakeExam {
     private Timestamp start;
     private Timestamp end;
     private double scoring ;
+    public Examination examination;
 
     public TakeExam() {
     }

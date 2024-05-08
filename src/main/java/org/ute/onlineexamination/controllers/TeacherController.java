@@ -206,6 +206,7 @@ public class TeacherController implements Initializable {
                     new Predicate<Question>() {
                         public boolean test(Question t) {
                             return t.getContent().contains(questionFilterName.getText()) && t.course.getName().contains(questionFilterCourse.getText());
+
                         }
                     }
             );
@@ -679,13 +680,5 @@ public class TeacherController implements Initializable {
 
     public void goToCourseTab(ActionEvent actionEvent) {
         teacherTabPane.getSelectionModel().select(courseTab);
-    }
-    public void logout(ActionEvent event) throws IOException {
-        Stage stage = new Stage();
-        stage.setTitle(AppUtils.APP_TITLE);
-        Pane panel = FXMLLoader.load(MainApplication.class.getResource("LoginPage.fxml"));
-        stage.setScene(new Scene(panel, 600, 400));
-        stage.show();
-        ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();;
     }
 }
