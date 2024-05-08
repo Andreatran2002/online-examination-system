@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.daos.ExamDAO;
 import org.ute.onlineexamination.models.Examination;
@@ -30,12 +31,14 @@ public class TestCardController  implements Initializable{
 
     Examination examination;
     ExamDAO examDAO;
+    Callback callback;
     public TestCardController(){
 
     }
 
-    public TestCardController(Examination examination) {
+    public TestCardController(Examination examination,Callback callback) {
         this.examination = examination;
+        this.callback = callback;
     }
 
     public Examination getExamination() {
@@ -70,7 +73,13 @@ public class TestCardController  implements Initializable{
         Stage stage = new Stage();
         stage.setTitle(AppUtils.APP_TITLE);
         FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource("TestPage.fxml"));
-        TestController controller = new TestController(examination);
+        TestController controller = new TestController(examination, new Callback() {
+            @Override
+            public Object call(Object param) {
+                callback.call(true);
+                return true;
+            }
+        });
         loader.setController(controller);
         Pane panel = loader.load();
         stage.setScene(new Scene(panel, 600, 500));
@@ -79,8 +88,8 @@ public class TestCardController  implements Initializable{
     }
     void setBtnState(){
 
-        Integer takeExamTimes = examDAO.checkTakeExamTimes(examination.getId());
-        if (takeExamTimes >= examination.getTime_retry()) {
+        Integer takeExamTimes = examDAO.checkTakeExamTimes(examination.getId(), AppUtils.CURRENT_ROLE.id);
+        if (takeExamTimes >= examination.getTimes_retry()) {
             testActionBtn.setText("Done");
             testActionBtn.setDisable(true);
         }

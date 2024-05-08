@@ -71,6 +71,7 @@ public class LoginController {
             wrongLogin.setText("Account not exist. Please try again !");
             return ;
         }
+
         if (user.checkPassword(loginPassword.getText())) {
             user.setLast_login(AppUtils.getCurrentDateTime());
             Timestamp timestamp = user.getLast_login();

@@ -2,11 +2,11 @@ package org.ute.onlineexamination.daos;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.chart.XYChart;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
-import org.ute.onlineexamination.models.Course;
-import org.ute.onlineexamination.models.StudentUser;
-import org.ute.onlineexamination.models.Teacher;
+import org.ute.onlineexamination.models.*;
+import org.ute.onlineexamination.models.tablemodels.StudentCourseOverview;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.*;
@@ -19,8 +19,43 @@ public class CourseDAO implements DAO<Course> {
         teacherDAO = new TeacherDAO();
     }
     @Override
-    public List<StudentUser> getAll() {
-        return null;
+    public ObservableList<Course> getAll() {
+        ObservableList<Course> courseList = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Course")) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                int teacher_id = rs.getInt("teacher_id");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
+                Timestamp start = rs.getTimestamp("start");
+                Timestamp end = rs.getTimestamp("end");
+                String category = rs.getString("category");
+                Timestamp created_at = rs.getTimestamp("created_at");
+                Timestamp updated_at = rs.getTimestamp("updated_at");
+                Timestamp deleted_at = rs.getTimestamp("deleted_at");
+                Course course = new Course(id, teacher_id, category, name, description, start, end, deleted_at, created_at, updated_at);
+                courseList.add(course);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return courseList;
+    }
+
+    public int countCourses() {
+        int count = 0;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) AS count FROM Course")) {
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return count;
     }
 
     @Override
@@ -94,6 +129,15 @@ public class CourseDAO implements DAO<Course> {
         try (Connection connection = DBConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Course SET deleted_at=? WHERE id=? ")) {
             preparedStatement.setTimestamp(1, AppUtils.getCurrentDateTime());
+            preparedStatement.setInt(2, course.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+    }
+    public void restore(Course course) {
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Course SET deleted_at=NULL WHERE id=? ")) {
             preparedStatement.setInt(1, course.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -110,6 +154,31 @@ public class CourseDAO implements DAO<Course> {
             while (rs.next()){
                 Course course = new Course();
                 // TODO: lay thong tin User
+                course.setId(rs.getInt("id"));
+                course.setName(rs.getString("name"));
+                course.setDescription(rs.getString("description"));
+                course.setDeleted_at(rs.getTimestamp("deleted_at"));
+                course.setStart(rs.getTimestamp("start"));
+                course.setEnd(rs.getTimestamp("end"));
+                course.setCategory(rs.getString("category"));
+                course.setTeacher_id(rs.getInt("teacher_id"));
+                courses.add(course);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return courses;
+    }
+    public ObservableList<Course> getByStudentId(Integer student_id ){
+        ObservableList<Course> courses = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT c.* FROM CourseRegistration cr\n" +
+                     "INNER JOIN Course c ON cr.course_id = c.id \n" +
+                     "WHERE cr.student_id=? ")) {
+            preparedStatement.setInt(1, student_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                Course course = new Course();
                 course.setId(rs.getInt("id"));
                 course.setName(rs.getString("name"));
                 course.setDescription(rs.getString("description"));
@@ -184,4 +253,104 @@ public class CourseDAO implements DAO<Course> {
         }
         return registId;
     }
+
+    public Integer getTotalStudent(Integer course_id) {
+        Integer total = 0;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM `CourseRegistration` WHERE course_id = ? AND deleted_at IS NULL ")) {
+            preparedStatement.setInt(1, course_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                total = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return total;
+    }
+
+    public ObservableList<StudentCourseOverview> getStudentCourseOverview(Integer course_id) {
+        ObservableList<StudentCourseOverview> data = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT u.full_name, u.mobile, u.email,COUNT(DISTINCT te.exam_id) AS number_of_exams_taken,cr.created_at AS registration_date\n" +
+                     "FROM User u\n" +
+                     "INNER JOIN Student s ON u.id = s.user_id\n" +
+                     "INNER JOIN CourseRegistration cr ON s.id = cr.student_id\n" +
+                     "LEFT JOIN TakeExam te ON s.id = te.student_id \n" +
+                     "WHERE cr.deleted_at IS NULL AND cr.course_id = ? AND te.exam_id IN (SELECT id FROM Examination WHERE course_id = ?)\n" +
+                     "GROUP BY u.full_name, u.mobile, u.email, cr.created_at;\n")) {
+            preparedStatement.setInt(1, course_id );
+            preparedStatement.setInt(2, course_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                StudentCourseOverview student = new StudentCourseOverview();
+                student.setFullName(rs.getString("full_name"));
+                student.setEmail(rs.getString("email"));
+                student.setMobile(rs.getString("mobile"));
+                student.setTotalTestDone(rs.getInt("number_of_exams_taken"));
+                student.setRegisterAt(rs.getTimestamp("registration_date"));
+                data.add(student);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return data;
+    }
+    public  ObservableList<XYChart.Series> getPassChartData(Integer course_id){
+        ObservableList<XYChart.Series> data = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT  e.name,\n" +
+                     "    (COUNT(CASE WHEN te.scoring > 5 THEN 1 END) / COUNT(*)) * 100 AS percentage\n" +
+                     "FROM TakeExam te\n" +
+                     "JOIN Examination e ON te.exam_id = e.id\n" +
+                     "WHERE e.course_id = ? GROUP BY e.name;\n")) {
+            preparedStatement.setInt(1, course_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                XYChart.Series series = new XYChart.Series();
+                series.setName(rs.getString("name"));
+                series.getData().add(new XYChart.Data(rs.getString("name"), rs.getDouble("percentage")));
+                data.add(series);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return data;
+    }
+
+    public  ObservableList<XYChart.Series> getScoreChartData(Integer course_id){
+        ObservableList<XYChart.Series> data = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT\n" +
+                     "    c.id AS course_id,\n" +
+                     "    u.email AS email,\n" +
+                     "    AVG(\n" +
+                     "        CASE \n" +
+                     "            WHEN e.scoring_type = 1 THEN (SELECT MAX(scoring) FROM TakeExam WHERE exam_id = e.id)\n" +
+                     "            WHEN e.scoring_type = 2 THEN (SELECT AVG(scoring) FROM TakeExam WHERE exam_id = e.id)\n" +
+                     "            ELSE 0\n" +
+                     "        END\n" +
+                     "    ) AS average_score\n" +
+                     "FROM Course c\n" +
+                     "LEFT JOIN Examination e ON c.id = e.course_id\n" +
+                     "LEFT JOIN TakeExam te ON e.id = te.exam_id\n" +
+                     "LEFT JOIN Student s ON te.student_id = s.id\n" +
+                     "LEFT JOIN User u ON s.user_id = u.id\n" +
+                     "WHERE c.id = ? AND u.email IS NOT NULL\n" +
+                     "GROUP BY c.id, u.email")) {
+            preparedStatement.setInt(1, course_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            Integer i = 1;
+            while (rs.next()){
+                XYChart.Series series = new XYChart.Series();
+                series.setName(rs.getString(""));
+                series.getData().add(new XYChart.Data(rs.getString("name"), rs.getDouble("percentage")));
+                data.add(series);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return data;
+    }
+
 }

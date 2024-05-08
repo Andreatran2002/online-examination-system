@@ -7,10 +7,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TableView;
+import javafx.stage.FileChooser;
 import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.models.RoleData;
 import org.ute.onlineexamination.models.User;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -145,4 +148,16 @@ public class AppUtils {
         long days = hours / 24;
         return days;
     }
+    public static void exportTable(TableView tableView, String fileName) throws IOException {
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
+
+        File file = fileChooser.showSaveDialog(tableView.getScene().getWindow());
+
+        if (file != null) {
+            ExcelExporter.exportToExcel(tableView, fileName, file.getAbsolutePath());
+        }
+    }
+
 }

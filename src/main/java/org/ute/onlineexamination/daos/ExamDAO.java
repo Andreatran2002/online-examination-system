@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
 import org.ute.onlineexamination.models.*;
+import org.ute.onlineexamination.models.tablemodels.StudentExamScore;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.*;
@@ -22,8 +23,44 @@ public class ExamDAO implements DAO<Examination> {
     }
 
     @Override
-    public List<StudentUser> getAll() {
-        return null;
+    public ObservableList<Examination> getAll() {
+        ObservableList<Examination> examinationList = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Examination")) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                int course_id = rs.getInt("course_id");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
+                Timestamp start = rs.getTimestamp("start");
+                Timestamp end = rs.getTimestamp("end");
+                int times_retry = rs.getInt("times_retry");
+                int scoring_type = rs.getInt("scoring_type");
+                int total_minutes = rs.getInt("total_minutes");
+                Timestamp created_at = rs.getTimestamp("created_at");
+                Timestamp updated_at = rs.getTimestamp("updated_at");
+                Timestamp deleted_at = rs.getTimestamp("deleted_at");
+                Examination exam = new Examination(id, course_id, name, description, start, end, times_retry, scoring_type, total_minutes, deleted_at, created_at, updated_at);
+                examinationList.add(exam);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return examinationList;
+    }
+    public int countExaminations() {
+        int count = 0;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) AS count FROM Examination")) {
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return count;
     }
 
     @Override
@@ -40,7 +77,7 @@ public class ExamDAO implements DAO<Examination> {
                 exam.setCourse_id(rs.getInt("course_id"));
                 exam.setDescription(rs.getString("description"));
                 exam.setName(rs.getString("name"));
-                exam.setTime_retry(rs.getInt("times_retry"));
+                exam.setTimes_retry(rs.getInt("times_retry"));
                 exam.setTotal_minutes(rs.getInt("total_minutes"));
                 exam.setScoring_type(rs.getInt("scoring_type"));
                 ObservableList<ExamQuestion> questions = examQuestionDAO.getByExamId(exam.getId());
@@ -62,7 +99,7 @@ public class ExamDAO implements DAO<Examination> {
             preparedStatement.setString(3, examination.getDescription());
             preparedStatement.setTimestamp(4, examination.getStart());
             preparedStatement.setTimestamp(5, examination.getEnd());
-            preparedStatement.setInt(6, examination.getTime_retry());
+            preparedStatement.setInt(6, examination.getTimes_retry());
             preparedStatement.setInt(7, examination.getScoring_type());
             preparedStatement.setInt(8, examination.getTotal_minutes());
             preparedStatement.setTimestamp(9, AppUtils.getCurrentDateTime());
@@ -87,7 +124,7 @@ public class ExamDAO implements DAO<Examination> {
             preparedStatement.setTimestamp(3, examination.getStart());
             preparedStatement.setTimestamp(4, examination.getEnd());
             preparedStatement.setInt(5, examination.getCourse_id());
-            preparedStatement.setInt(6, examination.getTime_retry());
+            preparedStatement.setInt(6, examination.getTimes_retry());
             preparedStatement.setInt(7, examination.getScoring_type());
             preparedStatement.setInt(8, examination.getTotal_minutes());
             preparedStatement.setTimestamp(9, AppUtils.getCurrentDateTime());
@@ -103,6 +140,16 @@ public class ExamDAO implements DAO<Examination> {
         try (Connection connection = DBConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Examination SET deleted_at=? WHERE id=? ")) {
             preparedStatement.setTimestamp(1, AppUtils.getCurrentDateTime());
+            preparedStatement.setInt(2, examination.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+    }
+
+    public void restore(Examination examination) {
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Examination SET deleted_at=NULL WHERE id=? ")) {
             preparedStatement.setInt(1, examination.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -128,7 +175,7 @@ public class ExamDAO implements DAO<Examination> {
                 exam.setDescription(rs.getString("description"));
                 exam.setStart(rs.getTimestamp("start"));
                 exam.setEnd(rs.getTimestamp("end"));
-                exam.setTime_retry(rs.getInt("times_retry"));
+                exam.setTimes_retry(rs.getInt("times_retry"));
                 exam.setScoring_type(rs.getInt("scoring_type"));
                 exam.setTotal_minutes(rs.getInt("total_minutes"));
                 Optional<Course> course = courseDAO.get(rs.getInt("course_id"));
@@ -160,7 +207,7 @@ public class ExamDAO implements DAO<Examination> {
                 exam.setDescription(rs.getString("description"));
                 exam.setStart(rs.getTimestamp("start"));
                 exam.setEnd(rs.getTimestamp("end"));
-                exam.setTime_retry(rs.getInt("times_retry"));
+                exam.setTimes_retry(rs.getInt("times_retry"));
                 exam.setScoring_type(rs.getInt("scoring_type"));
                 exam.setTotal_minutes(rs.getInt("total_minutes"));
                 Optional<Course> course = courseDAO.get(rs.getInt("course_id"));
@@ -226,13 +273,16 @@ public class ExamDAO implements DAO<Examination> {
             score = score + (results.get(i))/(totalPriority) ;
         }
 
+        if (score > 10 ) return -1.0;
+;
         return AppUtils.round(score*10,2);
     }
-    public  Integer checkTakeExamTimes ( Integer exam_id){
+    public  Integer checkTakeExamTimes ( Integer exam_id, Integer student_id){
         Integer times = 0 ;
         try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM TakeExam WHERE exam_id = ? AND deleted_at IS NULL")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM TakeExam WHERE exam_id = ? AND student_id=? AND deleted_at IS NULL")) {
             preparedStatement.setInt(1, exam_id);
+            preparedStatement.setInt(2, student_id);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()){
                 times = rs.getInt(1);
@@ -310,7 +360,7 @@ public class ExamDAO implements DAO<Examination> {
     public Integer getTotalCourse(Integer student_id) {
         Integer totals = 0 ;
         try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM CourseRegistration WHERE student_id=?")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM CourseRegistration WHERE student_id=?")) {
             preparedStatement.setInt(1, student_id);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()){
@@ -320,5 +370,100 @@ public class ExamDAO implements DAO<Examination> {
             DBConnectionFactory.printSQLException(e);
         }
         return totals;
+    }
+
+    public ObservableList<Double> getTestPerformance(Integer student_id) {
+        ObservableList<Double> data = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT scoring FROM TakeExam WHERE student_id=?")) {
+            preparedStatement.setInt(1, student_id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                data.add(rs.getDouble(1));
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return data;
+    }
+
+    public Integer getTotalByCourse(Integer course_id) {
+        Integer total = 0;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM `Examination` WHERE course_id = ? AND deleted_at IS NULL ")) {
+            preparedStatement.setInt(1, course_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                total = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return total;
+    }
+
+    public ObservableList<Examination> getByCourseId(Integer id) {
+        ObservableList<Examination> examinations = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Examination WHERE course_id = ? AND deleted_at IS NULL \n")) {
+            preparedStatement.setInt(1, id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                Examination exam = new Examination();
+                exam.setId(rs.getInt("id"));
+                exam.setName(rs.getString("name"));
+                exam.setCourse_id(rs.getInt("course_id"));
+                exam.setDescription(rs.getString("description"));
+                exam.setStart(rs.getTimestamp("start"));
+                exam.setEnd(rs.getTimestamp("end"));
+                exam.setTimes_retry(rs.getInt("times_retry"));
+                exam.setScoring_type(rs.getInt("scoring_type"));
+                exam.setTotal_minutes(rs.getInt("total_minutes"));
+                examinations.add(exam);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return examinations;
+    }
+
+    public ObservableList<StudentExamScore> getStudentExamScore(Integer exam_id) {
+        ObservableList<StudentExamScore> studentExamScores = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT\n" +
+                     "    u.email,\n" +
+                     "    u.full_name,\n" +
+                     "    COUNT(te.id) AS times_retry,\n" +
+                     "    CASE\n" +
+                     "        WHEN e.scoring_type = 1 THEN MAX(te.scoring)\n" +
+                     "        WHEN e.scoring_type = 2 THEN AVG(te.scoring)\n" +
+                     "        ELSE NULL\n" +
+                     "    END AS score\n" +
+                     "FROM\n" +
+                     "    Examination e\n" +
+                     "INNER JOIN\n" +
+                     "    TakeExam te ON e.id = te.exam_id\n" +
+                     "INNER JOIN\n" +
+                     "    Student s ON te.student_id = s.id\n" +
+                     "INNER JOIN\n" +
+                     "    User u ON s.user_id = u.id\n" +
+                     "WHERE\n" +
+                     "    e.id = ?\n" +
+                     "GROUP BY\n" +
+                     "    u.email, u.full_name, e.scoring_type;\n")) {
+            preparedStatement.setInt(1, exam_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                StudentExamScore studentExamScore = new StudentExamScore();
+                studentExamScore.setEmail(rs.getString("email"));
+                studentExamScore.setFullName(rs.getString("full_name"));
+                studentExamScore.setTimesRetry(rs.getInt("times_retry"));
+                studentExamScore.setScore(rs.getDouble("score"));
+                studentExamScores.add(studentExamScore);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return studentExamScores;
     }
 }

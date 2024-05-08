@@ -40,6 +40,7 @@ public class User {
         this.password_hash = generatedSecuredPasswordHash;
     }
     public Boolean checkPassword(String password){
+        System.out.println(password + "--"+password_hash);
         return BCrypt.checkpw(password, password_hash);
     }
 

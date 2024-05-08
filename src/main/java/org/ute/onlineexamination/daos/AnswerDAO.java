@@ -5,7 +5,7 @@ import javafx.collections.ObservableList;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
 import org.ute.onlineexamination.models.Answer;
-import org.ute.onlineexamination.models.StudentUser;
+import org.ute.onlineexamination.models.TeacherUser;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.*;
@@ -18,7 +18,7 @@ public class AnswerDAO implements DAO<Answer> {
         teacherDAO = new TeacherDAO();
     }
     @Override
-    public List<StudentUser> getAll() {
+    public List<Answer> getAll() {
         return null;
     }
 
@@ -63,11 +63,11 @@ public class AnswerDAO implements DAO<Answer> {
     }
 
     @Override
-    public void delete(Answer course) {
+    public void delete(Answer answer) {
         try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Answer SET deleted_at=? , WHERE id=? ")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Answer SET deleted_at=? WHERE id=? ")) {
             preparedStatement.setTimestamp(1, AppUtils.getCurrentDateTime());
-            preparedStatement.setInt(2, course.getId());
+            preparedStatement.setInt(2, answer.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             DBConnectionFactory.printSQLException(e);

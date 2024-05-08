@@ -2,27 +2,30 @@ package org.ute.onlineexamination.models;
 
 import java.sql.Timestamp;
 
-public class StudentUser {
+public class TeacherUser {
     private int id;
     private int user_id;
     private String full_name;
     private String mobile;
     private String email;
+    private String title;
+    private String address;
     private Timestamp created_at;
     private Timestamp updated_at;
     private Timestamp last_login;
     private Timestamp deleted_at;
 
-    public StudentUser() {
-        this.mobile="";
+    public TeacherUser() {
     }
 
-    public StudentUser(int id, int user_id, String full_name, String mobile, String email, Timestamp created_at, Timestamp updated_at, Timestamp last_login, Timestamp deleted_at) {
+    public TeacherUser(int id, int user_id, String full_name, String mobile, String email, String title, String address, Timestamp created_at, Timestamp updated_at, Timestamp last_login, Timestamp deleted_at) {
         this.id = id;
         this.user_id = user_id;
         this.full_name = full_name;
         this.mobile = mobile;
         this.email = email;
+        this.title = title;
+        this.address = address;
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.last_login = last_login;
@@ -67,6 +70,22 @@ public class StudentUser {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Timestamp getCreated_at() {

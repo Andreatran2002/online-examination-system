@@ -1,9 +1,13 @@
 package org.ute.onlineexamination.daos;
 
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
-import org.ute.onlineexamination.models.StudentUser;
 import org.ute.onlineexamination.models.TakeExam;
+import org.ute.onlineexamination.models.TeacherUser;
 import org.ute.onlineexamination.utils.AppUtils;
 
 import java.sql.*;
@@ -12,7 +16,7 @@ import java.util.Optional;
 
 public class TakeExamDAO implements DAO<TakeExam> {
     @Override
-    public List<StudentUser> getAll() {
+    public List<TakeExam> getAll() {
         return null;
     }
 
@@ -73,7 +77,44 @@ public class TakeExamDAO implements DAO<TakeExam> {
     }
 
     @Override
-    public void delete(TakeExam TakeExam) {
+    public void delete(TakeExam takeExam) {
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE TakeExam SET deleted_at = ? WHERE id=? ")) {
+            preparedStatement.setTimestamp(1, AppUtils.getCurrentDateTime());
+            preparedStatement.setInt(2, takeExam.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+    }
 
+    public ObservableList<Double> getScoreByExamId(Integer exam_id) {
+        ObservableList<Double> scores = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT scoring FROM TakeExam WHERE exam_id=? AND deleted_at IS NULL")) {
+            preparedStatement.setInt(1, exam_id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                scores.add(rs.getDouble("scoring"));
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return scores;
+    }
+
+    public Double getPassPercentageByExamId(Integer exam_id){
+        Double percentage = 50.0;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT (COUNT(CASE WHEN scoring > 5.0 THEN 1 END) / COUNT(*)) * 100 AS percentage FROM TakeExam WHERE exam_id = ? AND deleted_at IS NULL ")) {
+            preparedStatement.setInt(1, exam_id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                percentage = rs.getDouble("percentage");
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return percentage;
     }
 }

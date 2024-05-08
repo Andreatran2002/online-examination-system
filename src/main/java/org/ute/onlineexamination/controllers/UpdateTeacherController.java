@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.mindrot.jbcrypt.BCrypt;
 import org.ute.onlineexamination.MainApplication;
 import org.ute.onlineexamination.daos.TeacherDAO;
@@ -94,8 +95,6 @@ public class UpdateTeacherController implements Initializable {
                 }
             });
 
-            navToHomePage("TeacherPage",user);
-
         }catch (Exception e){
             AppUtils.showAlert(event,"Update teacher false",e.getMessage());
             System.out.println(e.getMessage());
@@ -106,5 +105,11 @@ public class UpdateTeacherController implements Initializable {
         Scene scene = new Scene(panel, 1000, 800);
         appStage1.setScene(scene);
         appStage1.show();
+    }
+    private void closeAllWindows() {
+        // Lặp qua tất cả các Stage và gọi phương thức close() trên mỗi Stage
+        for (Window stage : Stage.getWindows()) {
+            stage.hide();
+        }
     }
 }

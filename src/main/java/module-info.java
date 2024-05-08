@@ -8,6 +8,8 @@ module org.ute.onlineexamination {
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
     requires jbcrypt;
+    requires org.apache.poi.poi;
+    requires org.apache.poi.ooxml;
 
     opens org.ute.onlineexamination to javafx.fxml;
     exports org.ute.onlineexamination;
@@ -16,4 +18,5 @@ module org.ute.onlineexamination {
     exports org.ute.onlineexamination.daos;
     opens org.ute.onlineexamination.daos to javafx.fxml;
     opens org.ute.onlineexamination.models to javafx.base;
+    opens org.ute.onlineexamination.models.tablemodels to javafx.base;
 }

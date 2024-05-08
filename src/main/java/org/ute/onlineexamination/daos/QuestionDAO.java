@@ -14,12 +14,14 @@ import java.util.Optional;
 public class QuestionDAO implements DAO<Question> {
     TeacherDAO teacherDAO ;
     AnswerDAO answerDAO;
+    CourseDAO courseDAO;
     public QuestionDAO(){
         teacherDAO = new TeacherDAO();
         answerDAO = new AnswerDAO();
+        courseDAO = new CourseDAO();
     }
     @Override
-    public List<StudentUser> getAll() {
+    public List<Question> getAll() {
         return null;
     }
 
@@ -68,19 +70,17 @@ public class QuestionDAO implements DAO<Question> {
     }
 
     @Override
-    public void update(Question course) {
-//        try (Connection connection = DBConnectionFactory.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Course SET name=? , description=? , start=? , end=?, category=?, updated_at=? WHERE id=? ")) {
-//            preparedStatement.setString(1, course.getName());
-//            preparedStatement.setString(2, course.getDescription());
-//            preparedStatement.setTimestamp(3, course.getStart());
-//            preparedStatement.setTimestamp(4, course.getEnd());
-//            preparedStatement.setString(5, course.getCategory());
-//            preparedStatement.setTimestamp(6, AppUtils.getCurrentDateTime());
-//            preparedStatement.setInt(7, course.getId());
-//            preparedStatement.executeUpdate();
-//        } catch (SQLException e) {
-//            DBConnectionFactory.printSQLException(e);
-//        }
+    public void update(Question question) {
+        try (Connection connection = DBConnectionFactory.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Question SET content=? , active=?, course_id =?, updated_at=? WHERE id=? ")) {
+            preparedStatement.setString(1, question.getContent());
+            preparedStatement.setBoolean(2, question.getActive());
+            preparedStatement.setInt(3, question.getCourse_id());
+            preparedStatement.setTimestamp(4, AppUtils.getCurrentDateTime());
+            preparedStatement.setInt(5, question.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
     }
 
     @Override
@@ -101,7 +101,7 @@ public class QuestionDAO implements DAO<Question> {
                      "FROM Question q\n" +
                      "INNER JOIN Course c ON q.course_id = c.id\n" +
                      "INNER JOIN Teacher t ON c.teacher_id = t.id\n" +
-                     "WHERE t.id = ?\n")) {
+                     "WHERE t.id = ? AND q.deleted_at IS NULL \n")) {
             preparedStatement.setInt(1, id );
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()){
@@ -112,6 +112,8 @@ public class QuestionDAO implements DAO<Question> {
                 question.setCourse_id(rs.getInt("course_id"));
                 question.setDeleted_at(rs.getTimestamp("deleted_at"));
                 question.setAnswers( answerDAO.getByQuestionId(question.getId()));
+                Course course =  courseDAO.get(rs.getInt("course_id")).get();
+                question.course = course;
                 questions.add(question);
             }
         } catch (SQLException e) {
@@ -142,4 +144,28 @@ public class QuestionDAO implements DAO<Question> {
     }
 
 
+    public ObservableList<Question> getByExamId(Integer id) {
+        ObservableList<Question> questions = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT q.*, eq.priority FROM ExamQuestion eq\n" +
+                     "INNER JOIN Question q ON q.id = eq.question_id \n" +
+                     "WHERE eq.exam_id =? AND eq.deleted_at IS NULL")) {
+            preparedStatement.setInt(1, id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                Question question = new Question();
+                question.setId(rs.getInt("id"));
+                question.setContent(rs.getString("content"));
+                question.setActive(rs.getBoolean("active"));
+                question.setCourse_id(rs.getInt("course_id"));
+                question.setDeleted_at(rs.getTimestamp("deleted_at"));
+                question.setPriority(rs.getInt("priority"));
+                question.setAnswers( answerDAO.getByQuestionId(question.getId()));
+                questions.add(question);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return questions;
+    }
 }

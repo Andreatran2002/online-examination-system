@@ -1,5 +1,8 @@
 package org.ute.onlineexamination.daos;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.chart.XYChart;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
 import org.ute.onlineexamination.models.*;
@@ -13,7 +16,7 @@ public class TeacherDAO implements DAO<Teacher> {
 
 
     @Override
-    public List<StudentUser> getAll() {
+    public List<Teacher> getAll() {
         return null;
     }
 
@@ -98,4 +101,68 @@ public class TeacherDAO implements DAO<Teacher> {
         }
         return teacher;
     }
+
+    public Integer getTotalStudent(Integer teacher_id){
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(DISTINCT cr.student_id) AS student_count\n" +
+                     "FROM Course c\n" +
+                     "JOIN CourseRegistration cr ON c.id = cr.course_id\n" +
+                     "WHERE c.teacher_id = ?")) {
+            preparedStatement.setInt(1, teacher_id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return 0 ;
+    }
+
+    public ObservableList<XYChart.Series> getExamPerCourse(Integer teacher_id){
+        ObservableList<XYChart.Series> data = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT c.name AS course_name, COUNT(e.id) AS exam_count\n" +
+                     "    FROM Course c\n" +
+                     "    LEFT JOIN Examination e ON c.id = e.course_id AND e.deleted_at IS NULL\n" +
+                     "    WHERE c.teacher_id =? AND c.deleted_at IS NULL \n" +
+                     "    GROUP BY c.id, c.name;")) {
+            preparedStatement.setInt(1, teacher_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            Integer i = 1;
+            while (rs.next()){
+                XYChart.Series series = new XYChart.Series();
+                series.setName(rs.getString("course_name"));
+                series.getData().add(new XYChart.Data(rs.getString("course_name"), rs.getDouble("exam_count")));
+                data.add(series);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return data;
+    }
+
+    public ObservableList<XYChart.Series> getStudentPerCourse(Integer teacher_id){
+        ObservableList<XYChart.Series> data = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT c.name AS course_name, COUNT(cr.student_id) AS student_count\n" +
+                     "FROM Course c\n" +
+                     "LEFT JOIN CourseRegistration cr ON c.id = cr.course_id AND cr.deleted_at IS NULL\n" +
+                     "WHERE c.teacher_id = ? AND c.deleted_at IS NULL\n" +
+                     "GROUP BY c.id, c.name\n")) {
+            preparedStatement.setInt(1, teacher_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            Integer i = 1;
+            while (rs.next()){
+                XYChart.Series series = new XYChart.Series();
+                series.setName(rs.getString("course_name"));
+                series.getData().add(new XYChart.Data(rs.getString("course_name"), rs.getDouble("student_count")));
+                data.add(series);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return data;
+    }
+
 }

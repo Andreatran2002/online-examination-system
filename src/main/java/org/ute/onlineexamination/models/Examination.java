@@ -11,10 +11,12 @@ public class Examination {
     private String description;
     private Timestamp start;
     private Timestamp end;
-    private Integer time_retry ;
+    private Integer times_retry ;
     private Integer scoring_type;
-    private Boolean active;
     private Integer total_minutes;
+    private Timestamp deleted_at;
+    private Timestamp created_at;
+    private Timestamp updated_at;
 
     public ObservableList<ExamQuestion> questions;
     
@@ -32,15 +34,19 @@ public class Examination {
 
     public Course course ;
 
-    public Examination(Integer course_id, String name, String description, Timestamp start, Timestamp end, Integer time_retry, Integer scoring_type, Boolean active) {
+    public Examination(Integer id, Integer course_id, String name, String description, Timestamp start, Timestamp end, Integer times_retry, Integer scoring_type, Integer total_minutes, Timestamp deleted_at, Timestamp created_at, Timestamp updated_at) {
+        this.id = id;
         this.course_id = course_id;
         this.name = name;
         this.description = description;
         this.start = start;
         this.end = end;
-        this.time_retry = time_retry;
+        this.times_retry = times_retry;
         this.scoring_type = scoring_type;
-        this.active = active;
+        this.total_minutes = total_minutes;
+        this.deleted_at = deleted_at;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
     }
 
     public Integer getId() {
@@ -91,12 +97,12 @@ public class Examination {
         this.end = end;
     }
 
-    public Integer getTime_retry() {
-        return time_retry;
+    public Integer getTimes_retry() {
+        return times_retry;
     }
 
-    public void setTime_retry(Integer time_retry) {
-        this.time_retry = time_retry;
+    public void setTimes_retry(Integer times_retry) {
+        this.times_retry = times_retry;
     }
 
     public Integer getScoring_type() {
@@ -105,14 +111,6 @@ public class Examination {
 
     public void setScoring_type(Integer scoring_type) {
         this.scoring_type = scoring_type;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
     }
 
     public Timestamp getDeleted_at() {
@@ -138,8 +136,4 @@ public class Examination {
     public void setUpdated_at(Timestamp updated_at) {
         this.updated_at = updated_at;
     }
-
-    private Timestamp deleted_at;
-    private Timestamp created_at;
-    private Timestamp updated_at;
 }

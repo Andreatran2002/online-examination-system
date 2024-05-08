@@ -3,11 +3,11 @@ package org.ute.onlineexamination.models;
 import java.sql.Timestamp;
 
 public class ExamQuestion {
-    private Integer id;
+    private Integer id =-1;
     private Integer question_id;
     private Integer exam_id;
     private Integer priority;
-    public Question question;
+    public Question question = new Question();
 
     public Integer getPriority() {
         return priority;

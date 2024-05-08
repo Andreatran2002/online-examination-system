@@ -1,31 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ute.onlineexamination.controllers.TeacherController">
+<TabPane fx:id="teacherTabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ute.onlineexamination.controllers.TeacherController">
    <tabs>
       <Tab text="Dashboard">
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="381.0" prefWidth="598.0">
                <children>
-                  <GridPane layoutX="34.0" layoutY="30.0" prefHeight="697.0" prefWidth="926.0">
+                  <GridPane layoutX="34.0" layoutY="30.0" prefHeight="697.0" prefWidth="959.0">
                      <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="539.0599365234375" minWidth="10.0" prefWidth="529.71923828125" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="457.6624755859375" minWidth="10.0" prefWidth="396.28076171875" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="539.0599365234375" minWidth="10.0" prefWidth="465.6476745605469" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="506.73529052734375" minWidth="10.0" prefWidth="460.3523254394531" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints maxHeight="356.6624450683594" minHeight="10.0" prefHeight="314.02838134765625" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="488.7665710449219" minHeight="10.0" prefHeight="410.47161865234375" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="359.3191833496094" minHeight="10.0" prefHeight="271.8321228027344" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="488.7665710449219" minHeight="10.0" prefHeight="425.6678771972656" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <AnchorPane prefHeight="314.0" prefWidth="495.0">
-                           <children>
-                              <Label fx:id="currentUserName" layoutX="20.0" layoutY="14.0" prefHeight="17.0" prefWidth="72.0" text="Hello" />
-                           </children></AnchorPane>
+                        <AnchorPane prefHeight="314.0" prefWidth="495.0" />
                         <GridPane GridPane.columnIndex="1">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -41,7 +47,7 @@
                                     <AnchorPane layoutX="27.0" layoutY="58.0" prefHeight="64.0" prefWidth="143.0" style="-fx-background-color: white; -fx-background-radius: 5;">
                                        <children>
                                           <Circle fill="#2655ff" layoutX="11.0" layoutY="-8.0" radius="33.0" stroke="WHITE" strokeType="INSIDE" />
-                                          <Label layoutX="-2.0" layoutY="-22.0" text="18" textAlignment="CENTER" textFill="WHITE">
+                                          <Label fx:id="totalCourse" layoutX="-2.0" layoutY="-22.0" text="18" textAlignment="CENTER" textFill="WHITE">
                                              <font>
                                                 <Font size="24.0" />
                                              </font>
@@ -60,7 +66,7 @@
                                     <AnchorPane layoutX="27.0" layoutY="58.0" prefHeight="64.0" prefWidth="143.0" style="-fx-background-color: white; -fx-background-radius: 5;">
                                        <children>
                                           <Circle fill="#2655ff" layoutX="11.0" layoutY="-8.0" radius="33.0" stroke="WHITE" strokeType="INSIDE" />
-                                          <Label layoutX="-2.0" layoutY="-22.0" text="18" textAlignment="CENTER" textFill="WHITE">
+                                          <Label fx:id="totalExam" layoutX="-2.0" layoutY="-22.0" text="18" textAlignment="CENTER" textFill="WHITE">
                                              <font>
                                                 <Font size="24.0" />
                                              </font>
@@ -79,7 +85,7 @@
                                     <AnchorPane layoutX="27.0" layoutY="58.0" prefHeight="64.0" prefWidth="143.0" style="-fx-background-color: white; -fx-background-radius: 5;">
                                        <children>
                                           <Circle fill="#2655ff" layoutX="11.0" layoutY="-8.0" radius="33.0" stroke="WHITE" strokeType="INSIDE" />
-                                          <Label layoutX="-2.0" layoutY="-22.0" text="18" textAlignment="CENTER" textFill="WHITE">
+                                          <Label fx:id="totalStudents" layoutX="-2.0" layoutY="-22.0" text="18" textAlignment="CENTER" textFill="WHITE">
                                              <font>
                                                 <Font size="24.0" />
                                              </font>
@@ -93,42 +99,70 @@
                                     </AnchorPane>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <children>
+                                    <AnchorPane layoutX="36.0" layoutY="53.0" prefHeight="64.0" prefWidth="143.0" style="-fx-background-color: white; -fx-background-radius: 5;">
+                                       <children>
+                                          <Circle fill="#2655ff" layoutX="11.0" layoutY="-8.0" radius="33.0" stroke="WHITE" strokeType="INSIDE" />
+                                          <Label fx:id="totalQuestion" layoutX="-2.0" layoutY="-22.0" text="18" textAlignment="CENTER" textFill="WHITE">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="20.0" layoutY="19.0" text="Question">
+                                             <font>
+                                                <Font name="System Bold" size="18.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
+                                 </children></AnchorPane>
                            </children>
                         </GridPane>
-                        <AnchorPane prefHeight="411.0" prefWidth="483.0" GridPane.rowIndex="1">
+                        <AnchorPane fx:id="studentPerCoursePane" prefHeight="408.0" prefWidth="481.0" GridPane.rowIndex="1" />
+                        <AnchorPane prefHeight="364.0" prefWidth="505.0">
                            <children>
-                              <AnchorPane layoutX="24.0" layoutY="3.0" prefHeight="402.0" prefWidth="488.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                              <AnchorPane layoutX="2.0" layoutY="18.0" prefHeight="237.0" prefWidth="433.0" style="-fx-background-color: #2655ff; -fx-background-radius: 10;">
                                  <children>
-                                    <LineChart layoutX="-2.0" layoutY="14.0" prefHeight="391.0" prefWidth="487.0" title="Performance Overview">
-                                       <xAxis>
-                                          <CategoryAxis side="BOTTOM" />
-                                       </xAxis>
-                                       <yAxis>
-                                          <NumberAxis side="LEFT" />
-                                       </yAxis>
-                                    </LineChart>
+                                    <GridPane layoutX="21.0" layoutY="11.0" prefHeight="225.0" prefWidth="386.0">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label fx:id="dbWelcome" prefHeight="29.0" prefWidth="420.0" text="Welcome ABC" textFill="WHITE">
+                                             <font>
+                                                <Font name="System Bold" size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="dbMoreInfo" prefHeight="59.0" prefWidth="433.0" text="Exama for better course management" textFill="WHITE" GridPane.rowIndex="1">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <Button mnemonicParsing="false" onAction="#goToCourseTab" prefHeight="33.0" prefWidth="196.0" style="-fx-border-color: white; -fx-background-color: white;" text="Create New Course" textFill="#001eff" GridPane.rowIndex="2">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </Button>
+                                       </children>
+                                    </GridPane>
                                  </children>
                               </AnchorPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane prefHeight="397.0" prefWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                           <children>
-                              <ListView layoutX="7.0" layoutY="50.0" prefHeight="328.0" prefWidth="393.0" />
-                              <Label layoutX="31.0" layoutY="27.0" text="Current course status">
-                                 <font>
-                                    <Font size="20.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </AnchorPane>
+                        <AnchorPane fx:id="examPerCoursePane" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                      </children>
                   </GridPane>
                </children>
             </AnchorPane>
          </content>
       </Tab>
-      <Tab text="Cousrse">
+      <Tab fx:id="courseTab" text="Cousrse">
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
@@ -147,11 +181,11 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField layoutX="668.0" layoutY="18.0" />
-                  <Label layoutX="611.0" layoutY="22.0" text="Name" />
+                  <TextField fx:id="courseFilterName" layoutX="807.0" layoutY="20.0" />
                   <Button layoutX="127.0" layoutY="18.0" mnemonicParsing="false" onAction="#navToNewCourse" text="New" />
-                  <Button layoutX="840.0" layoutY="18.0" mnemonicParsing="false" text="Search" />
-                  <Button layoutX="930.0" layoutY="18.0" mnemonicParsing="false" onAction="#onReloadCourse" text="Reload" />
+                  <ChoiceBox fx:id="courseFilterCategory" layoutX="564.0" layoutY="19.0" prefWidth="150.0" />
+                  <Label layoutX="496.0" layoutY="25.0" text="Category" />
+                  <Label layoutX="744.0" layoutY="24.0" text="Name" />
                </children></AnchorPane>
          </content>
       </Tab>
@@ -175,12 +209,11 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField layoutX="496.0" layoutY="22.0" />
-                  <Label layoutX="435.0" layoutY="26.0" text="Name" />
-                  <Label layoutX="688.0" layoutY="26.0" prefHeight="17.0" prefWidth="45.0" text="Course" />
-                  <ChoiceBox layoutX="748.0" layoutY="22.0" prefWidth="150.0" />
-                  <Button layoutX="929.0" layoutY="22.0" mnemonicParsing="false" text="Search" />
+                  <TextField fx:id="examFilterName" layoutX="554.0" layoutY="22.0" />
+                  <Label layoutX="501.0" layoutY="27.0" text="Name" />
+                  <Label layoutX="747.0" layoutY="27.0" prefHeight="17.0" prefWidth="45.0" text="Course" />
                   <Button layoutX="166.0" layoutY="22.0" mnemonicParsing="false" onAction="#navToNewExam" text="New" />
+                  <TextField fx:id="examFilterCourse" layoutX="823.0" layoutY="22.0" />
                </children></AnchorPane>
          </content>
       </Tab>
@@ -201,12 +234,11 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField layoutX="496.0" layoutY="22.0" />
+                  <TextField fx:id="questionFilterName" layoutX="496.0" layoutY="22.0" />
                   <Label layoutX="435.0" layoutY="26.0" text="Name" />
-                  <Label layoutX="688.0" layoutY="26.0" prefHeight="17.0" prefWidth="45.0" text="Course" />
-                  <ChoiceBox layoutX="748.0" layoutY="22.0" prefWidth="150.0" />
-                  <Button layoutX="929.0" layoutY="22.0" mnemonicParsing="false" text="Search" />
+                  <Label layoutX="747.0" layoutY="26.0" prefHeight="17.0" prefWidth="45.0" text="Course" />
                   <Button layoutX="166.0" layoutY="22.0" mnemonicParsing="false" onAction="#navToNewQuestion" text="New" />
+                  <TextField fx:id="questionFilterCourse" layoutX="823.0" layoutY="20.0" />
                </children>
             </AnchorPane>
          </content>
@@ -215,7 +247,7 @@
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="771.0" prefWidth="990.0">
                <children>
-                  <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="242.0" prefWidth="891.0">
+                  <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="242.0" prefWidth="970.0" style="-fx-background-color: white; -fx-background-radius: 10;">
                      <children>
                         <Label layoutX="31.0" layoutY="23.0" text="Personal Infomation">
                            <font>
@@ -272,10 +304,10 @@
                               <Label fx:id="labelAddress" text="Address 1" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                            </children>
                         </GridPane>
-                        <Button layoutX="797.0" layoutY="17.0" mnemonicParsing="false" onAction="#navToUpdateTeacherPage" prefHeight="12.0" prefWidth="90.0" text="Update" textFill="WHITE" />
-                        <Button layoutX="798.0" layoutY="56.0" mnemonicParsing="false" onAction="#navToChangePasswordPage" prefHeight="26.0" prefWidth="90.0" text="Đổi mật khẩu" />
+                        <Button layoutX="797.0" layoutY="17.0" mnemonicParsing="false" onAction="#navToUpdateTeacherPage" prefHeight="12.0" prefWidth="90.0" style="-fx-background-color: blue;" text="Update" textFill="WHITE" />
+                        <Button layoutX="798.0" layoutY="56.0" mnemonicParsing="false" onAction="#navToChangePasswordPage" prefHeight="26.0" prefWidth="90.0" style="-fx-background-color: blue;" text="Đổi mật khẩu" textFill="WHITE" />
                      </children></AnchorPane>
-                  <Button layoutX="37.0" layoutY="278.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="119.0" style="-fx-background-color: red;" text="Logout" textFill="WHITE">
+                  <Button layoutX="15.0" layoutY="275.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="119.0" onAction="#logout" style="-fx-background-color: red;" text="Logout" textFill="WHITE">
                      <font>
                         <Font size="16.0" />
                      </font></Button>
