@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class TakeExamDAO implements DAO<TakeExam> {
+    ExamDAO examDAO;
+    public TakeExamDAO(){
+        examDAO = new ExamDAO();
+    }
     @Override
     public List<TakeExam> getAll() {
         return null;
@@ -115,5 +119,28 @@ public class TakeExamDAO implements DAO<TakeExam> {
             DBConnectionFactory.printSQLException(e);
         }
         return percentage;
+    }
+    public ObservableList<TakeExam> getByStudentId(Integer student_id, Integer course_id) {
+        ObservableList<TakeExam> takeExams = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * \n" +
+                     "FROM TakeExam te\n" +
+                     "INNER JOIN Examination e ON te.exam_id = e.id\n" +
+                     "WHERE te.student_id = ? AND e.course_id = ? AND te.deleted_at IS NULL")) {
+            preparedStatement.setInt(1, student_id);
+            preparedStatement.setInt(2, course_id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                TakeExam takeExam = new TakeExam();
+                takeExam.setScoring(rs.getDouble("scoring"));
+                takeExam.setEnd(rs.getTimestamp("end"));
+                takeExam.setStart(rs.getTimestamp("start"));
+                takeExam.examination = examDAO.get(rs.getInt("exam_id")).get();
+                takeExams.add(takeExam);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return takeExams;
     }
 }

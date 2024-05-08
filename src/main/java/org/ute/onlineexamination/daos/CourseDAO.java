@@ -25,8 +25,27 @@ public class CourseDAO implements DAO<Course> {
     }
 
     @Override
-    public List<Course> getAll() {
-        return null;
+    public ObservableList<Course> getAll() {
+        ObservableList<Course> courses = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Course")) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                Course course = new Course();
+                course.setId(rs.getInt("id"));
+                course.setName(rs.getString("name"));
+                course.setDescription(rs.getString("description"));
+                course.setDeleted_at(rs.getTimestamp("deleted_at"));
+                course.setStart(rs.getTimestamp("start"));
+                course.setEnd(rs.getTimestamp("end"));
+                course.setCategory(rs.getString("category"));
+                course.setTeacher_id(rs.getInt("teacher_id"));
+                courses.add(course);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return courses;
     }
 
     @Override
@@ -105,6 +124,29 @@ public class CourseDAO implements DAO<Course> {
         } catch (SQLException e) {
             DBConnectionFactory.printSQLException(e);
         }
+    }
+
+    public void restore(Course course) {
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Course SET deleted_at=NULL WHERE id=? ")) {
+            preparedStatement.setInt(1, course.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+    }
+    public int countCourses() {
+        int count = 0;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) AS count FROM Course")) {
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return count;
     }
 
     public ObservableList<Course> getByTeacherId(Integer id) {
@@ -383,5 +425,63 @@ public class CourseDAO implements DAO<Course> {
         }
         return result;
     }
-
+    public ObservableList<XYChart.Series> getPassChartDataByStudent(Integer course_id, Integer student_id) {
+        ObservableList<XYChart.Series> data = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT  e.name,\n" +
+                     "    (COUNT(CASE WHEN te.scoring > 5 THEN 1 END) / COUNT(*)) * 100 AS percentage\n" +
+                     "FROM TakeExam te\n" +
+                     "JOIN Examination e ON te.exam_id = e.id \n" +
+                     "WHERE e.course_id = ? AND te.student_id=? GROUP BY e.name;\n")) {
+            preparedStatement.setInt(1, course_id );
+            preparedStatement.setInt(2, student_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                XYChart.Series series = new XYChart.Series();
+                series.setName(rs.getString("name"));
+                series.getData().add(new XYChart.Data(rs.getString("name"), rs.getDouble("percentage")));
+                data.add(series);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return data;
+    }
+    public Double getCourseFinalScore(Integer course_id , Integer student_id) {
+        Double score = 0.0;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT \n" +
+                     "    AVG(final_score) AS average_score\n" +
+                     "FROM (SELECT\n" +
+                     "        c.id AS course_id,\n" +
+                     "        c.name,\n" +
+                     "        CASE\n" +
+                     "            WHEN e.scoring_type = 1 THEN MAX(te.scoring)   -- Lấy điểm cao nhất\n" +
+                     "            WHEN e.scoring_type = 2 THEN AVG(te.scoring)   -- Lấy trung bình điểm\n" +
+                     "            ELSE 0                                         -- Giá trị mặc định nếu không có loại điểm nào phù hợp\n" +
+                     "        END AS final_score\n" +
+                     "    FROM\n" +
+                     "        Course c\n" +
+                     "    LEFT JOIN\n" +
+                     "        Examination e ON c.id = e.course_id\n" +
+                     "    LEFT JOIN\n" +
+                     "        TakeExam te ON e.id = te.exam_id\n" +
+                     "    WHERE\n" +
+                     "        c.id = ?\n" +
+                     "        AND te.student_id = ?\n" +
+                     "    GROUP BY\n" +
+                     "        e.id ,e.scoring_type\n" +
+                     ") AS subquery;\n")) {
+            preparedStatement.setInt(1, course_id );
+            preparedStatement.setInt(2, student_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                score = rs.getDouble("average_score");
+            }
+            return score;
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return score;
+    }
 }
