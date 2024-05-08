@@ -5,9 +5,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.chart.XYChart;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
-import org.ute.onlineexamination.models.Course;
-import org.ute.onlineexamination.models.Teacher;
-import org.ute.onlineexamination.models.User;
+import org.ute.onlineexamination.models.*;
+import org.ute.onlineexamination.models.enums.PagingType;
 import org.ute.onlineexamination.models.tablemodels.StudentCourseOverview;
 import org.ute.onlineexamination.utils.AppUtils;
 
@@ -138,31 +137,6 @@ public class CourseDAO implements DAO<Course> {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()){
                 Course course = new Course();
-                course.setId(rs.getInt("id"));
-                course.setName(rs.getString("name"));
-                course.setDescription(rs.getString("description"));
-                course.setDeleted_at(rs.getTimestamp("deleted_at"));
-                course.setStart(rs.getTimestamp("start"));
-                course.setEnd(rs.getTimestamp("end"));
-                course.setCategory(rs.getString("category"));
-                course.setTeacher_id(rs.getInt("teacher_id"));
-                courses.add(course);
-            }
-        } catch (SQLException e) {
-            DBConnectionFactory.printSQLException(e);
-        }
-        return courses;
-    }
-    //TODO update function
-    public ObservableList<Course> getFilterAndPaging(){
-        ObservableList<Course> courses = FXCollections.observableArrayList();
-        try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Course WHERE deleted_at IS NULL ")) {
-//            preparedStatement.setInt(1, id );
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()){
-                Course course = new Course();
-                // TODO: lay thong tin User
                 course.setId(rs.getInt("id"));
                 course.setName(rs.getString("name"));
                 course.setDescription(rs.getString("description"));
@@ -312,4 +286,128 @@ public class CourseDAO implements DAO<Course> {
         return data;
     }
 
+    public ObservableList<XYChart.Series> getPassChartDataByStudent(Integer course_id, Integer student_id) {
+        ObservableList<XYChart.Series> data = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT  e.name,\n" +
+                     "    (COUNT(CASE WHEN te.scoring > 5 THEN 1 END) / COUNT(*)) * 100 AS percentage\n" +
+                     "FROM TakeExam te\n" +
+                     "JOIN Examination e ON te.exam_id = e.id \n" +
+                     "WHERE e.course_id = ? AND te.student_id=? GROUP BY e.name;\n")) {
+            preparedStatement.setInt(1, course_id );
+            preparedStatement.setInt(2, student_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                XYChart.Series series = new XYChart.Series();
+                series.setName(rs.getString("name"));
+                series.getData().add(new XYChart.Data(rs.getString("name"), rs.getDouble("percentage")));
+                data.add(series);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return data;
+    }
+
+    public Double getCourseFinalScore(Integer course_id , Integer student_id) {
+        Double score = 0.0;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT \n" +
+                     "    AVG(final_score) AS average_score\n" +
+                     "FROM (SELECT\n" +
+                     "        c.id AS course_id,\n" +
+                     "        c.name,\n" +
+                     "        CASE\n" +
+                     "            WHEN e.scoring_type = 1 THEN MAX(te.scoring)   -- Lấy điểm cao nhất\n" +
+                     "            WHEN e.scoring_type = 2 THEN AVG(te.scoring)   -- Lấy trung bình điểm\n" +
+                     "            ELSE 0                                         -- Giá trị mặc định nếu không có loại điểm nào phù hợp\n" +
+                     "        END AS final_score\n" +
+                     "    FROM\n" +
+                     "        Course c\n" +
+                     "    LEFT JOIN\n" +
+                     "        Examination e ON c.id = e.course_id\n" +
+                     "    LEFT JOIN\n" +
+                     "        TakeExam te ON e.id = te.exam_id\n" +
+                     "    WHERE\n" +
+                     "        c.id = ?\n" +
+                     "        AND te.student_id = ?\n" +
+                     "    GROUP BY\n" +
+                     "        e.id ,e.scoring_type\n" +
+                     ") AS subquery;\n")) {
+            preparedStatement.setInt(1, course_id );
+            preparedStatement.setInt(2, student_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                score = rs.getDouble("average_score");
+            }
+            return score;
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return score;
+    }
+    public ObservableList<Course> getPaging( Integer first_id, Integer last_id , Integer limit, PagingType type) {
+        ObservableList<Course> courses = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Course WHERE id "+ (type == PagingType.AFTER && last_id!=0 ? "<":">" )+ " ? AND deleted_at IS NULL\n" +
+                     "ORDER BY id DESC \n" +
+                     "LIMIT ? ")) {
+            preparedStatement.setInt(1, type == PagingType.AFTER ? last_id : first_id );
+            preparedStatement.setInt(2, limit );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                Course course = new Course();
+                course.setId(rs.getInt("id"));
+                course.setName(rs.getString("name"));
+                course.setDescription(rs.getString("description"));
+                course.setDeleted_at(rs.getTimestamp("deleted_at"));
+                course.setStart(rs.getTimestamp("start"));
+                course.setEnd(rs.getTimestamp("end"));
+                course.setCategory(rs.getString("category"));
+                course.setTeacher_id(rs.getInt("teacher_id"));
+                courses.add(course);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return courses;
+    }
+
+    public Boolean hasNext(Integer lastExam, Integer student_id) {
+        Boolean result = false;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT EXISTS (\n" +
+                     "SELECT * FROM Course " +
+                     "WHERE id < ? AND deleted_at IS NULL \n" +
+                     "ORDER BY id DESC\n" +
+                     ") AS has_next")) {
+            preparedStatement.setInt(1, lastExam );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                result = rs.getInt(1) == 1 ;
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return result;
+    }
+
+    public Boolean hasBefore(Integer firstExam, Integer student_id) {
+        Boolean result = false;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT EXISTS (\n" +
+                     "SELECT * FROM Course \n" +
+                     "WHERE id > ? AND deleted_at IS NULL \n" +
+                     "ORDER BY id DESC\n" +
+                     ") AS has_before")) {
+            preparedStatement.setInt(1, firstExam );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                result = rs.getInt(1) == 1 ;
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return result;
+    }
 }

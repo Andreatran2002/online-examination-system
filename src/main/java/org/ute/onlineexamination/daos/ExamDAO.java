@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import org.ute.onlineexamination.base.DAO;
 import org.ute.onlineexamination.database.DBConnectionFactory;
 import org.ute.onlineexamination.models.*;
+import org.ute.onlineexamination.models.enums.PagingType;
 import org.ute.onlineexamination.models.tablemodels.StudentExamScore;
 import org.ute.onlineexamination.utils.AppUtils;
 
@@ -420,5 +421,86 @@ public class ExamDAO implements DAO<Examination> {
             DBConnectionFactory.printSQLException(e);
         }
         return studentExamScores;
+    }
+
+    public ObservableList<Examination> getPagingByStudentId(Integer student_id, Integer first_id, Integer last_id , Integer limit, PagingType type) {
+        ObservableList<Examination> examinations = FXCollections.observableArrayList();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT e.* \n" +
+                     "FROM Examination e\n" +
+                     "INNER JOIN Course c ON c.id = e.course_id \n" +
+                     "INNER JOIN CourseRegistration cr ON cr.course_id = c.id\n" +
+                     "WHERE e.id "+ (type == PagingType.AFTER && last_id!=0 ? "<":">" )+ " ? AND cr.student_id = ? AND e.deleted_at IS NULL\n" +
+                     "ORDER BY id DESC \n" +
+                     "LIMIT ? ")) {
+            preparedStatement.setInt(1, type == PagingType.AFTER ? last_id : first_id );
+            preparedStatement.setInt(2, student_id );
+            preparedStatement.setInt(3, limit );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                Examination exam = new Examination();
+                exam.setId(rs.getInt("id"));
+                exam.setName(rs.getString("name"));
+                exam.setCourse_id(rs.getInt("course_id"));
+                exam.setDescription(rs.getString("description"));
+                exam.setStart(rs.getTimestamp("start"));
+                exam.setEnd(rs.getTimestamp("end"));
+                exam.setTime_retry(rs.getInt("times_retry"));
+                exam.setScoring_type(rs.getInt("scoring_type"));
+                exam.setTotal_minutes(rs.getInt("total_minutes"));
+                Optional<Course> course = courseDAO.get(rs.getInt("course_id"));
+                ObservableList<ExamQuestion> questions = examQuestionDAO.getByExamId(rs.getInt("id"));
+                exam.course = course.get();
+                exam.questions = questions;
+                examinations.add(exam);
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return examinations;
+    }
+
+    public Boolean hasNext(Integer lastExam, Integer student_id) {
+        Boolean result = false;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT EXISTS (\n" +
+                     "SELECT e.* FROM Examination e\n" +
+                     "INNER JOIN Course c ON e.course_id = c.id \n" +
+                     "INNER JOIN CourseRegistration cr ON cr.course_id = c.id \n" +
+                     "WHERE e.id < ? AND cr.student_id = ? AND e.deleted_at IS NULL \n" +
+                     "ORDER BY e.id DESC\n" +
+                     ") AS has_next")) {
+            preparedStatement.setInt(1, lastExam );
+            preparedStatement.setInt(2, student_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                result = rs.getInt(1) == 1 ;
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return result;
+    }
+
+    public Boolean hasBefore(Integer firstExam, Integer student_id) {
+        Boolean result = false;
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT EXISTS (\n" +
+                     "SELECT e.* FROM Examination e\n" +
+                     "INNER JOIN Course c ON e.course_id = c.id \n" +
+                     "INNER JOIN CourseRegistration cr ON cr.course_id = c.id \n" +
+                     "WHERE e.id > ? AND cr.student_id = ? AND e.deleted_at IS NULL \n" +
+                     "ORDER BY e.id DESC\n" +
+                     ") AS has_next")) {
+            preparedStatement.setInt(1, firstExam );
+            preparedStatement.setInt(2, student_id );
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                result = rs.getInt(1) == 1 ;
+            }
+        } catch (SQLException e) {
+            DBConnectionFactory.printSQLException(e);
+        }
+        return result;
     }
 }

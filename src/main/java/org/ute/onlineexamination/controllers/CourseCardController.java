@@ -25,6 +25,7 @@ import org.ute.onlineexamination.utils.AppUtils;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.temporal.Temporal;
 import java.util.ResourceBundle;
@@ -91,19 +92,27 @@ public class CourseCardController implements Initializable{
     }
 
     void setBtnState(){
-
-        Boolean hasEnrolled = courseDAO.checkEnroll(course.getId());
-        if (hasEnrolled) {
-            courseCardBtn.setText("Enrolled");
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+        if (currentTimestamp.getTime() < course.getStart().getTime()) {
+            courseCardBtn.setText("Not started");
             courseCardBtn.setDisable(true);
-        }
-        else {
-            courseCardBtn.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    enrollCourse(event);
-                }
-            });
+        } else if (currentTimestamp.getTime() > course.getEnd().getTime()) {
+            courseCardBtn.setText("Outdated");
+            courseCardBtn.setDisable(true);
+        } else{
+            Boolean hasEnrolled = courseDAO.checkEnroll(course.getId());
+            if (hasEnrolled) {
+                courseCardBtn.setText("Enrolled");
+                courseCardBtn.setDisable(true);
+            }
+            else {
+                courseCardBtn.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        enrollCourse(event);
+                    }
+                });
+            }
         }
     }
 

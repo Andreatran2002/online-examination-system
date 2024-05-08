@@ -65,7 +65,7 @@ public class NewCourseController implements Initializable {
             course.setName(name.getText());
             course.setDescription(description.getText());
             courseDAO.save(course);
-            AppUtils.showInfo(event, "Create course success", "Create course " + name + "successfull", new AlertActionInterface() {
+            AppUtils.showInfo(event, "Create course success", "Create course " + name.getText() + "successfull", new AlertActionInterface() {
                 @Override
                 public void action() {
                     Stage   appStage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
