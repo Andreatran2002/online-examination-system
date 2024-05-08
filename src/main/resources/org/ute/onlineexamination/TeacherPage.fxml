@@ -194,15 +194,15 @@
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
                   <TableView fx:id="examTableView" layoutX="16.0" layoutY="80.0" prefHeight="642.0" prefWidth="969.0">
-                    <columns>
-                      <TableColumn fx:id="examTitleColumn" prefWidth="186.02786445617676" text="Exam Titile" />
-                      <TableColumn fx:id="examCourseColumn" prefWidth="150.4167022705078" text="Course" />
+                     <columns>
+                        <TableColumn fx:id="examTitleColumn" prefWidth="186.02786445617676" text="Exam Titile" />
+                        <TableColumn fx:id="examCourseColumn" prefWidth="150.4167022705078" text="Course" />
                         <TableColumn fx:id="examDescriptionColumn" prefWidth="190.63900756835938" text="Description" />
                         <TableColumn fx:id="examTotalQuestionColumn" minWidth="0.0" prefWidth="88.86102294921875" text="Total" />
                         <TableColumn fx:id="examStartColumn" prefWidth="98.541748046875" text="Start" />
                         <TableColumn fx:id="examEndColumn" prefWidth="101.04180908203125" text="End" />
                         <TableColumn fx:id="examActionColumn" prefWidth="145.4581298828125" text="Action" />
-                    </columns>
+                     </columns>
                   </TableView>
                   <Label layoutX="16.0" layoutY="23.0" text="List Examinations">
                      <font>
@@ -255,18 +255,18 @@
                            </font>
                         </Label>
                         <GridPane layoutX="31.0" layoutY="49.0" prefHeight="175.0" prefWidth="422.0">
-                          <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                          </columnConstraints>
-                          <rowConstraints>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
                            <children>
                               <Label text="Email Address">
                                  <font>
@@ -307,8 +307,6 @@
                         <Button layoutX="797.0" layoutY="17.0" mnemonicParsing="false" onAction="#navToUpdateTeacherPage" prefHeight="12.0" prefWidth="90.0" style="-fx-background-color: blue;" text="Update" textFill="WHITE" />
                         <Button layoutX="798.0" layoutY="56.0" mnemonicParsing="false" onAction="#navToChangePasswordPage" prefHeight="26.0" prefWidth="90.0" style="-fx-background-color: blue;" text="Đổi mật khẩu" textFill="WHITE" />
                      </children></AnchorPane>
-                  <Button layoutX="15.0" layoutY="275.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="119.0" onAction="#logout" style="-fx-background-color: red;" text="Logout" textFill="WHITE"/>
-
                   <Button layoutX="15.0" layoutY="275.0" mnemonicParsing="false" onAction="#logout" prefHeight="37.0" prefWidth="119.0" style="-fx-background-color: red;" text="Logout" textFill="WHITE">
                      <font>
                         <Font size="16.0" />
